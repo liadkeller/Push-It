@@ -1,0 +1,25 @@
+def reposDir = new File(System.properties['user.home'], ".android/manual-offline-m2")
+def repos = new ArrayList()
+reposDir.eachDir {repos.add(it) }
+repos.sort()
+
+allprojects {
+  buildscript {
+    repositories {
+      for (repo in repos) {
+        maven {
+          name = "injected_offline_${repo.name}"
+          url = repo.toURI().toURL()
+        }
+      }
+    }
+  }
+  repositories {
+    for (repo in repos) {
+      maven {
+        name = "injected_offline_${repo.name}"
+        url = repo.toURI().toURL()
+      }
+    }
+  }
+}

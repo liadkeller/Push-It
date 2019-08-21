@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.liadk.android.pushit.ItemFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/logoImageView"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="true"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mainImageView"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="true"/>
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp"
+            android:text="Item Title"
+            android:textAppearance="@style/textAppearanceHeader" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Item Author and Publication Time"
+            android:id="@+id/detailsTextView"
+            android:gravity="left"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black"
+            android:text="Item Text"
+            android:id="@+id/mainTextView"
+            android:gravity="left"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/itemImageView1"
+            android:visibility="gone"/>
+
+        <SurfaceView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/itemSurfaceView1"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black"
+            android:text="Item Text Segment 1"
+            android:id="@+id/seg1TextView"
+            android:gravity="left"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/itemImageView2"
+            android:visibility="gone"/>
+
+        <SurfaceView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/itemSurfaceView2"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black"
+            android:text="Item Text Segment 2"
+            android:id="@+id/seg2TextView"
+            android:gravity="left"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp"
+            android:visibility="gone"/>
+    </LinearLayout>
+</ScrollView>
