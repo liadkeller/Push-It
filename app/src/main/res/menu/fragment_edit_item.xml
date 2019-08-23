@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menu_item_save_changes"
+        android:title="@string/save_changes"
+        android:showAsAction="ifRoom">
+    </item>
+
+    <item android:id="@+id/menu_item_save_draft"
+        android:title="@string/save_draft">
+    </item>
+
+    <item android:id="@+id/menu_item_post_article"
+    android:title="@string/post_article">
+    </item>
+
+    <item android:id="@+id/menu_item_publish_article"
+    android:title="@string/publish_article">
+    </item>
+</menu>

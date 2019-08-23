@@ -10,71 +10,123 @@
 9        android:targetSdkVersion="23" />
 9-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml
 10
-11    <application
-11-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:6:5-41:19
-12        android:allowBackup="true"
-12-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:7:9-35
-13        android:debuggable="true"
-14        android:icon="@mipmap/ic_launcher"
-14-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:8:9-43
-15        android:label="@string/app_name"
-15-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:9:9-41
-16        android:supportsRtl="true"
-16-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:10:9-35
-17        android:testOnly="true"
-18        android:theme="@style/AppTheme" >
-18-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:11:9-40
-19        <activity android:name="com.liadk.android.pushit.PageActivity" >
-19-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:12:9-17:20
-19-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:12:19-47
-20            <intent-filter>
-20-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:13:13-16:29
-21                <action android:name="android.intent.action.MAIN" />
-21-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:14:17-68
-21-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:14:25-66
-22
-23                <category android:name="android.intent.category.LAUNCHER" />
-23-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:15:17-76
-23-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:15:27-74
-24            </intent-filter>
-25        </activity>
-26        <activity android:name="com.liadk.android.pushit.ItemActivity" >
-26-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:18:9-21:20
-26-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:18:19-47
-27            <meta-data
-27-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:19:13-20:48
-28                android:name="android.support.PARENT_ACTIVITY"
-28-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:19:24-70
-29                android:value=".PageActivity" />
-29-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:20:17-46
-30        </activity>
-31        <activity
-31-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:22:9-26:20
-32            android:name="com.liadk.android.pushit.EditItemActivity"
-32-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:22:19-51
-33            android:windowSoftInputMode="stateHidden|adjustResize" >
-33-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:23:13-67
-34            <meta-data
-34-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:19:13-20:48
-35                android:name="android.support.PARENT_ACTIVITY"
-35-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:19:24-70
-36                android:value=".ItemActivity" />
-36-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:20:17-46
-37        </activity>
-38
-39        <!--
-40        <provider
-41            android:name="android.support.v4.content.FileProvider"
-42            android:authorities="${applicationId}.com.vansuita.pickimage.provider"
-43            android:exported="false"
-44            android:grantUriPermissions="true"
-45            tools:replace="android:authorities">
-46            <meta-data
-47                android:name="android.support.FILE_PROVIDER_PATHS"
-48                android:resource="@xml/picker_provider_paths" />
-49        </provider>
-50        -->
-51
-52    </application>
-53
-54</manifest>
+11    <uses-permission android:name="android.permission.CAMERA" />
+11-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4132be4c55121960fd0382215a43f898\PickImage-2.1.0\AndroidManifest.xml:11:5-65
+11-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4132be4c55121960fd0382215a43f898\PickImage-2.1.0\AndroidManifest.xml:11:22-62
+12
+13    <uses-feature android:name="android.hardware.camera" />
+13-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4132be4c55121960fd0382215a43f898\PickImage-2.1.0\AndroidManifest.xml:13:5-60
+13-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4132be4c55121960fd0382215a43f898\PickImage-2.1.0\AndroidManifest.xml:13:19-57
+14    <uses-feature android:name="android.hardware.camera.autofocus" />
+14-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4132be4c55121960fd0382215a43f898\PickImage-2.1.0\AndroidManifest.xml:14:5-70
+14-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4132be4c55121960fd0382215a43f898\PickImage-2.1.0\AndroidManifest.xml:14:19-67
+15
+16    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+16-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4132be4c55121960fd0382215a43f898\PickImage-2.1.0\AndroidManifest.xml:16:5-81
+16-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4132be4c55121960fd0382215a43f898\PickImage-2.1.0\AndroidManifest.xml:16:22-78
+17
+18    <application
+18-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:6:5-53:19
+19        android:allowBackup="true"
+19-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:7:9-35
+20        android:configChanges="orientation"
+20-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4132be4c55121960fd0382215a43f898\PickImage-2.1.0\AndroidManifest.xml:20:9-44
+21        android:debuggable="true"
+22        android:icon="@mipmap/ic_launcher"
+22-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:8:9-43
+23        android:label="@string/app_name"
+23-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:9:9-41
+24        android:screenOrientation="portrait"
+24-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4132be4c55121960fd0382215a43f898\PickImage-2.1.0\AndroidManifest.xml:22:9-45
+25        android:supportsRtl="true"
+25-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:10:9-35
+26        android:testOnly="true"
+27        android:theme="@style/AppTheme" >
+27-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:11:9-40
+28        <activity android:name="com.liadk.android.pushit.ExploreActivity" >
+28-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:12:9-17:20
+28-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:12:19-50
+29            <intent-filter>
+29-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:13:13-16:29
+30                <action android:name="android.intent.action.MAIN" />
+30-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:14:17-68
+30-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:14:25-66
+31
+32                <category android:name="android.intent.category.LAUNCHER" />
+32-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:15:17-76
+32-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:15:27-74
+33            </intent-filter>
+34        </activity>
+35        <activity
+35-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:18:9-19:56
+36            android:name="com.liadk.android.pushit.PageActivity"
+36-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:18:19-47
+37            android:parentActivityName="com.liadk.android.pushit.ExploreActivity" />
+37-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:19:9-54
+38        <activity
+38-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:20:9-24:20
+39            android:name="com.liadk.android.pushit.PageSettingsActivity"
+39-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:20:19-55
+40            android:parentActivityName="com.liadk.android.pushit.PageActivity" >
+40-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:21:13-55
+41
+42            <!--
+43                <meta-data android:name="android.support.PARENT_ACTIVITY"
+44                android:value=".PageActivity"/>
+45            -->
+46        </activity>
+47        <activity
+47-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:26:9-30:20
+48            android:name="com.liadk.android.pushit.ItemActivity"
+48-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:26:19-47
+49            android:parentActivityName="com.liadk.android.pushit.PageActivity" >
+49-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:27:13-55
+50
+51            <!--
+52                <meta-data android:name="android.support.PARENT_ACTIVITY"
+53                android:value=".PageActivity"/>
+54            -->
+55        </activity>
+56        <activity
+56-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:31:9-36:20
+57            android:name="com.liadk.android.pushit.EditItemActivity"
+57-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:31:19-51
+58            android:parentActivityName="com.liadk.android.pushit.ItemActivity"
+58-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:33:13-55
+59            android:windowSoftInputMode="stateHidden|adjustResize" >
+59-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:32:13-67
+60
+61            <!--
+62            <meta-data android:name="android.support.PARENT_ACTIVITY" TODO Take Care Of.
+63            android:value=".ItemActivity"/>
+64            -->
+65        </activity>
+66        <activity
+66-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:37:9-40:20
+67            android:name="com.liadk.android.pushit.CreateNotificationActivity"
+67-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:37:19-61
+68            android:parentActivityName="com.liadk.android.pushit.EditItemActivity"
+68-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:39:13-59
+69            android:windowSoftInputMode="stateHidden|adjustResize" >
+69-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:38:13-67
+70        </activity>
+71
+72        <provider
+73            android:name="android.support.v4.content.FileProvider"
+73-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:43:13-67
+74            android:authorities="com.liadk.android.pushit.com.vansuita.pickimage.provider"
+74-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:44:13-83
+75            android:exported="false"
+75-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:45:13-37
+76            android:grantUriPermissions="true" >
+76-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:46:13-47
+77            <meta-data
+77-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:48:13-50:65
+78                android:name="android.support.FILE_PROVIDER_PATHS"
+78-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:49:17-67
+79                android:resource="@xml/picker_provider_paths" />
+79-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:50:17-62
+80        </provider>
+81    </application>
+82
+83</manifest>

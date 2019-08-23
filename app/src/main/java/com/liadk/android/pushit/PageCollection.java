@@ -26,7 +26,18 @@ public class PageCollection {
         ArrayList<Item> pageItems = new ArrayList<>();
 
         page.setItems(pageItems);
+        page.setName("Lidi News - Best News in Town");
         mPages.add(page);
+
+
+        Item tlaibBreaking = new Item(page);
+        tlaibBreaking.setTitle("Trump Mocks Tlaib's Grandma as She \"Don't Have to See Her Now\"");
+        tlaibBreaking.setState(Item.State.CREATED);
+        Bitmap img3 = BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.tlaibvstrump);
+        tlaibBreaking.setImage(img3);
+
+        ItemCollection.get(mAppContext).add(tlaibBreaking);
+        pageItems.add(tlaibBreaking);
 
 
         Item sirenBreaking = new Item(page); // TODO Delete this
@@ -52,12 +63,6 @@ public class PageCollection {
         ItemCollection.get(mAppContext).add(gazansBreaking);
         pageItems.add(gazansBreaking);
 
-
-        Item tlaibBreaking = new Item(page);
-        tlaibBreaking.setTitle("Trump Mocks Tlaib's Grandma as She \"Don't Have to See Her Now\"");
-        tlaibBreaking.setState(Item.State.CREATED);
-        Bitmap img3 = BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.tlaibvstrump);
-        tlaibBreaking.setImage(img3);
 
         ItemCollection.get(mAppContext).add(tlaibBreaking);
         pageItems.add(tlaibBreaking);

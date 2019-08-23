@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/page_settings">
+        <EditTextPreference
+            android:dialogTitle="@string/page_name"
+            android:key="pageName"
+            android:title="@string/page_name"
+            android:inputType="text"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/page_design">
+        <ListPreference
+            android:dialogTitle="@string/choose_design"
+            android:entries="@array/settings_list_preference_values"
+            android:entryValues="@array/settings_list_preference_values"
+            android:defaultValue="Single Header"
+            android:key="listDesign"
+            android:summary="@string/choose_design_summary"
+            android:title="@string/choose_design" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

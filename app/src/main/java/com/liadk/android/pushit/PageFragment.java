@@ -1,13 +1,10 @@
 package com.liadk.android.pushit;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,18 +15,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.UUID;
 
 public class PageFragment extends Fragment {
 
     private static final String TAG = "PageFragment";
+    public static final String EXTRA_ID = "id";
+
+    private static final int HEADER_TYPE = 0;
+    private static final int NO_HEADER_TYPE = 1;
+    private static final int NO_IMAGE_TYPE = 2;
 
     private Page mPage;
     private RecyclerView mRecyclerView;
@@ -39,18 +38,27 @@ public class PageFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        mPage = PageCollection.get(getActivity()).getPages().get(0); // TODO Delete This
+        UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
+        mPage = PageCollection.get(getActivity()).getPage(id);
+
+        if(!mPage.getName().equals("")) {
+            getActivity().setTitle(mPage.getName());
+        }
+
         Log.d(TAG, "Page items number: " + mPage.getItems().size());
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_page, container, false);
+        View v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
         mRecyclerView.setAdapter(new PageRecycleViewAdapter(getActivity(), mPage));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        final int PADDING_SIZE = (int) (4 * (getResources().getDisplayMetrics().density) + 0.5f); // 4dp
+        mRecyclerView.setPadding(0, PADDING_SIZE, 0, PADDING_SIZE);
 
         return v;
     }
@@ -72,8 +80,31 @@ public class PageFragment extends Fragment {
         }
 
         @Override
+        public int getItemViewType(int position) {
+            if(mPage.settings.design == Page.Design.NO_IMAGES)
+                return NO_IMAGE_TYPE;
+
+            if(mPage.settings.design == Page.Design.SINGLE_HEADER && position > 0)
+                return NO_HEADER_TYPE;
+
+            else
+                return HEADER_TYPE;
+        }
+
+        @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_card, parent, false);
+            View v;
+            if(viewType == HEADER_TYPE)
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_card_header, parent, false);
+
+            else if(viewType == NO_HEADER_TYPE)
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_card, parent, false);
+
+            else { // TODO Add different layout for NO_IMAGE_TYPE
+                v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_card_no_image, parent, false);
+                return new NoImageViewHolder(v);
+            }
+
             return new ViewHolder(v);
         }
 
@@ -82,44 +113,64 @@ public class PageFragment extends Fragment {
             int reversedIndex = mItems.size() - 1 - position;
             final Item item = mItems.get(reversedIndex);
 
-            ViewHolder viewHolder = (ViewHolder) holder;
-            viewHolder.mImageView.setImageBitmap(item.getImage());
-            viewHolder.mTextView.setText(item.getTitle());
-            viewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(getActivity(), ItemActivity.class);
-                    i.putExtra(ItemFragment.EXTRA_ID, item.getId());
-                    startActivity(i);
-                }
-            });
-            /*
-            viewHolder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Boolean isPremitted; // TODO take care of user permissions
-                    if(isPremitted = true) {
-                        TextView editButton = new TextView(getActivity());
-                        editButton.setText(R.string.edit_item);
-                        editButton.setGravity(View.TEXT_ALIGNMENT_CENTER);
-                        //editButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                        editButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent i = new Intent(getActivity(), ItemActivity.class);
-                                i.putExtra(ItemFragment.EXTRA_ID, item.getId());
-                                startActivity(i);
-                            }
-                        });
+            if(getItemViewType(position) == NO_IMAGE_TYPE) {
 
-                        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(editButton).create();
-                        alertDialog.show();
-                        return true;
+                NoImageViewHolder viewHolder = (NoImageViewHolder) holder;
+                viewHolder.mTextView.setText(item.getTitle());
+                viewHolder.mTimeTextView.setText(item.getShortTime());
+                viewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getActivity(), ItemActivity.class);
+                        i.putExtra(ItemFragment.EXTRA_ID, item.getId());
+                        startActivity(i);
                     }
-                    return false;
-                }
-            });
-             */
+                });
+            }
+
+            else {
+                ViewHolder viewHolder = (ViewHolder) holder;
+                viewHolder.mImageView.setImageBitmap(item.getImage());
+                viewHolder.mTextView.setText(item.getTitle());
+                viewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getActivity(), ItemActivity.class);
+                        i.putExtra(ItemFragment.EXTRA_ID, item.getId());
+                        startActivity(i);
+                    }
+                });
+
+                /*
+                viewHolder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Boolean isPremitted; // TODO take care of user permissions
+                        if(isPremitted = true) {
+                            TextView editButton = new TextView(getActivity());
+                            editButton.setText(R.string.edit_item);
+                            editButton.setGravity(View.TEXT_ALIGNMENT_CENTER);
+                            //editButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                            editButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent i = new Intent(getActivity(), ItemActivity.class);
+                                    i.putExtra(ItemFragment.EXTRA_ID, item.getId());
+                                    startActivity(i);
+                                }
+                            });
+
+                            AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(editButton).create();
+                            alertDialog.show();
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                */
+
+            }
+
         }
 
         @Override
@@ -138,6 +189,21 @@ public class PageFragment extends Fragment {
                 mCardView = (CardView) itemView.findViewById(R.id.card);
                 mImageView = (ImageView) itemView.findViewById(R.id.cardImageView);
                 mTextView = (TextView) itemView.findViewById(R.id.cardText);
+            }
+        }
+
+        private class NoImageViewHolder extends RecyclerView.ViewHolder {
+            CardView mCardView;
+            TextView mTextView;
+            TextView mTimeTextView;
+
+
+            public NoImageViewHolder(View v) {
+                super(v);
+
+                mCardView = (CardView) v.findViewById(R.id.card);
+                mTextView = (TextView) v.findViewById(R.id.cardText);
+                mTimeTextView = (TextView) v.findViewById(R.id.cardTime);
             }
         }
     }
@@ -159,6 +225,23 @@ public class PageFragment extends Fragment {
             startActivity(intent);
         }
 
+        else if(item.getItemId() == R.id.menu_item_page_settings) {
+
+            Intent i = new Intent(getActivity(), PageSettingsActivity.class);
+            i.putExtra(EXTRA_ID, mPage.getId());
+            startActivity(i);
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    public static Fragment newInstance(UUID id) {
+        Bundle args = new Bundle();
+        args.putSerializable(ItemFragment.EXTRA_ID, id);
+
+        PageFragment fragment = new PageFragment();
+        fragment.setArguments(args);
+
+        return (Fragment) fragment;
     }
 }

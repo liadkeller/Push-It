@@ -10,18 +10,13 @@ import java.util.UUID;
  */
 public class EditItemActivity extends SingleFragmentActivity {
 
+    //
+    // listener for pressing the Back button
     protected OnBackPressedListener onBackPressedListener;
 
     public interface OnBackPressedListener {
         void onBackPressed();
     }
-
-    @Override
-    protected Fragment createFragment() {
-        UUID id = (UUID) getIntent().getSerializableExtra(ItemFragment.EXTRA_ID);
-        return EditItemFragment.newInstance(id);
-    }
-
 
     public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
         this.onBackPressedListener = onBackPressedListener;
@@ -33,6 +28,15 @@ public class EditItemActivity extends SingleFragmentActivity {
             onBackPressedListener.onBackPressed();
         else
             super.onBackPressed();
+    }
+
+
+    //
+    // createFragment and lifecycle methods implementation
+    @Override
+    protected Fragment createFragment() {
+        UUID id = (UUID) getIntent().getSerializableExtra(ItemFragment.EXTRA_ID);
+        return EditItemFragment.newInstance(id);
     }
 
     @Override

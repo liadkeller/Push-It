@@ -11,5 +11,6 @@
     <color name="colorAccent">#F40034</color>
 
     <color name="lightRed">@android:color/holo_red_light</color>
+    <color name="niceBlue">#D53F51B5</color>
     <color name="cardview_title_background">#B40000</color>>
 </resources>

@@ -14,11 +14,54 @@ import java.util.UUID;
  */
 public class Page {
     UUID mId;
+    String mName = "";
     ArrayList<Item> mPageItems;
+
+    PageSettings settings;
+
+    enum Design {
+        ALL_HEADERS, SINGLE_HEADER, NO_IMAGES;
+
+        public static Design getDesign(String design) {
+            if("All Headers".equals(design))
+                return ALL_HEADERS;
+            else if("No Images".equals(design))
+                return NO_IMAGES;
+            else
+                return SINGLE_HEADER;
+        }
+
+        @Override
+        public String toString() {
+            if(this == ALL_HEADERS)
+                return "All Headers";
+            else if (this == NO_IMAGES)
+                return "No Images";
+            else
+                return "Single Header";
+        }
+    }
+
+    public class PageSettings {
+        public Design design;
+
+        public PageSettings() {
+            if(design == null) {
+                design = Design.SINGLE_HEADER; // Default
+            }
+        }
+    }
+
+
 
     public Page() {
         mId = UUID.randomUUID();
         mPageItems = new ArrayList<>();
+        settings = new PageSettings();
+    }
+
+    public void setName(String name) {
+        this.mName = name;
     }
 
     public void setItems(ArrayList<Item> mPageItems) {
@@ -35,6 +78,10 @@ public class Page {
 
     public boolean has(Item item) {
         return mPageItems.contains(item);
+    }
+
+    public String getName() {
+        return mName;
     }
 
     public UUID getId() {

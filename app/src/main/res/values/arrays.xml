@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+        <string-array name="settings_list_preference_values">
+            <item>All Headers</item>
+            <item>Single Header</item>
+            <item>No Images</item>
+        </string-array>
+
+</resources>

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="redButtonTextColor" type="color">@android:color/black</item>
+    <item name="specialButtonTextColor" type="color">@android:color/black</item>
 </resources>

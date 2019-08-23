@@ -20,9 +20,9 @@ public class Item {
     boolean mEdit; // true - edit mode; false - public mode
     Item mEditItem;
 
-    String mTitle;
-    Bitmap mImage;
-    String mAuthor;
+    String mTitle = "";
+    String mAuthor = "";
+    Bitmap mImage; // TODO TAKE CARE OF new Bitmap()
     Date mOriginalTime; // original creation time
     Date mTime;                  // creation time
     Page mOwner;
@@ -207,12 +207,17 @@ public class Item {
         return df.format("MMM d, hh:mm", mTime).toString();
     }
 
+    public String getShortTime() {
+        DateFormat df = new DateFormat();
+        return df.format("hh:mm", mTime).toString();
+    }
+
     public String getAuthor() {
         return mAuthor;
     }
 
     public String getDetails() {
-        if(mAuthor == null || "".equals(mAuthor)) return getTime();
+        if(mAuthor == null || mAuthor.equals("")) return getTime();
         else return getTime() + " | " + mAuthor;
     }
 

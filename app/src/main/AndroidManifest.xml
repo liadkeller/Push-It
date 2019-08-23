@@ -9,23 +9,36 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PageActivity">
+        <activity android:name=".ExploreActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ItemActivity">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".PageActivity"/>
-        </activity>
-        <activity android:name=".EditItemActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize">
-             <meta-data android:name="android.support.PARENT_ACTIVITY"
-            android:value=".ItemActivity"/>
+        <activity android:name=".PageActivity"
+        android:parentActivityName=".ExploreActivity"/>
+        <activity android:name=".PageSettingsActivity"
+            android:parentActivityName=".PageActivity">
+            <!--<meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PageActivity"/>-->
         </activity>
 
-        <!--
+        <activity android:name=".ItemActivity"
+            android:parentActivityName=".PageActivity">
+            <!--<meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PageActivity"/>-->
+        </activity>
+        <activity android:name=".EditItemActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:parentActivityName=".ItemActivity">
+             <!--<meta-data android:name="android.support.PARENT_ACTIVITY" TODO Take Care Of.
+            android:value=".ItemActivity"/>-->
+        </activity>
+        <activity android:name=".CreateNotificationActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:parentActivityName=".EditItemActivity">
+        </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.com.vansuita.pickimage.provider"
@@ -36,7 +49,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/picker_provider_paths" />
         </provider>
-         -->
 
     </application>
 

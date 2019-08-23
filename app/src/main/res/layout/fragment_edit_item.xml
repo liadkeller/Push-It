@@ -415,7 +415,7 @@
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
             android:backgroundTint="@color/lightRed"
-            android:textColor="@color/redButtonTextColor"/>
+            android:textColor="@color/specialButtonTextColor"/>
 
     </LinearLayout>
 </ScrollView>

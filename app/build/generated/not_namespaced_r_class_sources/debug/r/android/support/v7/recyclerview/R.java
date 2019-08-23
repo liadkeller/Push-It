@@ -12,27 +12,27 @@ public final class R {
     public static final class attr {
         private attr() {}
 
-        public static final int layoutManager = 0x7f02007b;
-        public static final int reverseLayout = 0x7f0200a0;
-        public static final int spanCount = 0x7f0200ab;
-        public static final int stackFromEnd = 0x7f0200b1;
+        public static final int layoutManager = 0x7f03008f;
+        public static final int reverseLayout = 0x7f0300ca;
+        public static final int spanCount = 0x7f0300d9;
+        public static final int stackFromEnd = 0x7f0300df;
     }
     public static final class dimen {
         private dimen() {}
 
-        public static final int item_touch_helper_max_drag_scroll_per_frame = 0x7f05004d;
-        public static final int item_touch_helper_swipe_escape_max_velocity = 0x7f05004e;
-        public static final int item_touch_helper_swipe_escape_velocity = 0x7f05004f;
+        public static final int item_touch_helper_max_drag_scroll_per_frame = 0x7f060056;
+        public static final int item_touch_helper_swipe_escape_max_velocity = 0x7f060057;
+        public static final int item_touch_helper_swipe_escape_velocity = 0x7f060058;
     }
     public static final class id {
         private id() {}
 
-        public static final int item_touch_helper_previous_elevation = 0x7f07003e;
+        public static final int item_touch_helper_previous_elevation = 0x7f08004c;
     }
     public static final class styleable {
         private styleable() {}
 
-        public static final int[] RecyclerView = { 0x10100c4, 0x7f02007b, 0x7f0200a0, 0x7f0200ab, 0x7f0200b1 };
+        public static final int[] RecyclerView = { 0x10100c4, 0x7f03008f, 0x7f0300ca, 0x7f0300d9, 0x7f0300df };
         public static final int RecyclerView_android_orientation = 0;
         public static final int RecyclerView_layoutManager = 1;
         public static final int RecyclerView_reverseLayout = 2;
