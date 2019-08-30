@@ -3,6 +3,7 @@ package com.liadk.android.pushit;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,6 +22,12 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -34,6 +41,8 @@ public class PageFragment extends Fragment {
     private static final int NO_IMAGE_TYPE = 2;
 
     private Page mPage;
+    private DatabaseReference mPagesDatabase;
+
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefresh;
 
@@ -42,15 +51,41 @@ public class PageFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
-        mPage = PageCollection.get(getActivity()).getPage(id);
+        final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
+        mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
+        mPagesDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mPage = Page.fromDB(dataSnapshot.child(id.toString()));
+
+                onPageChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        /*
+
+
+         */
+
+    }
+
+    private void onPageChanged() {
         if(!mPage.getName().equals("")) {
             getActivity().setTitle(mPage.getName());
         }
 
         Log.d(TAG, "Page items number: " + mPage.getItems().size());
+
+        if(mRecyclerView != null)
+            ((PageRecycleViewAdapter) mRecyclerView.getAdapter()).setPage(mPage);
     }
+
 
     @Nullable
     @Override
@@ -58,8 +93,10 @@ public class PageFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_recycler_view_refresh, container, false);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
-        mRecyclerView.setAdapter(new PageRecycleViewAdapter(getActivity(), mPage));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(new PageRecycleViewAdapter(getActivity()));
+        if(mPage != null)
+            ((PageRecycleViewAdapter) mRecyclerView.getAdapter()).setPage(mPage);
 
         final int PADDING_SIZE = (int) (4 * (getResources().getDisplayMetrics().density) + 0.5f); // 4dp
         mRecyclerView.setPadding(0, PADDING_SIZE, 0, PADDING_SIZE);
@@ -87,13 +124,19 @@ public class PageFragment extends Fragment {
         ArrayList<Item> mItems;
 
 
-        public PageRecycleViewAdapter(Context context, Page page) {
+        public PageRecycleViewAdapter(Context context) {
             mContext = context;
+        }
+
+        public void setPage(Page page) {
             mItems = page.getItems();
+            notifyDataSetChanged();
         }
 
         // Returns the item of the menu of whose menu item was selected
         private Item getItem(MenuItem menuItem) {
+            if(mItems == null) return null;
+
             int position = menuItem.getOrder(); // we put the adapter position instead of the order
             int reversedIndex = mItems.size() - 1 - position;
 
@@ -183,6 +226,7 @@ public class PageFragment extends Fragment {
 
         @Override
         public int getItemCount() {
+            if(mItems == null) return 0;
             return mItems.size();
         }
 

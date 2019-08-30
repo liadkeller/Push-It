@@ -1,12 +1,11 @@
 package com.liadk.android.pushit;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.text.format.DateFormat;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -62,6 +61,20 @@ public class Page {
         settings = new PageSettings();
     }
 
+    public static Page fromDB(DataSnapshot ds) {
+        Page page = new Page();
+        page.mId = UUID.fromString(ds.getKey());
+        page.mName = (String) ds.child("name").getValue();
+        page.mDescription = (String) ds.child("description").getValue();
+        for(DataSnapshot dataSnapshot : ds.child("items").getChildren()) {
+            Item item = Item.fromDB(dataSnapshot, page);
+            page.mPageItems.add(item);
+            // TODO sort mPageItems according to time
+        }
+
+        return page;
+    }
+
     public void setName(String name) {
         this.mName = name;
     }
@@ -108,5 +121,13 @@ public class Page {
 
     public ArrayList<Item> getItems() {
         return mPageItems;
+    }
+    
+    
+    public void pushToDB(DatabaseReference db) {
+        db.child(getId().toString()).child("name").setValue(getName());
+        db.child(getId().toString()).child("description").setValue(getDescription());
+        for(Item item : getItems())
+            item.pushToDB(db.child(getId().toString()).child("items"));
     }
 }

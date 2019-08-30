@@ -4,7 +4,18 @@
             "outputFile": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v17\\values-v17.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\c0897e2fa713b188b25889b79edcbeda\\appcompat-v7-25.1.0\\res\\values-v17\\values-v17.xml",
+                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\040acbf5b4b9fc84e0f408ce253f6fe3\\preference-v7-23.4.0\\res\\values-v17\\values-v17.xml",
+                    "from": {
+                        "startLines": "2,7",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,280",
+                        "endLines": "6,10",
+                        "endColumns": "12,12",
+                        "endOffsets": "275,436"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\756ac9314fdd3764887457c96e11cc27\\appcompat-v7-25.1.0\\res\\values-v17\\values-v17.xml",
                     "from": {
                         "startLines": "2,5,9,12,15,18,22,26,29,32,35,39,42,46",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -20,17 +31,6 @@
                         "endLines": "13,17,20,23,26,30,34,37,40,43,47,50,54,58",
                         "endColumns": "12,12,12,12,12,12,12,12,12,12,12,12,12,12",
                         "endOffsets": "609,837,995,1145,1317,1545,1787,1958,2132,2301,2574,2774,2978,3307"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\62b86ddcdc469d795b4311c12145e81d\\preference-v7-23.4.0\\res\\values-v17\\values-v17.xml",
-                    "from": {
-                        "startLines": "2,7",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,280",
-                        "endLines": "6,10",
-                        "endColumns": "12,12",
-                        "endOffsets": "275,436"
                     }
                 }
             ]

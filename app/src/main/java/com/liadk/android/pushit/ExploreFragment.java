@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.DividerItemDecoration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +15,44 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class ExploreFragment extends Fragment {
 
+    FirebaseDatabase mDatabase;
     private RecyclerView mRecyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.explore);
+        mDatabase = FirebaseDatabase.getInstance();
+
+        resetDatabase();
+        addDataToDatabase();
+    }
+
+    private void resetDatabase() {
+        DatabaseReference pagesDatabase = mDatabase.getReference("pages");
+        DatabaseReference itemsDatabase = mDatabase.getReference("items");
+
+        pagesDatabase.setValue(null);
+        itemsDatabase.setValue(null);
+    }
+
+    private void addDataToDatabase() { // TODO GET RID OF
+        DatabaseReference pagesDatabase = mDatabase.getReference("pages");
+        DatabaseReference itemsDatabase = mDatabase.getReference("items");
+
+        for(Page page : PageCollection.get(getActivity()).getPages())
+            page.pushToDB(pagesDatabase);
+
+        for(Item item : ItemCollection.get(getActivity()).getItems())
+            item.pushToDB(itemsDatabase);
     }
 
     @Nullable

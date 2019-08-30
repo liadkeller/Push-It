@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.android.support:support-core-utils:25.1.0@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d1b0dc27f92718b258b22fa67d3c54f6/support-core-utils-25.1.0/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e0b5c59af4a1492ad9e6cc21933c4c86/support-core-utils-25.1.0/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d1b0dc27f92718b258b22fa67d3c54f6/support-core-utils-25.1.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d1b0dc27f92718b258b22fa67d3c54f6/support-core-utils-25.1.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e0b5c59af4a1492ad9e6cc21933c4c86/support-core-utils-25.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e0b5c59af4a1492ad9e6cc21933c4c86/support-core-utils-25.1.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.support/support-core-utils/25.1.0/62caa9a54bc91e70cae70f76ac642f5a504a1bad/support-core-utils-25.1.0-javadoc.jar!/" />

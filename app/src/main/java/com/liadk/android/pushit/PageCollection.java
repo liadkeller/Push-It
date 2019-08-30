@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -21,7 +20,7 @@ public class PageCollection {
         mAppContext = appContext;
         mPages = new ArrayList<>();
 
-
+        // TODO DELETE
         Page page = new Page();
         Page page2 = new Page();
         ArrayList<Item> pageItems = new ArrayList<>();
