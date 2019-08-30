@@ -92,13 +92,23 @@
     <string name="no_title_toast">You Must Give a Title to Your Article!</string>
     <string name="no_text_toast">You Must Give Text to Your Article!</string>
     <string name="no_notification_title_toast">You Must Give a Title to Your Notification!</string>
+    <string name="no_page_name_toast">A Page Must Have a Name!</string>
 
-    <string name="choose_design">Choose Design</string>
-    <string name="choose_design_summary">Click to choose the page design</string>
-    <string name="page_name">Page Name</string>
     <string name="page_design">Page Design</string>
+    <string name="page_name">Page Name</string>
     <string name="choose_name_summary">Click to set the page name</string>
+    <string name="page_description">Page Description</string>
+    <string name="choose_description_summary">Click to set the page description</string>
+    <string name="page_layout">Page Layout</string>
+    <string name="choose_layout_summary">Click to choose the page layout</string>
+    <string name="page_logo">Page Logo</string>
+    <string name="choose_logo_summary">Click to set the page logo</string>
 
     <string name="explore">Explore</string>
+    <string name="set_page_logo">Set Page Logo</string>
+    <string name="no_logo">No Logo Has Been Set</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>

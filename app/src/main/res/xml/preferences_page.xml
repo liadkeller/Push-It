@@ -6,17 +6,29 @@
             android:key="pageName"
             android:title="@string/page_name"
             android:inputType="text"/>
+
+        <EditTextPreference
+            android:dialogTitle="@string/page_description"
+            android:key="pageDesc"
+            android:title="@string/page_description"
+            android:inputType="text"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/page_design">
+        <Preference
+            android:key="pageLogo"
+            android:title="@string/page_logo"
+            android:summary="@string/choose_logo_summary">
+        </Preference>
+
         <ListPreference
-            android:dialogTitle="@string/choose_design"
+            android:dialogTitle="@string/page_layout"
             android:entries="@array/settings_list_preference_values"
             android:entryValues="@array/settings_list_preference_values"
             android:defaultValue="Single Header"
-            android:key="listDesign"
-            android:summary="@string/choose_design_summary"
-            android:title="@string/choose_design" />
+            android:key="pageLayout"
+            android:summary="@string/choose_layout_summary"
+            android:title="@string/page_layout" />
     </PreferenceCategory>
 
 </PreferenceScreen>

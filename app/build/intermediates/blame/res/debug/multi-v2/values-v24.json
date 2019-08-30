@@ -4,13 +4,13 @@
             "outputFile": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v24\\values-v24.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\1ac9dd5ac55606f34828d1d0c0e8498b\\appcompat-v7-25.0.0\\res\\values-v24\\values-v24.xml",
+                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\c0897e2fa713b188b25889b79edcbeda\\appcompat-v7-25.1.0\\res\\values-v24\\values-v24.xml",
                     "from": {
-                        "startLines": "2,3,4,5",
-                        "startColumns": "4,4,4,4",
-                        "startOffsets": "55,124,188,257",
-                        "endColumns": "68,63,68,69",
-                        "endOffsets": "119,183,252,322"
+                        "startLines": "2,3,4,5,6,7",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "55,212,347,416,480,549",
+                        "endColumns": "156,134,68,63,68,69",
+                        "endOffsets": "207,342,411,475,544,614"
                     }
                 }
             ]

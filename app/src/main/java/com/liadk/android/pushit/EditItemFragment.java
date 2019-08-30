@@ -124,7 +124,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         imageView = (ImageView) v.findViewById(R.id.itemImageView);
 
         setTimeButton = (Button) v.findViewById(R.id.setTimeButton);
-        timeTextView = (TextView) v.findViewById(R.id.timeTextView);
+        timeTextView = (TextView) v.findViewById(R.id.cardTime);
 
         setImageButtons = new Button[] { (Button) v.findViewById(R.id.setImage1Button), (Button) v.findViewById(R.id.setImage2Button) };
         setVideoButtons = new Button[] { (Button) v.findViewById(R.id.setVideo1Button), (Button) v.findViewById(R.id.setVideo2Button) };
@@ -204,7 +204,9 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             public void onClick(View v) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
 
-                PickImageDialog.build(new PickSetup())
+                PickImageDialog.build(new PickSetup()
+                        .setTitle(getString(R.string.set_image))
+                        .setSystemDialog(true))
                         .setOnPickResult(new IPickResult() {
                             @Override
                             public void onPickResult(PickResult r) {
@@ -213,7 +215,8 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                                     onImageUpdated();
                                 }
                             }
-                        }).show(fm);
+                        })
+                        .show(fm);
 
             /*
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -288,8 +291,8 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         });
 
         for(int i = 0; i < MAX_MEDIA; i++) {
-            setImageButtons[i].setOnClickListener(new SetMediaListener(i));
-            // TODO setVideoButtons[i].setOnClickListener(new SetMediaListener(i));
+            setImageButtons[i].setOnClickListener(new SetMediaListener(i, true));
+            // TODO setVideoButtons[i].setOnClickListener(new SetMediaListener(i, false));
             removeImageButtons[i].setOnClickListener(new RemoveMediaListener(i));
             removeVideoButtons[i].setOnClickListener(new RemoveMediaListener(i));
             editTexts[i].addTextChangedListener(new EditTextListener(i));
@@ -324,9 +327,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                 if(mItem.getTitle().equals(""))
                     Toast.makeText(getActivity(), R.string.no_title_toast, Toast.LENGTH_SHORT).show();
 
-                else if(mItem.getText().equals(""))
-                    Toast.makeText(getActivity(), R.string.no_text_toast, Toast.LENGTH_SHORT).show();
-
                 else {
                     showClickDialog(R.string.publish_article, R.string.publish, R.string.publish_article_dialog, new DialogInterface.OnClickListener() {
                         @Override
@@ -345,9 +345,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             public void onClick(View v) {
                 if(mItem.getTitle().equals(""))
                     Toast.makeText(getActivity(), R.string.no_title_toast, Toast.LENGTH_SHORT).show();
-
-                else if(mItem.getText().equals(""))
-                    Toast.makeText(getActivity(), R.string.no_text_toast, Toast.LENGTH_SHORT).show();
 
                 else {
                     showClickDialog(R.string.post_article, R.string.post, R.string.post_article_dialog, new DialogInterface.OnClickListener() {
@@ -428,24 +425,54 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
     private class SetMediaListener implements View.OnClickListener {
         int i;
+        boolean isImage;
+        String setImage;
+        String setVideo;
         ArrayList<Object> mediaSegments = mItem.getMediaSegments();
 
-        public SetMediaListener(int i) { this.i = i; }
+        public SetMediaListener(int i, boolean isImage) {
+            this.i = i;
+            this.isImage = isImage;
+            if(this.isImage)
+                setImage = getString(getResources().getIdentifier("set_image_" + (i+1), "string", getActivity().getPackageName()));
+            else
+                setVideo = getString(getResources().getIdentifier("set_video_" + (i+1), "string", getActivity().getPackageName()));
+        }
 
         @Override
         public void onClick(View v) {
             FragmentManager fm = getActivity().getSupportFragmentManager();
 
-            PickImageDialog.build(new PickSetup())
-                    .setOnPickResult(new IPickResult() {
-                        @Override
-                        public void onPickResult(PickResult r) {
-                            if (r.getError() == null) {
-                                mediaSegments.set(i, r.getBitmap());
-                                onMediaSegmentsUpdated();
+            if(isImage) {
+                PickImageDialog.build(new PickSetup()
+                        .setTitle(setImage)
+                        .setSystemDialog(true))
+                        .setOnPickResult(new IPickResult() {
+                            @Override
+                            public void onPickResult(PickResult r) {
+                                if (r.getError() == null) {
+                                    mediaSegments.set(i, r.getBitmap());
+                                    onMediaSegmentsUpdated();
+                                }
                             }
-                        }
-                    }).show(fm);
+                        }).show(fm);
+            }
+
+            else {
+                PickImageDialog.build(new PickSetup()
+                        .setTitle(setVideo)
+                        .setSystemDialog(true))
+                        //.setVideo(true)) TODO Enable Video
+                        .setOnPickResult(new IPickResult() {
+                            @Override
+                            public void onPickResult(PickResult r) {
+                                if (r.getError() == null) {
+                                    mediaSegments.set(i, r.getBitmap());
+                                    onMediaSegmentsUpdated();
+                                }
+                            }
+                        }).show(fm);
+            }
         }
 
     }
@@ -593,7 +620,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.set_time)
                 .setMessage(R.string.publication_time_dialog_state_changed)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mItem.setCurrentTime();
@@ -603,7 +630,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                         Toast.makeText(getActivity(), R.string.post_article_toast, Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         updateState(CREATED);

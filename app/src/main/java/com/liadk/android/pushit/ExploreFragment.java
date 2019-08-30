@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ public class ExploreFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         mRecyclerView.setAdapter(new PageListRecycleViewAdapter(getActivity()));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         
@@ -67,8 +69,8 @@ public class ExploreFragment extends Fragment {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             final Page page = mPages.get(position);
-            // ((ViewHolder)holder).mImageView.setBitmap(page.getLogoImage()); TODO
-            ((ViewHolder)holder).mTextView.setText(page.getName());
+            ((ViewHolder)holder).mNameTextView.setText(page.getName());
+            ((ViewHolder)holder).mDescTextView.setText(page.getDescription());
             ((ViewHolder)holder).mLinearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -77,6 +79,9 @@ public class ExploreFragment extends Fragment {
                     startActivity(intent);
                 }
             });
+
+            if(page.getLogoImage() != null) // TODO Take care of default logo (including default Bibi image in the xml layout file)
+                ((ViewHolder)holder).mImageView.setImageBitmap(page.getLogoImage());
         }
 
         @Override
@@ -87,15 +92,16 @@ public class ExploreFragment extends Fragment {
         public class ViewHolder extends RecyclerView.ViewHolder {
             LinearLayout mLinearLayout;
             ImageView mImageView;
-            TextView mTextView;
+            TextView mNameTextView;
+            TextView mDescTextView;
 
             ViewHolder(View v) {
                 super(v);
                 mLinearLayout = (LinearLayout) v.findViewById(R.id.pageListItemLayout);
                 mImageView = (ImageView) v.findViewById(R.id.pageImageView);
-                mTextView = (TextView) v.findViewById(R.id.pageNameTextView);
+                mNameTextView = (TextView) v.findViewById(R.id.pageNameTextView);
+                mDescTextView = (TextView) v.findViewById(R.id.pageDescTextView);
             }
-
         }
     }
 }

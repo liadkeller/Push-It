@@ -113,8 +113,12 @@ public class ItemFragment extends Fragment {
         }
 
         else if(item.getItemId() == android.R.id.home) {
+
             if (NavUtils.getParentActivityName(getActivity()) != null) {
-                NavUtils.navigateUpFromSameTask(getActivity());
+                Intent intent = NavUtils.getParentActivityIntent(getActivity());
+                intent.putExtra(PageFragment.EXTRA_ID, mItem.getOwner().getId());
+
+                NavUtils.navigateUpTo(getActivity(), intent);
             }
             return true;
         }

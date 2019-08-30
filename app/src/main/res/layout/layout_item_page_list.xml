@@ -2,27 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pageListItemLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:id="@+id/pageListItemLayout">
+    android:padding="6dp">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/pageImageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop" />
+        android:layout_margin="6dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/netanyahu" />
 
-    <TextView
-        android:id="@+id/pageNameTextView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/pageNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            tools:text="Lidi Lidi Lidi Lidi Lidi Lidi " />
+
+        <TextView
+            android:id="@+id/pageDescTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            tools:text="Yada Yada Yada Yada Yada Yada Yada Yada Yada Yada Yada Yada Yada Yada Yada " />
+    </LinearLayout>
 
 
 </LinearLayout>

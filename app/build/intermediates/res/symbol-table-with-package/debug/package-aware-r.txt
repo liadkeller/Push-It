@@ -80,6 +80,10 @@ attr cardUseCompatPadding
 attr checkBoxPreferenceStyle
 attr checkboxStyle
 attr checkedTextViewStyle
+attr civ_border_color
+attr civ_border_overlay
+attr civ_border_width
+attr civ_circle_background_color
 attr closeIcon
 attr closeItemLayout
 attr collapseContentDescription
@@ -179,8 +183,10 @@ attr negativeButtonText
 attr order
 attr orderingFromXml
 attr overlapAnchor
+attr paddingBottomNoButtons
 attr paddingEnd
 attr paddingStart
+attr paddingTopNoTitle
 attr panelBackground
 attr panelMenuListTheme
 attr panelMenuListWidth
@@ -226,6 +232,7 @@ attr shouldDisableView
 attr showAsAction
 attr showDividers
 attr showText
+attr showTitle
 attr singleChoiceItemLayout
 attr spanCount
 attr spinBars
@@ -307,6 +314,7 @@ bool abc_config_showMenuShortcutsWhenKeyboardPresent
 color abc_background_cache_hint_selector_material_dark
 color abc_background_cache_hint_selector_material_light
 color abc_btn_colored_borderless_text_material
+color abc_btn_colored_text_material
 color abc_color_highlight_material
 color abc_hint_foreground_material_dark
 color abc_hint_foreground_material_light
@@ -432,11 +440,13 @@ dimen abc_dialog_fixed_height_major
 dimen abc_dialog_fixed_height_minor
 dimen abc_dialog_fixed_width_major
 dimen abc_dialog_fixed_width_minor
-dimen abc_dialog_list_padding_vertical_material
+dimen abc_dialog_list_padding_bottom_no_buttons
+dimen abc_dialog_list_padding_top_no_title
 dimen abc_dialog_min_width_major
 dimen abc_dialog_min_width_minor
 dimen abc_dialog_padding_material
 dimen abc_dialog_padding_top_material
+dimen abc_dialog_title_divider_material
 dimen abc_disabled_alpha_material_dark
 dimen abc_disabled_alpha_material_light
 dimen abc_dropdownitem_icon_width
@@ -588,8 +598,14 @@ drawable abc_textfield_search_activated_mtrl_alpha
 drawable abc_textfield_search_default_mtrl_alpha
 drawable abc_textfield_search_material
 drawable abc_vector_test
+drawable ben_barak
+drawable bibi_face
+drawable bibi_sulimani
 drawable camera
 drawable gallery
+drawable haley
+drawable iron_dome
+drawable joe_walsh
 drawable netanyahu
 drawable notification_action_background
 drawable notification_bg
@@ -603,8 +619,10 @@ drawable notification_template_icon_bg
 drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
+drawable peretz_bibi
 drawable rockets_gaza
 drawable rockets_gaza2
+drawable sulimani
 drawable tlaibvstrump
 id action0
 id action_bar
@@ -648,6 +666,7 @@ id chronometer
 id collapseActionView
 id confirmChangesButton
 id contentPanel
+id context_menu_edit_item
 id createButton
 id custom
 id customPanel
@@ -706,13 +725,17 @@ id menu_item_save_draft
 id middle
 id multiply
 id never
+id noLogoTextView
 id none
 id normal
 id notification_background
 id notification_main_column
 id notification_main_column_container
+id pageDescTextView
 id pageImageView
 id pageListItemLayout
+id pageLogoButton
+id pageLogoImageView
 id pageNameTextView
 id parentPanel
 id progress_circular
@@ -772,14 +795,16 @@ id src_over
 id status_bar_latest_event_content
 id submenuarrow
 id submit_area
+id swipeContainer
 id switchWidget
 id tabMode
 id text
 id text2
 id textSpacerNoButtons
+id textSpacerNoTitle
 id time
-id timeTextView
 id title
+id titleDividerNoCustom
 id titleEditText
 id titleTextView
 id title_template
@@ -808,6 +833,7 @@ layout abc_activity_chooser_view
 layout abc_activity_chooser_view_list_item
 layout abc_alert_dialog_button_bar_material
 layout abc_alert_dialog_material
+layout abc_alert_dialog_title_material
 layout abc_dialog_title_material
 layout abc_expanded_menu_layout
 layout abc_list_menu_item_checkbox
@@ -828,8 +854,10 @@ layout dialog
 layout fragment_create_notification
 layout fragment_edit_item
 layout fragment_item
+layout fragment_page_logo
 layout fragment_page_settings
 layout fragment_recycler_view
+layout fragment_recycler_view_refresh
 layout layout_item_card
 layout layout_item_card_header
 layout layout_item_card_no_image
@@ -861,6 +889,7 @@ layout select_dialog_item_material
 layout select_dialog_multichoice_material
 layout select_dialog_singlechoice_material
 layout support_simple_spinner_dropdown_item
+menu context_menu_page
 menu fragment_edit_item
 menu fragment_item
 menu fragment_page
@@ -907,8 +936,9 @@ string camera
 string cancel
 string changes_saved_toast
 string choose
-string choose_design
-string choose_design_summary
+string choose_description_summary
+string choose_layout_summary
+string choose_logo_summary
 string choose_name_summary
 string confirm_changes
 string create_article
@@ -923,6 +953,7 @@ string exit_edit_dialog_new
 string exit_no_save
 string exit_notification_dialog
 string exit_save
+string explore
 string gallery
 string image_1
 string image_2
@@ -939,11 +970,16 @@ string item_time_label
 string item_title_hint
 string item_title_label
 string loading
+string no_logo
 string no_notification_title_toast
+string no_page_name_toast
 string no_providers
 string no_text_toast
 string no_title_toast
+string page_description
 string page_design
+string page_layout
+string page_logo
 string page_name
 string page_settings
 string post
@@ -981,6 +1017,7 @@ string set_image
 string set_image_1
 string set_image_2
 string set_original_time
+string set_page_logo
 string set_push_image
 string set_time
 string set_video_1
@@ -997,6 +1034,7 @@ style AlertDialog_AppCompat_Light
 style Animation_AppCompat_Dialog
 style Animation_AppCompat_DropDownUp
 style AppTheme
+style AppTheme_AppBarOverlay
 style Base_AlertDialog_AppCompat
 style Base_AlertDialog_AppCompat_Light
 style Base_Animation_AppCompat_Dialog
@@ -1039,6 +1077,8 @@ style Base_TextAppearance_AppCompat_Widget_ActionBar_Title_Inverse
 style Base_TextAppearance_AppCompat_Widget_ActionMode_Subtitle
 style Base_TextAppearance_AppCompat_Widget_ActionMode_Title
 style Base_TextAppearance_AppCompat_Widget_Button
+style Base_TextAppearance_AppCompat_Widget_Button_Borderless_Colored
+style Base_TextAppearance_AppCompat_Widget_Button_Colored
 style Base_TextAppearance_AppCompat_Widget_Button_Inverse
 style Base_TextAppearance_AppCompat_Widget_DropDownItem
 style Base_TextAppearance_AppCompat_Widget_PopupMenu_Header
@@ -1238,6 +1278,8 @@ style TextAppearance_AppCompat_Widget_ActionMode_Subtitle_Inverse
 style TextAppearance_AppCompat_Widget_ActionMode_Title
 style TextAppearance_AppCompat_Widget_ActionMode_Title_Inverse
 style TextAppearance_AppCompat_Widget_Button
+style TextAppearance_AppCompat_Widget_Button_Borderless_Colored
+style TextAppearance_AppCompat_Widget_Button_Colored
 style TextAppearance_AppCompat_Widget_Button_Inverse
 style TextAppearance_AppCompat_Widget_DropDownItem
 style TextAppearance_AppCompat_Widget_PopupMenu_Header
@@ -1364,7 +1406,7 @@ styleable ActionMenuItemView android_minWidth
 styleable ActionMenuView
 styleable ActionMode background backgroundSplit closeItemLayout height subtitleTextStyle titleTextStyle
 styleable ActivityChooserView expandActivityOverflowButtonDrawable initialActivityCount
-styleable AlertDialog android_layout buttonPanelSideLayout listItemLayout listLayout multiChoiceItemLayout singleChoiceItemLayout
+styleable AlertDialog android_layout buttonPanelSideLayout listItemLayout listLayout multiChoiceItemLayout showTitle singleChoiceItemLayout
 styleable AppCompatImageView android_src srcCompat
 styleable AppCompatSeekBar android_thumb tickMark tickMarkTint tickMarkTintMode
 styleable AppCompatTextHelper android_textAppearance android_drawableTop android_drawableBottom android_drawableLeft android_drawableRight android_drawableStart android_drawableEnd
@@ -1373,6 +1415,7 @@ styleable AppCompatTheme android_windowIsFloating android_windowAnimationStyle a
 styleable ButtonBarLayout allowStacking
 styleable CardView android_minWidth android_minHeight cardBackgroundColor cardCornerRadius cardElevation cardMaxElevation cardPreventCornerOverlap cardUseCompatPadding contentPadding contentPaddingBottom contentPaddingLeft contentPaddingRight contentPaddingTop
 styleable CheckBoxPreference android_summaryOn android_summaryOff android_disableDependentsState disableDependentsState summaryOff summaryOn
+styleable CircleImageView civ_border_color civ_border_overlay civ_border_width civ_circle_background_color
 styleable ColorStateListItem android_color android_alpha alpha
 styleable CompoundButton android_button buttonTint buttonTintMode
 styleable DialogPreference android_dialogTitle android_dialogMessage android_dialogIcon android_positiveButtonText android_negativeButtonText android_dialogLayout dialogIcon dialogLayout dialogMessage dialogTitle negativeButtonText positiveButtonText
@@ -1392,7 +1435,8 @@ styleable PreferenceFragmentCompat android_layout android_divider android_divide
 styleable PreferenceGroup android_orderingFromXml orderingFromXml
 styleable PreferenceImageView android_maxWidth android_maxHeight maxHeight maxWidth
 styleable PreferenceTheme checkBoxPreferenceStyle dialogPreferenceStyle editTextPreferenceStyle preferenceActivityStyle preferenceCategoryStyle preferenceFragmentCompatStyle preferenceFragmentListStyle preferenceFragmentPaddingSide preferenceFragmentStyle preferenceHeaderPanelStyle preferenceInformationStyle preferenceLayoutChild preferenceListStyle preferencePanelStyle preferenceScreenStyle preferenceStyle preferenceTheme ringtonePreferenceStyle seekBarPreferenceStyle switchPreferenceCompatStyle switchPreferenceStyle yesNoPreferenceStyle
-styleable RecyclerView android_orientation layoutManager reverseLayout spanCount stackFromEnd
+styleable RecycleListView paddingBottomNoButtons paddingTopNoTitle
+styleable RecyclerView android_orientation android_descendantFocusability layoutManager reverseLayout spanCount stackFromEnd
 styleable SearchView android_focusable android_maxWidth android_inputType android_imeOptions closeIcon commitIcon defaultQueryHint goIcon iconifiedByDefault layout queryBackground queryHint searchHintIcon searchIcon submitBackground suggestionRowLayout voiceIcon
 styleable Spinner android_entries android_popupBackground android_prompt android_dropDownWidth popupTheme
 styleable SwitchCompat android_textOn android_textOff android_thumb showText splitTrack switchMinWidth switchPadding switchTextAppearance thumbTextPadding thumbTint thumbTintMode track trackTint trackTintMode

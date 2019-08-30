@@ -3,6 +3,7 @@
 
     <item android:id="@+id/menu_item_create_article"
         android:title="@string/create_article"
+        android:icon="@android:drawable/ic_menu_add"
         android:showAsAction="ifRoom">
     </item>
 

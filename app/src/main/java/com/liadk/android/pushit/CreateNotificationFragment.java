@@ -148,7 +148,9 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
             public void onClick(View v) {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
 
-                PickImageDialog.build(new PickSetup())
+                PickImageDialog.build(new PickSetup()
+                        .setTitle(getString(R.string.set_push_image))
+                        .setSystemDialog(true))
                         .setOnPickResult(new IPickResult() {
                             @Override
                             public void onPickResult(PickResult r) {
@@ -205,14 +207,14 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.set_time)
                 .setMessage(R.string.publication_time_dialog_state_changed)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mItem.setCurrentTime();
                         updateState();
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         updateState();

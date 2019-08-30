@@ -5,16 +5,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,6 +35,7 @@ public class PageFragment extends Fragment {
 
     private Page mPage;
     private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefresh;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +55,7 @@ public class PageFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
+        View v = inflater.inflate(R.layout.fragment_recycler_view_refresh, container, false);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
         mRecyclerView.setAdapter(new PageRecycleViewAdapter(getActivity(), mPage));
@@ -59,6 +63,15 @@ public class PageFragment extends Fragment {
 
         final int PADDING_SIZE = (int) (4 * (getResources().getDisplayMetrics().density) + 0.5f); // 4dp
         mRecyclerView.setPadding(0, PADDING_SIZE, 0, PADDING_SIZE);
+
+        mSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // TODO Refresh
+                mSwipeRefresh.setRefreshing(false);
+            }
+        });
 
         return v;
     }
@@ -79,6 +92,14 @@ public class PageFragment extends Fragment {
             mItems = page.getItems();
         }
 
+        // Returns the item of the menu of whose menu item was selected
+        private Item getItem(MenuItem menuItem) {
+            int position = menuItem.getOrder(); // we put the adapter position instead of the order
+            int reversedIndex = mItems.size() - 1 - position;
+
+            return mItems.get(reversedIndex);
+        }
+
         @Override
         public int getItemViewType(int position) {
             if(mPage.settings.design == Page.Design.NO_IMAGES)
@@ -94,18 +115,20 @@ public class PageFragment extends Fragment {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v;
-            if(viewType == HEADER_TYPE)
+            if(viewType == HEADER_TYPE) {
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_card_header, parent, false);
+                return new HeaderViewHolder(v);
+            }
 
-            else if(viewType == NO_HEADER_TYPE)
+            else if(viewType == NO_HEADER_TYPE) {
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_card, parent, false);
+                return new NoHeaderViewHolder(v);
+            }
 
-            else { // TODO Add different layout for NO_IMAGE_TYPE
+            else { // if(view type == NO_IMAGES)
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_card_no_image, parent, false);
                 return new NoImageViewHolder(v);
             }
-
-            return new ViewHolder(v);
         }
 
         @Override
@@ -113,7 +136,36 @@ public class PageFragment extends Fragment {
             int reversedIndex = mItems.size() - 1 - position;
             final Item item = mItems.get(reversedIndex);
 
-            if(getItemViewType(position) == NO_IMAGE_TYPE) {
+            if(getItemViewType(position) == HEADER_TYPE) {
+                HeaderViewHolder viewHolder = (HeaderViewHolder) holder;
+                viewHolder.mImageView.setImageBitmap(item.getImage());
+                viewHolder.mTextView.setText(item.getTitle());
+                viewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getActivity(), ItemActivity.class);
+                        i.putExtra(ItemFragment.EXTRA_ID, item.getId());
+                        startActivity(i);
+                    }
+                });
+            }
+
+            else if(getItemViewType(position) == NO_HEADER_TYPE) {
+                NoHeaderViewHolder viewHolder = (NoHeaderViewHolder) holder;
+                viewHolder.mImageView.setImageBitmap(item.getImage());
+                viewHolder.mTextView.setText(item.getTitle());
+                viewHolder.mTimeTextView.setText(item.getShortTime());
+                viewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getActivity(), ItemActivity.class);
+                        i.putExtra(ItemFragment.EXTRA_ID, item.getId());
+                        startActivity(i);
+                    }
+                });
+            }
+
+            if(getItemViewType(position) == NO_IMAGE_TYPE){
 
                 NoImageViewHolder viewHolder = (NoImageViewHolder) holder;
                 viewHolder.mTextView.setText(item.getTitle());
@@ -127,50 +179,6 @@ public class PageFragment extends Fragment {
                     }
                 });
             }
-
-            else {
-                ViewHolder viewHolder = (ViewHolder) holder;
-                viewHolder.mImageView.setImageBitmap(item.getImage());
-                viewHolder.mTextView.setText(item.getTitle());
-                viewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent i = new Intent(getActivity(), ItemActivity.class);
-                        i.putExtra(ItemFragment.EXTRA_ID, item.getId());
-                        startActivity(i);
-                    }
-                });
-
-                /*
-                viewHolder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        Boolean isPremitted; // TODO take care of user permissions
-                        if(isPremitted = true) {
-                            TextView editButton = new TextView(getActivity());
-                            editButton.setText(R.string.edit_item);
-                            editButton.setGravity(View.TEXT_ALIGNMENT_CENTER);
-                            //editButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                            editButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent i = new Intent(getActivity(), ItemActivity.class);
-                                    i.putExtra(ItemFragment.EXTRA_ID, item.getId());
-                                    startActivity(i);
-                                }
-                            });
-
-                            AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(editButton).create();
-                            alertDialog.show();
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-                */
-
-            }
-
         }
 
         @Override
@@ -178,17 +186,47 @@ public class PageFragment extends Fragment {
             return mItems.size();
         }
 
-        private class ViewHolder extends RecyclerView.ViewHolder {
+        private class HeaderViewHolder extends RecyclerView.ViewHolder {
             CardView mCardView;
             ImageView mImageView;
             TextView mTextView;
 
-            public ViewHolder(View itemView) {
+            public HeaderViewHolder(View itemView) {
                 super(itemView);
 
                 mCardView = (CardView) itemView.findViewById(R.id.card);
                 mImageView = (ImageView) itemView.findViewById(R.id.cardImageView);
                 mTextView = (TextView) itemView.findViewById(R.id.cardText);
+
+                mCardView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                    @Override
+                    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+                        contextMenu.add(0, R.id.context_menu_edit_item, getAdapterPosition(), R.string.edit_item); // we put adapter position instead of 'item order'
+                    }
+                });
+            }
+        }
+
+        private class NoHeaderViewHolder extends RecyclerView.ViewHolder {
+            CardView mCardView;
+            ImageView mImageView;
+            TextView mTextView;
+            TextView mTimeTextView;
+
+            public NoHeaderViewHolder(View itemView) {
+                super(itemView);
+
+                mCardView = (CardView) itemView.findViewById(R.id.card);
+                mImageView = (ImageView) itemView.findViewById(R.id.cardImageView);
+                mTextView = (TextView) itemView.findViewById(R.id.cardText);
+                mTimeTextView = (TextView) itemView.findViewById(R.id.cardTime);
+
+                mCardView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                    @Override
+                    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+                        contextMenu.add(0, R.id.context_menu_edit_item, getAdapterPosition(), R.string.edit_item); // we put adapter position instead of 'item order'
+                    }
+                });
             }
         }
 
@@ -204,6 +242,14 @@ public class PageFragment extends Fragment {
                 mCardView = (CardView) v.findViewById(R.id.card);
                 mTextView = (TextView) v.findViewById(R.id.cardText);
                 mTimeTextView = (TextView) v.findViewById(R.id.cardTime);
+
+                mCardView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                    @Override
+                    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+                        contextMenu.add(0, R.id.context_menu_edit_item, getAdapterPosition(), R.string.edit_item); // we put adapter position instead of 'item order'
+                        //getActivity().getMenuInflater().inflate(R.menu.context_menu_page, contextMenu); TODO DEL
+                    }
+                });
             }
         }
     }
@@ -233,6 +279,21 @@ public class PageFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem menuItem) {
+        if(menuItem.getItemId() == R.id.context_menu_edit_item) {
+            Item item = ((PageRecycleViewAdapter) mRecyclerView.getAdapter()).getItem(menuItem);
+
+            Intent intent = new Intent(getActivity(), EditItemActivity.class);
+            intent.putExtra(ItemFragment.EXTRA_ID, item.getId());
+            startActivity(intent);
+
+            return true;
+        }
+
+        return super.onContextItemSelected(menuItem);
     }
 
     public static Fragment newInstance(UUID id) {

@@ -23,11 +23,22 @@ public class PageCollection {
 
 
         Page page = new Page();
+        Page page2 = new Page();
         ArrayList<Item> pageItems = new ArrayList<>();
 
         page.setItems(pageItems);
         page.setName("Lidi News - Best News in Town");
+        page.setDescription("Lidi's here for ya");
         mPages.add(page);
+
+        page2.setItems(pageItems);
+        page2.setName("Breaking News All Night");
+        page2.setDescription("Here to Break it everything right as it comes");
+        page2.settings.design = Page.Design.NO_IMAGES;
+        mPages.add(page2);
+
+
+
 
 
         Item tlaibBreaking = new Item(page);
@@ -63,9 +74,57 @@ public class PageCollection {
         ItemCollection.get(mAppContext).add(gazansBreaking);
         pageItems.add(gazansBreaking);
 
+        Item blueWhiteBreaking = new Item(page);
+        blueWhiteBreaking.setTitle("B&W Member Draws Criticism After Stupid Remarks");
+        blueWhiteBreaking.setImage(BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.ben_barak));
 
-        ItemCollection.get(mAppContext).add(tlaibBreaking);
-        pageItems.add(tlaibBreaking);
+        ItemCollection.get(mAppContext).add(blueWhiteBreaking);
+        page.addItem(blueWhiteBreaking);
+
+        Item walshBreaking = new Item(page);
+        walshBreaking.setTitle("Trump is Terrified:\nJoe Walsh Running For President");
+        walshBreaking.setImage(BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.joe_walsh));
+
+        ItemCollection.get(mAppContext).add(walshBreaking);
+        page.addItem(walshBreaking);
+
+        Item laborBreaking = new Item(page);
+        laborBreaking.setTitle("MASSIVE DRAMA:\nLabor Leader Sheds Iconic Mustache After 47 Years");
+        laborBreaking.setImage(BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.peretz_bibi));
+
+        ItemCollection.get(mAppContext).add(laborBreaking);
+        page.addItem(laborBreaking);
+
+
+        Item sulimaniBreaking = new Item(page);
+        sulimaniBreaking.setTitle("IDF Eliminates Threat of Drones Attack Hours Before Executed");
+        sulimaniBreaking.setImage(BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.sulimani));
+
+        ItemCollection.get(mAppContext).add(sulimaniBreaking);
+        page.addItem(sulimaniBreaking);
+
+
+        Item bibiBreaking = new Item(page);
+        bibiBreaking.setTitle("Opinion: Netanyahu Gains Victory in the North, Humilliated in the South");
+        bibiBreaking.setImage(BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.bibi_face));
+
+        ItemCollection.get(mAppContext).add(bibiBreaking);
+        page.addItem(bibiBreaking);
+
+
+        Item sderotBreaking = new Item(page);
+        sderotBreaking.setTitle("Siren Strikes Fear in Sderot During Massive City Event");
+        sderotBreaking.setImage(BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.rockets_gaza2));
+
+        ItemCollection.get(mAppContext).add(sderotBreaking);
+        page.addItem(sderotBreaking);
+
+        Item macronBreaking = new Item(page);
+        macronBreaking.setTitle("Haley Slams Macron: 'Manipulative', 'Insincere' & 'Completely Disrespectful'");
+        macronBreaking.setImage(BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.haley));
+
+        ItemCollection.get(mAppContext).add(macronBreaking);
+        page.addItem(macronBreaking);
     }
 
     public static PageCollection get(Context c) {

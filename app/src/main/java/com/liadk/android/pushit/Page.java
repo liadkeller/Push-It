@@ -15,6 +15,8 @@ import java.util.UUID;
 public class Page {
     UUID mId;
     String mName = "";
+    String mDescription = "";
+    Bitmap mLogoImage;
     ArrayList<Item> mPageItems;
 
     PageSettings settings;
@@ -64,6 +66,14 @@ public class Page {
         this.mName = name;
     }
 
+    public void setDescription(String description) {
+        this.mDescription = description;
+    }
+
+    public void setLogoImage(Bitmap logoImage) {
+        this.mLogoImage = logoImage;
+    }
+
     public void setItems(ArrayList<Item> mPageItems) {
         this.mPageItems = mPageItems;
     }
@@ -80,12 +90,20 @@ public class Page {
         return mPageItems.contains(item);
     }
 
+    public UUID getId() {
+        return mId;
+    }
+
     public String getName() {
         return mName;
     }
 
-    public UUID getId() {
-        return mId;
+    public String getDescription() {
+        return mDescription;
+    }
+
+    public Bitmap getLogoImage() {
+        return mLogoImage;
     }
 
     public ArrayList<Item> getItems() {
