@@ -8,6 +8,8 @@ import android.util.Base64;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ public class Item {
         NEW, DRAFT, CREATED, PUBLISHED;
 
         public static State getState(String state) {
+            if(state == null) return null;
             switch (state.toUpperCase()) {
                 case "DRAFT":
                     return DRAFT;
@@ -52,28 +55,24 @@ public class Item {
 
     UUID mId;
 
-    boolean mEdit; // true - edit mode; false - public mode
-    Item mEditItem;
-
     String mTitle = "";
     String mAuthor = "";
     Bitmap mImage; // TODO TAKE CARE OF new Bitmap() TODO add to Database
     Date mOriginalTime; // original creation time
     Date mTime;                  // creation time
-    Page mOwner;
+    UUID mOwnerId;
 
     ArrayList<String> mTextSegments;
     ArrayList<Object> mMediaSegments;             // TODO add to Database
-    //ArrayList<Bitmap> mImages;
-    //ArrayList<MediaStore.Video> mVideos;
+
     int mCounter;
 
     State mState;
 
 
-    public Item(Page owner) {
+    public Item(UUID ownerId) {
         mId = UUID.randomUUID();
-        mOwner = owner;
+        mOwnerId = ownerId;
 
         mOriginalTime = new Date();
         mTime = mOriginalTime;
@@ -83,17 +82,12 @@ public class Item {
         mCounter = 0;
         mTextSegments = new ArrayList<>();
         mMediaSegments = new ArrayList<>();
-        //mImages = new ArrayList<>();
-        //mVideos = new ArrayList<>();
 
         mTextSegments.add("");
-
-        mEdit = false;
-        setNewEditItem(); // If item is edited not through "mEditItem" and the changes weren't synced with mEditItem, they won't appear in Edit mode
     }
 
     private Item() {
-        this((Page) null);
+        this((UUID) null);
     }
 
     public Item(Item item) {
@@ -104,7 +98,7 @@ public class Item {
         mAuthor = item.mAuthor;
         mOriginalTime = item.mOriginalTime;
         mTime = item.mTime;
-        mOwner = item.mOwner;
+        mOwnerId = item.mOwnerId;
         mTextSegments = new ArrayList<>(item.mTextSegments);
         mMediaSegments = new ArrayList<>(item.mMediaSegments);
         //mImages = item.mImages;
@@ -116,71 +110,46 @@ public class Item {
 
     public void setTitle(String title) {
         mTitle = title;
-        if (!mEdit) mEditItem.setTitle(title);
     }
 
     public void setImage(Bitmap image) {
         mImage = image;
-        if (!mEdit) mEditItem.setImage(image);
-
     }
 
     public void setAuthor(String author) {
         mAuthor = author;
-        if (!mEdit) mEditItem.setAuthor(author);
-
     }
 
     public void setTime(Date time) {
         mTime = time;
-        if (!mEdit) mEditItem.setTime(time);
     }
 
     public void setCurrentTime() {
         mTime = new Date();
-        if (!mEdit) mEditItem.setTime(mTime);
     }
 
     public void setText(String text) {
         mTextSegments.set(0, text);
-        if (!mEdit) mEditItem.setText(text);
     }
 
     public void setState(State state) {
         mState = state;
-        if (!mEdit) mEditItem.setState(state);
-    }
-
-    public void setEdit(boolean edit) {
-        this.mEdit = edit;
-    }
-
-    public void setEditItem(Item editItem) {
-        mEditItem = editItem;
-        mEditItem.setEdit(true);
-    }
-
-    public void setNewEditItem() {
-        setEditItem(new Item(this));
     }
 
     public void addText(String text) {
         mTextSegments.add(text);
-        if (!mEdit) mEditItem.addText(text);
     }
 
     public void addImage(Bitmap image) {
         mMediaSegments.add(image);
         mTextSegments.add("");
         mCounter++;
-        if (!mEdit) mEditItem.addImage(image);
     }
 
     public void addVideo(MediaStore.Video video) {
         mMediaSegments.add(video);
         mTextSegments.add("");
         mCounter++;
-        if (!mEdit) mEditItem.addVideo(video);
     }
 
     public void setCounter(int counter) {
@@ -231,16 +200,19 @@ public class Item {
     }
 
     public String getFormattedOriginalTime() {
+        if(mOriginalTime == null) return null;
         DateFormat df = new DateFormat();
         return df.format("MMM d, hh:mm", mOriginalTime).toString();
     }
 
     public String getTime() {
+        if(mTime == null) return null;
         DateFormat df = new DateFormat();
         return df.format("MMM d, hh:mm", mTime).toString();
     }
 
     public String getShortTime() {
+        if(mTime == null) return null;
         DateFormat df = new DateFormat();
         return df.format("hh:mm", mTime).toString();
     }
@@ -258,16 +230,8 @@ public class Item {
         return mState;
     }
 
-    public Page getOwner() {
-        return mOwner;
-    }
-
-    public boolean isEdit() {
-        return mEdit;
-    }
-
-    public Item getEditItem() {
-        return mEditItem;
+    public UUID getOwnerId() {
+        return mOwnerId;
     }
 
     public ArrayList<String> getTextSegments() {
@@ -282,63 +246,96 @@ public class Item {
         return mCounter;
     }
 
-    // saves all changes made in the edit screen
-    // copies all data from the "edit" copy to this one
-    public void edit() {
-        mTitle = mEditItem.mTitle;
-        mImage = mEditItem.mImage;
-        mAuthor = mEditItem.mAuthor;
-        mOriginalTime = mEditItem.mOriginalTime;
-        mTime = mEditItem.mTime;
-        mTextSegments = new ArrayList<>(mEditItem.mTextSegments);
-        mMediaSegments = new ArrayList<>(mEditItem.mMediaSegments);
-        //mImages = mEditItem.mImages;
-        //mVideos = mEditItem.mVideos;
-        mCounter = mEditItem.mCounter;
-        mOwner = mEditItem.mOwner;
-
-        mState = mEditItem.mState;
-    }
-
-    public void addToPage(State oldState) {
-        if (mEdit) return;
-
-        if (oldState == State.DRAFT)
-            mOwner.removeItem(this); // if saved as a draft
-
-        if (!mOwner.has(this))
-            mOwner.addItem(this);
-    }
-
     public long getOriginalTimeLong() {
         return mOriginalTime.getTime();
     }
 
     public long getTimeLong() {
-        return mOriginalTime.getTime();
+        return mTime.getTime();
     }
 
 
-    public static Item fromDB(DataSnapshot ds, Page owner) {
-        Item item = new Item(owner);
+    public void updateOnPost() {
+        // TODO:
+        //  Update Creation Time and all stuff when posting/publishing a NEW/DRAFT Item
+    }
+
+
+    public static Item fromDB(DataSnapshot ds) {
+        Item item = new Item();
 
         item.mId = UUID.fromString(ds.getKey());
         item.mTitle = (String) ds.child("title").getValue();
         item.mAuthor = (String) ds.child("author").getValue();
         //item.mImage = bitmapFromBlob((String) ds.child("image").getValue());
-        item.mTime = new Date((long) ds.child("time").getValue());
-        item.mOriginalTime = new Date((long) ds.child("original-time").getValue());
+
+        if(ds.child("owner").getValue() != null)
+            item.mOwnerId = UUID.fromString((String) ds.child("owner").getValue());
         item.mState = State.getState((String) ds.child("state").getValue());
-        item.mEdit = (boolean) ds.child("edit-boolean").getValue();
-        item.mCounter = (int) ds.child("counter").getValue(Integer.class);
+
+        item.mCounter = 0;
+        item.mTextSegments = new ArrayList<>();
+        item.mMediaSegments = new ArrayList<>();
+        item.mTime = null;
+        item.mOriginalTime = null;
+
+        if(ds.child("counter").getValue() != null)
+            item.mCounter = (int) ds.child("counter").getValue(Integer.class);
         for (int i = 0; i <= item.mCounter; i++)
+            //if(ds.child("text").child(i + "").getValue() != null) Todo decide about adding mTextSegments list including nulls or not
             item.mTextSegments.add((String) ds.child("text").child(i + "").getValue());
 
-        item.setNewEditItem();
+        if(ds.child("time").getValue() != null)
+            item.mTime = new Date( (long) ds.child("time").getValue());
+        if(ds.child("original-time").getValue() != null)
+            item.mOriginalTime = new Date((long) ds.child("original-time").getValue());
+
+        downloadMedia(item);
 
         return item;
     }
 
+
+    public void pushToDB(DatabaseReference db) {
+        db.child(getId().toString()).child("title").setValue(getTitle());
+        db.child(getId().toString()).child("author").setValue(getAuthor());
+        //db.child(getId().toString()).child("image").setValue(getBlob(getImage())); TODO Add image to DB
+        db.child(getId().toString()).child("time").setValue(getTimeLong());
+        db.child(getId().toString()).child("original-time").setValue(getOriginalTimeLong());
+        db.child(getId().toString()).child("owner").setValue(getOwnerId().toString());
+        db.child(getId().toString()).child("state").setValue(getState().toString());
+
+        db.child(getId().toString()).child("counter").setValue(getSegmentsCounter());
+        for(int i = 0; i <= getSegmentsCounter(); i++)
+            db.child(getId().toString()).child("text").child(i+"").setValue(getTextSegments().get(i));
+        /* for(int i = 0; i < getSegmentsCounter(); i++)
+            db.child(getId().toString()).child("media").child(i+"").setValue(getTextSegments().get(i));  TODO Add Media to DB */
+
+        uploadMedia();
+    }
+
+    private void uploadMedia() {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference("items").child(getId().toString());
+        //UploadTask uploadTask = storageRef.child("image.png").putBytes(getImageBytes(mImage)); // TODO Tremendously Pricey
+    }
+
+    private static void downloadMedia(final Item item) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference("items").child(item.getId().toString());
+
+        final long MAX_SIZE = 100 * 1024;
+
+        /*storageRef.child("image.png").getBytes(MAX_SIZE).addOnSuccessListener(new OnSuccessListener<byte[]>() { // TODO Tremendously Pricey
+           @Override
+           public void onSuccess(byte[] bytes) {
+               item.mImage = bitmapFromBytes(bytes); // TODO Check IF NOT CONTRADICTS FINAL DECLARATION
+           }
+        });
+        */
+    }
+
+
+
+    // image processing - blob
     public String getBlob(Bitmap image) {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
@@ -353,22 +350,15 @@ public class Item {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
+    // image processing - bytes
+    private byte[] getImageBytes(Bitmap image) {
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+        return byteStream.toByteArray();
+    }
 
-    public void pushToDB(DatabaseReference db) {
-        db.child(getId().toString()).child("title").setValue(getTitle());
-        db.child(getId().toString()).child("author").setValue(getAuthor());
-        //db.child(getId().toString()).child("image").setValue(getBlob(getImage()));
-        db.child(getId().toString()).child("time").setValue(getTimeLong());
-        db.child(getId().toString()).child("original-time").setValue(getOriginalTimeLong());
-        db.child(getId().toString()).child("owner").setValue(getOwner().getId().toString());
-        db.child(getId().toString()).child("state").setValue(getState().toString());
-        db.child(getId().toString()).child("edit-boolean").setValue(isEdit());
-        db.child(getId().toString()).child("edit-item").setValue(getEditItem().getId().toString());
-        db.child(getId().toString()).child("counter").setValue(getSegmentsCounter());
-        for(int i = 0; i <= getSegmentsCounter(); i++)
-            db.child(getId().toString()).child("text").child(i+"").setValue(getTextSegments().get(i));
-        /*for(int i = 0; i < getSegmentsCounter(); i++)
-            db.child(getId().toString()).child("media").child(i+"").setValue(getTextSegments().get(i));*/
-
+    public static Bitmap bitmapFromBytes(byte[] bytes)
+    {
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 }

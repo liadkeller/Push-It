@@ -3,6 +3,7 @@ package com.liadk.android.pushit;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -15,15 +16,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class ExploreFragment extends Fragment {
 
-    FirebaseDatabase mDatabase;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mPagesDatabase;
+
+    private ArrayList<Page> mPages;
     private RecyclerView mRecyclerView;
 
     @Override
@@ -32,8 +39,29 @@ public class ExploreFragment extends Fragment {
         getActivity().setTitle(R.string.explore);
         mDatabase = FirebaseDatabase.getInstance();
 
-        resetDatabase();
-        addDataToDatabase();
+        mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
+        mPagesDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() == null) return;
+
+                mPages = new ArrayList<>();
+                for(DataSnapshot ds: dataSnapshot.getChildren()) {
+                    mPages.add(Page.getPageDetailsFromDB(ds));
+                }
+
+                if(mRecyclerView != null)
+                    mRecyclerView.getAdapter().notifyDataSetChanged();
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+
+        //resetDatabase();
+        //addDataToDatabase();
     }
 
     private void resetDatabase() {
@@ -80,11 +108,9 @@ public class ExploreFragment extends Fragment {
 
     public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
         Context mContext;
-        ArrayList<Page> mPages;
 
         PageListRecycleViewAdapter(Context context) {
             mContext = context;
-            mPages = PageCollection.get(mContext).getPages();
         }
 
         @Override
@@ -113,6 +139,7 @@ public class ExploreFragment extends Fragment {
 
         @Override
         public int getItemCount() {
+            if(mPages == null) return 0;
             return mPages.size();
         }
 

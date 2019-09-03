@@ -2,6 +2,7 @@ package com.liadk.android.pushit;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +15,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
@@ -24,6 +30,7 @@ import java.util.UUID;
 public class PageLogoFragment extends Fragment {
 
     private Page mPage;
+    private DatabaseReference mPagesDatabase;
 
     private ImageView mImageView;
     private ImageButton mImageButton;
@@ -35,8 +42,24 @@ public class PageLogoFragment extends Fragment {
         setHasOptionsMenu(true);
         getActivity().setTitle(R.string.set_page_logo);
 
-        UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
-        mPage = PageCollection.get(getActivity()).getPage(id);
+        final UUID id = (UUID) getArguments().getSerializable(PageFragment.EXTRA_ID);
+
+        mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
+        mPagesDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() == null) return;
+
+                mPage = Page.fromDB(dataSnapshot.child(id.toString()));
+                if(getView() != null) {
+                    configureImageButtonListener();
+                    onImageUpdated();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 
     @Nullable
@@ -50,6 +73,15 @@ public class PageLogoFragment extends Fragment {
         mNoLogoTextView = (TextView) v.findViewById(R.id.noLogoTextView);
 
         // Configuring
+        if(mPage != null) {
+            configureImageButtonListener();
+            onImageUpdated();
+        }
+
+        return v;
+    }
+
+    private void configureImageButtonListener() {
         mImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,10 +101,6 @@ public class PageLogoFragment extends Fragment {
                         }).show(fm);
             }
         });
-
-        onImageUpdated();
-
-        return v;
     }
 
     private void onImageUpdated() {

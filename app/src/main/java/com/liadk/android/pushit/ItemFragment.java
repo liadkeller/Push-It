@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.UUID;
 
 /**
@@ -27,10 +34,11 @@ import java.util.UUID;
  */
 public class ItemFragment extends Fragment {
 
-    public static final String EXTRA_ID = "id";
+    public static final String EXTRA_ID = "itemId";
     private static final int REQUEST_EDIT = 0;
 
     private Item mItem;
+    private DatabaseReference mItemsDatabase;
 
     ImageView mImageView;
     TextView mTitleTextView;
@@ -46,8 +54,21 @@ public class ItemFragment extends Fragment {
         setHasOptionsMenu(true);
         getActivity().setTitle("");
 
-        UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
-        mItem = ItemCollection.get(getActivity()).getItem(id);
+        final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
+
+        mItemsDatabase = FirebaseDatabase.getInstance().getReference("items");
+        mItemsDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() == null) return;
+
+                mItem = Item.fromDB(dataSnapshot.child(id.toString()));
+                updateUI();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 
     @Override
@@ -66,7 +87,8 @@ public class ItemFragment extends Fragment {
         mImageViews = new ImageView[] { (ImageView) v.findViewById(R.id.itemImageView1), (ImageView) v.findViewById(R.id.itemImageView2) };
         mSurfaceViews = new SurfaceView[] { (SurfaceView) v.findViewById(R.id.itemSurfaceView1), (SurfaceView) v.findViewById(R.id.itemSurfaceView2) };
 
-        updateUI();
+        if(mItem != null)
+            updateUI();
 
         return v;
     }
@@ -74,7 +96,7 @@ public class ItemFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateUI();
+        if(mItem != null) updateUI();
     }
 
     @Override
@@ -98,11 +120,12 @@ public class ItemFragment extends Fragment {
                     .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Page owner = mItem.getOwner();
-                            if(owner != null)
-                                owner.removeItem(mItem);
-                            ItemCollection.get(getActivity()).delete(mItem);
                             getActivity().finish();
+
+                            DatabaseReference pageItemsDatabase = FirebaseDatabase.getInstance().getReference("pages/" + mItem.getOwnerId().toString() + "/items");
+
+                            mItemsDatabase.child(mItem.getId().toString()).removeValue();
+                            pageItemsDatabase.child(mItem.getId().toString()).removeValue();
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, null)
@@ -116,7 +139,7 @@ public class ItemFragment extends Fragment {
 
             if (NavUtils.getParentActivityName(getActivity()) != null) {
                 Intent intent = NavUtils.getParentActivityIntent(getActivity());
-                intent.putExtra(PageFragment.EXTRA_ID, mItem.getOwner().getId());
+                intent.putExtra(PageFragment.EXTRA_ID, mItem.getOwnerId());
 
                 NavUtils.navigateUpTo(getActivity(), intent);
             }
@@ -128,15 +151,6 @@ public class ItemFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    /*
-        if(resultCode == Activity.RESULT_OK)
-        {
-            if(requestCode == REQUEST_EDIT) {
-                updateUI(); // TODO move to onResume()
-            }
-        }
-    */
-
         if(resultCode == Activity.RESULT_CANCELED) {
             getActivity().finish();
         }

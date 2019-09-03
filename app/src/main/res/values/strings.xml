@@ -58,7 +58,8 @@
     <string name="post_article_dialog">Are you sure you want to post this article? \n\nNotice that after the article will be post, it will appear on your page and everyone will be able to see it.</string>
     <string name="save_draft_dialog">Are you sure you want to save this article as a draft?</string>
     <string name="delete_article_dialog">Are you sure you want to delete this article? \n\nAll information will be lost.</string>
-    <string name="save_changes_dialog">Are you sure you want to save changes? \n\nOld information will be overwritten.</string>>
+    <string name="save_changes_dialog">Are you sure you want to save changes? \n\nOld information will be overwritten.</string>
+    >
     <string name="save_changes_dialog_published">Are you sure you want to save changes? \n\nNote that the Push Notification that was sent can not be changed now.</string>
 
     <string name="publish_article_toast">The article has been published. A notification was sent to all followers</string>
@@ -111,4 +112,12 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
+    <string name="account_login">Account Login</string>
+    <string name="account_title">My Account</string>
+    <string name="account_status">Account Status</string>
+    <string name="status_creator">Content Creator</string>
+    <string name="status_follower">Content Follower</string>
+    <string name="account_page">My Page Settings</string>
+    <string name="create">Create</string>
+    <string name="login">Login</string>
 </resources>

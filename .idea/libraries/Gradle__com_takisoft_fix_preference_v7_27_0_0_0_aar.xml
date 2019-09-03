@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="Gradle: com.takisoft.fix:preference-v7:27.0.0.0@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ad9d6a7789002428261bcd120c0a9f99/preference-v7-27.0.0.0/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ad9d6a7789002428261bcd120c0a9f99/preference-v7-27.0.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ad9d6a7789002428261bcd120c0a9f99/preference-v7-27.0.0.0/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.takisoft.fix/preference-v7/27.0.0.0/471c80366bd71171eb30872c5bec26cd59f1d71b/preference-v7-27.0.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.takisoft.fix/preference-v7/27.0.0.0/4beab01354bfc1c5f1c0b546e90a2cc552855a18/preference-v7-27.0.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

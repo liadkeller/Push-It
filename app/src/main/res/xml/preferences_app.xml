@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:key="accountLogin"
+        android:title="@string/account_login"/>
+
+    <PreferenceCategory android:title="@string/account_title">
+        <Preference
+            android:key="accountEmail"
+            android:title="mail@host.com"/> <!-- TODO -->
+
+        <SwitchPreference
+            android:key="accountStatus"
+            android:defaultValue="true"
+            android:title="@string/account_status"
+            android:summary="@string/status_creator"/> <!-- TODO -->
+
+        <Preference
+            android:key="pageSettings"
+            android:title="@string/account_page"/>
+    </PreferenceCategory>
+</PreferenceScreen>

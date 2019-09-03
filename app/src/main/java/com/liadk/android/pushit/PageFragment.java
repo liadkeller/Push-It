@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +34,7 @@ import java.util.UUID;
 public class PageFragment extends Fragment {
 
     private static final String TAG = "PageFragment";
-    public static final String EXTRA_ID = "id";
+    public static final String EXTRA_ID = "pageId";
 
     private static final int HEADER_TYPE = 0;
     private static final int NO_HEADER_TYPE = 1;
@@ -54,29 +54,23 @@ public class PageFragment extends Fragment {
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
         mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
+        //mPagesDatabase.child(id.toString()).child("items").orderByChild("time"); TODO Sort Items By Time
         mPagesDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mPage = Page.fromDB(dataSnapshot.child(id.toString()));
+                if(dataSnapshot.getValue() == null) return;
 
+                mPage = Page.fromDB(dataSnapshot.child(id.toString()));
                 onPageChanged();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
-
-        /*
-
-
-         */
-
     }
 
     private void onPageChanged() {
-        if(!mPage.getName().equals("")) {
+        if(!"".equals(mPage.getName()) && getActivity() != null) {
             getActivity().setTitle(mPage.getName());
         }
 
@@ -106,6 +100,7 @@ public class PageFragment extends Fragment {
             @Override
             public void onRefresh() {
                 // TODO Refresh
+                mRecyclerView.getAdapter().notifyDataSetChanged();
                 mSwipeRefresh.setRefreshing(false);
             }
         });
@@ -291,7 +286,6 @@ public class PageFragment extends Fragment {
                     @Override
                     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
                         contextMenu.add(0, R.id.context_menu_edit_item, getAdapterPosition(), R.string.edit_item); // we put adapter position instead of 'item order'
-                        //getActivity().getMenuInflater().inflate(R.menu.context_menu_page, contextMenu); TODO DEL
                     }
                 });
             }
@@ -306,13 +300,15 @@ public class PageFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_item_create_article) {
+            DatabaseReference itemsDatabase = FirebaseDatabase.getInstance().getReference("items");
 
-            Item newItem = new Item(mPage);
-            ItemCollection.get(getActivity()).add(newItem);
+            Item newItem = new Item(mPage.getId());
+            newItem.pushToDB(itemsDatabase); // we add only to itemsDatabase and not to pagesDatabase - we'll add it there when we save the item in EditItemFragment
 
             Intent intent = new Intent(getActivity(), EditItemActivity.class);
             intent.putExtra(ItemFragment.EXTRA_ID, newItem.getId());
             startActivity(intent);
+            return true;
         }
 
         else if(item.getItemId() == R.id.menu_item_page_settings) {
@@ -320,11 +316,22 @@ public class PageFragment extends Fragment {
             Intent i = new Intent(getActivity(), PageSettingsActivity.class);
             i.putExtra(EXTRA_ID, mPage.getId());
             startActivity(i);
+            return true;
+        }
+
+        else if(item.getItemId() == android.R.id.home) {
+
+            if (NavUtils.getParentActivityName(getActivity()) != null) {
+                NavUtils.navigateUpFromSameTask(getActivity());
+            }
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+
+    // takes care of context menu for editing items
     @Override
     public boolean onContextItemSelected(MenuItem menuItem) {
         if(menuItem.getItemId() == R.id.context_menu_edit_item) {
@@ -339,6 +346,7 @@ public class PageFragment extends Fragment {
 
         return super.onContextItemSelected(menuItem);
     }
+
 
     public static Fragment newInstance(UUID id) {
         Bundle args = new Bundle();

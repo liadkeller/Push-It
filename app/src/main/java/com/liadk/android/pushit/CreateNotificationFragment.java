@@ -1,11 +1,11 @@
 package com.liadk.android.pushit;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +24,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
@@ -34,8 +39,8 @@ import java.util.UUID;
 public class CreateNotificationFragment extends Fragment implements EditItemActivity.OnBackPressedListener {
 
     private Item mItem;
+    private DatabaseReference mItemsDatabase;
     private PushNotification mNotification;
-
 
     private EditText mTitleEditText;
     private CheckBox mTitleCheckBox;
@@ -93,9 +98,24 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         ((CreateNotificationActivity) getActivity()).setOnBackPressedListener((EditItemActivity.OnBackPressedListener) this);  // this class has a "onBackPressed()" method as needed
         setHasOptionsMenu(true);
 
-        UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
-        mItem = ItemCollection.get(getActivity()).getItem(id);
-        mNotification = new PushNotification(mItem);
+        final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
+
+        mItemsDatabase = FirebaseDatabase.getInstance().getReference("items");
+        mItemsDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() == null) return;
+
+                mItem = Item.fromDB(dataSnapshot.child(id.toString()));
+                mNotification = new PushNotification(mItem);
+
+                if(getView() != null)
+                    configureView(getView());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 
     @Nullable
@@ -112,6 +132,13 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         mPublishButton = (Button) v.findViewById(R.id.publishButton);
 
         // Configuring
+        if(mItem != null)
+            configureView(v);
+
+        return v;
+    }
+
+    private void configureView(View v) {
         mTitleEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -192,11 +219,9 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         });
 
         onImageUpdated();
-
-        return v;
     }
 
-    private void onImageUpdated() {
+        private void onImageUpdated() {
         Bitmap image = mNotification.getImage();
         if(image != null) {
             mImageView.setImageBitmap(image);
@@ -226,15 +251,22 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
     }
 
     private void updateState() {
-        // Update(PUBLISHED) is here
-        mItem.addToPage(mItem.getState());
+        // updateState(PUBLISHED) is here
         mItem.setState(Item.State.PUBLISHED);
+        saveChanges();
         Toast.makeText(getActivity(), R.string.publish_article_toast, Toast.LENGTH_SHORT).show();
 
         // exits two layers
         Intent intent = new Intent(getActivity(), ItemActivity.class);
         intent.putExtra(ItemFragment.EXTRA_ID, mItem.getId());
         NavUtils.navigateUpTo(getActivity(), intent);
+    }
+
+    private void saveChanges() {
+        DatabaseReference pageItemsDatabase = FirebaseDatabase.getInstance().getReference("pages/" + mItem.getOwnerId().toString() + "/items");
+
+        mItem.pushToDB(mItemsDatabase);
+        mItem.pushToDB(pageItemsDatabase);
     }
 
     @Override

@@ -7,7 +7,7 @@
 7    <uses-sdk
 8        android:minSdkVersion="16"
 8-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml
-9        android:targetSdkVersion="24" />
+9        android:targetSdkVersion="26" />
 9-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml
 10
 11    <uses-permission android:name="android.permission.CAMERA" />
@@ -21,199 +21,199 @@
 14-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8855780df4290e61c4ec31c5351ec599\PickImage-2.1.0\AndroidManifest.xml:14:5-70
 14-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8855780df4290e61c4ec31c5351ec599\PickImage-2.1.0\AndroidManifest.xml:14:19-67
 15
-16    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Although the *SdkVersion is captured in gradle build files, this is required for non gradle builds -->
+16    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 16-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8855780df4290e61c4ec31c5351ec599\PickImage-2.1.0\AndroidManifest.xml:16:5-81
 16-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8855780df4290e61c4ec31c5351ec599\PickImage-2.1.0\AndroidManifest.xml:16:22-78
-17    <!-- <uses-sdk android:minSdkVersion="14"/> -->
-18    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-18-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:25:5-79
-18-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:25:22-76
-19    <uses-permission android:name="android.permission.INTERNET" />
-19-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:26:5-67
-19-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:26:22-64
-20
-21    <application
-21-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:5:5-54:19
-22        android:allowBackup="true"
-22-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:6:9-35
-23        android:configChanges="orientation"
-23-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8855780df4290e61c4ec31c5351ec599\PickImage-2.1.0\AndroidManifest.xml:20:9-44
-24        android:debuggable="true"
-25        android:icon="@mipmap/ic_launcher"
-25-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:7:9-43
-26        android:label="@string/app_name"
-26-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:8:9-41
-27        android:screenOrientation="portrait"
-27-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8855780df4290e61c4ec31c5351ec599\PickImage-2.1.0\AndroidManifest.xml:22:9-45
-28        android:supportsRtl="true"
-28-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:9:9-35
-29        android:testOnly="true"
-30        android:theme="@style/AppTheme" >
-30-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:10:9-40
-31        <activity android:name="com.liadk.android.pushit.ExploreActivity" >
-31-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:11:9-16:20
-31-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:11:19-50
-32            <intent-filter>
-32-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:12:13-15:29
-33                <action android:name="android.intent.action.MAIN" />
-33-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:13:17-68
-33-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:13:25-66
-34
-35                <category android:name="android.intent.category.LAUNCHER" />
-35-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:14:17-76
-35-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:14:27-74
-36            </intent-filter>
-37        </activity>
-38        <activity
-38-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:17:9-18:56
-39            android:name="com.liadk.android.pushit.PageActivity"
-39-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:17:19-47
-40            android:parentActivityName="com.liadk.android.pushit.ExploreActivity" />
-40-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:18:9-54
+17    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- Although the *SdkVersion is captured in gradle build files, this is required for non gradle builds -->
+18    <!-- <uses-sdk android:minSdkVersion="14"/> -->
+19    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+19-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:25:5-79
+19-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:25:22-76
+20    <uses-permission android:name="android.permission.INTERNET" />
+20-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:26:5-67
+20-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:26:22-64
+21
+22    <application
+22-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:6:5-54:19
+23        android:allowBackup="true"
+23-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:7:9-35
+24        android:configChanges="orientation"
+24-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8855780df4290e61c4ec31c5351ec599\PickImage-2.1.0\AndroidManifest.xml:20:9-44
+25        android:debuggable="true"
+26        android:icon="@mipmap/ic_launcher"
+26-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:8:9-43
+27        android:label="@string/app_name"
+27-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:9:9-41
+28        android:screenOrientation="portrait"
+28-->[com.github.jrvansuita:PickImage:2.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8855780df4290e61c4ec31c5351ec599\PickImage-2.1.0\AndroidManifest.xml:22:9-45
+29        android:supportsRtl="true"
+29-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:10:9-35
+30        android:testOnly="true"
+31        android:theme="@style/AppTheme" >
+31-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:11:9-40
+32        <activity
+32-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:12:9-18:20
+33            android:name="com.liadk.android.pushit.HomeActivity"
+33-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:12:19-47
+34            android:theme="@style/AppTheme.SettingsTheme" >
+34-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:13:13-58
+35            <intent-filter>
+35-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:14:13-17:29
+36                <action android:name="android.intent.action.MAIN" />
+36-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:15:17-69
+36-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:15:25-66
+37
+38                <category android:name="android.intent.category.LAUNCHER" />
+38-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:16:17-77
+38-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:16:27-74
+39            </intent-filter>
+40        </activity>
 41        <activity
-41-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:19:9-23:20
-42            android:name="com.liadk.android.pushit.PageSettingsActivity"
-42-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:19:19-55
-43            android:parentActivityName="com.liadk.android.pushit.PageActivity" >
-43-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:20:13-55
-44
-45            <!--
-46                <meta-data android:name="android.support.PARENT_ACTIVITY"
-47                android:value=".PageActivity"/>
-48            -->
-49        </activity>
-50        <activity
-50-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:24:9-25:65
-51            android:name="com.liadk.android.pushit.PageLogoActivity"
-51-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:24:19-51
-52            android:parentActivityName="com.liadk.android.pushit.PageSettingsActivity" />
-52-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:25:13-63
-53        <activity
-53-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:27:9-31:20
-54            android:name="com.liadk.android.pushit.ItemActivity"
-54-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:27:19-47
-55            android:parentActivityName="com.liadk.android.pushit.PageActivity" >
-55-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:28:13-55
-56
-57            <!--
-58                <meta-data android:name="android.support.PARENT_ACTIVITY"
-59                android:value=".PageActivity"/>
-60            -->
-61        </activity>
+41-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:20:9-22:58
+42            android:name="com.liadk.android.pushit.PageActivity"
+42-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:21:13-41
+43            android:parentActivityName="com.liadk.android.pushit.HomeActivity" />
+43-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:22:13-55
+44        <activity
+44-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:23:9-26:70
+45            android:name="com.liadk.android.pushit.PageSettingsActivity"
+45-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:24:13-49
+46            android:parentActivityName="com.liadk.android.pushit.PageActivity"
+46-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:25:13-55
+47            android:theme="@style/AppTheme.SettingsTheme" />
+47-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:26:13-58
+48        <activity
+48-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:27:9-29:66
+49            android:name="com.liadk.android.pushit.PageLogoActivity"
+49-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:28:13-45
+50            android:parentActivityName="com.liadk.android.pushit.PageSettingsActivity" />
+50-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:29:13-63
+51        <activity
+51-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:30:9-32:67
+52            android:name="com.liadk.android.pushit.ItemActivity"
+52-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:31:13-41
+53            android:parentActivityName="com.liadk.android.pushit.PageActivity" />
+53-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:32:13-55
+54        <activity
+54-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:33:9-36:79
+55            android:name="com.liadk.android.pushit.EditItemActivity"
+55-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:34:13-45
+56            android:parentActivityName="com.liadk.android.pushit.ItemActivity"
+56-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:35:13-55
+57            android:windowSoftInputMode="stateHidden|adjustResize" />
+57-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:36:13-67
+58        <activity
+58-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:37:9-40:79
+59            android:name="com.liadk.android.pushit.CreateNotificationActivity"
+59-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:38:13-55
+60            android:parentActivityName="com.liadk.android.pushit.EditItemActivity"
+60-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:39:13-59
+61            android:windowSoftInputMode="stateHidden|adjustResize" />
+61-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:40:13-67
 62        <activity
-62-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:32:9-37:20
-63            android:name="com.liadk.android.pushit.EditItemActivity"
-63-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:32:19-51
-64            android:parentActivityName="com.liadk.android.pushit.ItemActivity"
-64-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:34:13-55
-65            android:windowSoftInputMode="stateHidden|adjustResize" >
-65-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:33:13-67
-66
-67            <!--
-68            <meta-data android:name="android.support.PARENT_ACTIVITY" TODO Take Care Of.
-69            android:value=".ItemActivity"/>
-70            -->
-71        </activity>
-72        <activity
-72-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:38:9-41:20
-73            android:name="com.liadk.android.pushit.CreateNotificationActivity"
-73-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:38:19-61
-74            android:parentActivityName="com.liadk.android.pushit.EditItemActivity"
-74-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:40:13-59
-75            android:windowSoftInputMode="stateHidden|adjustResize" >
-75-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:39:13-67
-76        </activity>
-77
-78        <provider
-79            android:name="android.support.v4.content.FileProvider"
-79-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:44:13-67
-80            android:authorities="com.liadk.android.pushit.com.vansuita.pickimage.provider"
-80-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:45:13-83
-81            android:exported="false"
-81-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:46:13-37
-82            android:grantUriPermissions="true" >
-82-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:47:13-47
-83            <meta-data
-83-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:49:13-51:65
-84                android:name="android.support.FILE_PROVIDER_PATHS"
-84-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:50:17-67
-85                android:resource="@xml/picker_provider_paths" />
-85-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:51:17-62
-86        </provider>
+62-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:41:9-42:57
+63            android:name="com.liadk.android.pushit.LoginActivity"
+63-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:41:19-48
+64            android:parentActivityName="com.liadk.android.pushit.HomeActivity" />
+64-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:42:13-55
+65
+66        <provider
+67            android:name="android.support.v4.content.FileProvider"
+67-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:45:13-67
+68            android:authorities="com.liadk.android.pushit.com.vansuita.pickimage.provider"
+68-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:46:13-83
+69            android:exported="false"
+69-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:47:13-37
+70            android:grantUriPermissions="true" >
+70-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:48:13-47
+71            <meta-data
+71-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:50:13-52:65
+72                android:name="android.support.FILE_PROVIDER_PATHS"
+72-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:51:17-67
+73                android:resource="@xml/picker_provider_paths" />
+73-->C:\Users\user\AndroidStudioProjects\PushIt\app\src\main\AndroidManifest.xml:52:17-62
+74        </provider>
+75
+76        <meta-data
+76-->[com.android.support:design:26.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\3fccdee4c89d74f5ee7272a5b9bfdf41\design-26.1.0\AndroidManifest.xml:26:9-28:38
+77            android:name="android.support.VERSION"
+77-->[com.android.support:design:26.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\3fccdee4c89d74f5ee7272a5b9bfdf41\design-26.1.0\AndroidManifest.xml:27:13-51
+78            android:value="26.1.0" />
+78-->[com.android.support:design:26.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\3fccdee4c89d74f5ee7272a5b9bfdf41\design-26.1.0\AndroidManifest.xml:28:13-35
+79
+80        <activity
+80-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:24:9-31:50
+81            android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
+81-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:25:13-85
+82            android:excludeFromRecents="true"
+82-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:26:13-46
+83            android:exported="true"
+83-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:27:13-36
+84            android:launchMode="singleTask"
+84-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:28:13-44
+85            android:permission="com.google.firebase.auth.api.gms.permission.LAUNCH_FEDERATED_SIGN_IN"
+85-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:29:13-102
+86            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+86-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:30:13-72
 87
-88        <activity
-88-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:24:9-31:50
-89            android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
-89-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:25:13-85
-90            android:excludeFromRecents="true"
-90-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:26:13-46
-91            android:exported="true"
-91-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:27:13-36
-92            android:launchMode="singleTask"
-92-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:28:13-44
-93            android:permission="com.google.firebase.auth.api.gms.permission.LAUNCH_FEDERATED_SIGN_IN"
-93-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:29:13-102
-94            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-94-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:30:13-72
-95
-96        <service
-96-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:33:9-39:19
-97            android:name="com.google.firebase.components.ComponentDiscoveryService"
-97-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:34:13-84
-98            android:exported="false" >
-98-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:35:13-37
-99            <meta-data
-99-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:36:13-38:85
-100                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
-100-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:37:17-109
-101                android:value="com.google.firebase.components.ComponentRegistrar" />
-101-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:38:17-82
-102            <meta-data
-102-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:30:13-32:85
-103                android:name="com.google.firebase.components:com.google.firebase.database.DatabaseRegistrar"
-103-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:31:17-109
-104                android:value="com.google.firebase.components.ComponentRegistrar" />
-104-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:32:17-82
-105        </service>
+88        <service
+88-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:33:9-39:19
+89            android:name="com.google.firebase.components.ComponentDiscoveryService"
+89-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:34:13-84
+90            android:exported="false" >
+90-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:35:13-37
+91            <meta-data
+91-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:36:13-38:85
+92                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
+92-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:37:17-109
+93                android:value="com.google.firebase.components.ComponentRegistrar" />
+93-->[com.google.firebase:firebase-auth:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\88aa6586eb1ea14efe999e67b66ba9f9\firebase-auth-17.0.0\AndroidManifest.xml:38:17-82
+94            <meta-data
+94-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:30:13-32:85
+95                android:name="com.google.firebase.components:com.google.firebase.database.DatabaseRegistrar"
+95-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:31:17-109
+96                android:value="com.google.firebase.components.ComponentRegistrar" />
+96-->[com.google.firebase:firebase-database:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\87aca3ed50b7529a41cf9ecbf0c17cb6\firebase-database-17.0.0\AndroidManifest.xml:32:17-82
+97            <meta-data
+97-->[com.google.firebase:firebase-storage:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\f011d1fd310c0614209e472cd81d52f8\firebase-storage-17.0.0\AndroidManifest.xml:31:13-33:85
+98                android:name="com.google.firebase.components:com.google.firebase.storage.StorageRegistrar"
+98-->[com.google.firebase:firebase-storage:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\f011d1fd310c0614209e472cd81d52f8\firebase-storage-17.0.0\AndroidManifest.xml:32:17-107
+99                android:value="com.google.firebase.components.ComponentRegistrar" />
+99-->[com.google.firebase:firebase-storage:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\f011d1fd310c0614209e472cd81d52f8\firebase-storage-17.0.0\AndroidManifest.xml:33:17-82
+100        </service>
+101
+102        <activity
+102-->[com.google.android.gms:play-services-base:16.0.1] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8e40034fc49b635ad99f4cced5b47355\play-services-base-16.0.1\AndroidManifest.xml:23:9-26:75
+103            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+103-->[com.google.android.gms:play-services-base:16.0.1] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8e40034fc49b635ad99f4cced5b47355\play-services-base-16.0.1\AndroidManifest.xml:24:13-79
+104            android:exported="false"
+104-->[com.google.android.gms:play-services-base:16.0.1] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8e40034fc49b635ad99f4cced5b47355\play-services-base-16.0.1\AndroidManifest.xml:25:13-37
+105            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+105-->[com.google.android.gms:play-services-base:16.0.1] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8e40034fc49b635ad99f4cced5b47355\play-services-base-16.0.1\AndroidManifest.xml:26:13-72
 106
-107        <activity
-107-->[com.google.android.gms:play-services-base:16.0.1] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8e40034fc49b635ad99f4cced5b47355\play-services-base-16.0.1\AndroidManifest.xml:23:9-26:75
-108            android:name="com.google.android.gms.common.api.GoogleApiActivity"
-108-->[com.google.android.gms:play-services-base:16.0.1] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8e40034fc49b635ad99f4cced5b47355\play-services-base-16.0.1\AndroidManifest.xml:24:13-79
-109            android:exported="false"
-109-->[com.google.android.gms:play-services-base:16.0.1] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8e40034fc49b635ad99f4cced5b47355\play-services-base-16.0.1\AndroidManifest.xml:25:13-37
-110            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-110-->[com.google.android.gms:play-services-base:16.0.1] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8e40034fc49b635ad99f4cced5b47355\play-services-base-16.0.1\AndroidManifest.xml:26:13-72
-111
-112        <provider
-112-->[com.google.firebase:firebase-common:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8f3504482d68625e30d983608e4c024c\firebase-common-17.0.0\AndroidManifest.xml:12:9-16:39
-113            android:name="com.google.firebase.provider.FirebaseInitProvider"
-113-->[com.google.firebase:firebase-common:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8f3504482d68625e30d983608e4c024c\firebase-common-17.0.0\AndroidManifest.xml:13:13-77
-114            android:authorities="com.liadk.android.pushit.firebaseinitprovider"
-114-->[com.google.firebase:firebase-common:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8f3504482d68625e30d983608e4c024c\firebase-common-17.0.0\AndroidManifest.xml:14:13-72
-115            android:exported="false"
-115-->[com.google.firebase:firebase-common:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8f3504482d68625e30d983608e4c024c\firebase-common-17.0.0\AndroidManifest.xml:15:13-37
-116            android:initOrder="100" />
-116-->[com.google.firebase:firebase-common:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8f3504482d68625e30d983608e4c024c\firebase-common-17.0.0\AndroidManifest.xml:16:13-36
-117
-118        <meta-data
-118-->[com.google.android.gms:play-services-basement:16.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4786363a50e5055e0252db125c56cfd9\play-services-basement-16.1.0\AndroidManifest.xml:23:9-25:69
-119            android:name="com.google.android.gms.version"
-119-->[com.google.android.gms:play-services-basement:16.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4786363a50e5055e0252db125c56cfd9\play-services-basement-16.1.0\AndroidManifest.xml:24:13-58
-120            android:value="@integer/google_play_services_version" />
-120-->[com.google.android.gms:play-services-basement:16.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4786363a50e5055e0252db125c56cfd9\play-services-basement-16.1.0\AndroidManifest.xml:25:13-66
-121        <meta-data
-121-->[com.android.support:support-v4:26.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\425a87b380a9203dea15390b4f67f2ae\support-v4-26.1.0\AndroidManifest.xml:26:9-28:38
-122            android:name="android.support.VERSION"
-122-->[com.android.support:support-v4:26.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\425a87b380a9203dea15390b4f67f2ae\support-v4-26.1.0\AndroidManifest.xml:27:13-51
-123            android:value="26.1.0" />
-123-->[com.android.support:support-v4:26.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\425a87b380a9203dea15390b4f67f2ae\support-v4-26.1.0\AndroidManifest.xml:28:13-35
-124        <meta-data
-124-->[android.arch.lifecycle:runtime:1.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\45ba4bd0be68a45317ff18a2b059ba55\runtime-1.0.0\AndroidManifest.xml:25:9-27:47
-125            android:name="android.arch.lifecycle.VERSION"
-125-->[android.arch.lifecycle:runtime:1.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\45ba4bd0be68a45317ff18a2b059ba55\runtime-1.0.0\AndroidManifest.xml:26:13-58
-126            android:value="27.0.0-SNAPSHOT" />
-126-->[android.arch.lifecycle:runtime:1.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\45ba4bd0be68a45317ff18a2b059ba55\runtime-1.0.0\AndroidManifest.xml:27:13-44
-127    </application>
-128
-129</manifest>
+107        <provider
+107-->[com.google.firebase:firebase-common:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8f3504482d68625e30d983608e4c024c\firebase-common-17.0.0\AndroidManifest.xml:12:9-16:39
+108            android:name="com.google.firebase.provider.FirebaseInitProvider"
+108-->[com.google.firebase:firebase-common:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8f3504482d68625e30d983608e4c024c\firebase-common-17.0.0\AndroidManifest.xml:13:13-77
+109            android:authorities="com.liadk.android.pushit.firebaseinitprovider"
+109-->[com.google.firebase:firebase-common:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8f3504482d68625e30d983608e4c024c\firebase-common-17.0.0\AndroidManifest.xml:14:13-72
+110            android:exported="false"
+110-->[com.google.firebase:firebase-common:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8f3504482d68625e30d983608e4c024c\firebase-common-17.0.0\AndroidManifest.xml:15:13-37
+111            android:initOrder="100" />
+111-->[com.google.firebase:firebase-common:17.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\8f3504482d68625e30d983608e4c024c\firebase-common-17.0.0\AndroidManifest.xml:16:13-36
+112
+113        <meta-data
+113-->[com.google.android.gms:play-services-basement:16.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4786363a50e5055e0252db125c56cfd9\play-services-basement-16.1.0\AndroidManifest.xml:23:9-25:69
+114            android:name="com.google.android.gms.version"
+114-->[com.google.android.gms:play-services-basement:16.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4786363a50e5055e0252db125c56cfd9\play-services-basement-16.1.0\AndroidManifest.xml:24:13-58
+115            android:value="@integer/google_play_services_version" />
+115-->[com.google.android.gms:play-services-basement:16.1.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\4786363a50e5055e0252db125c56cfd9\play-services-basement-16.1.0\AndroidManifest.xml:25:13-66
+116        <meta-data
+116-->[android.arch.lifecycle:runtime:1.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\45ba4bd0be68a45317ff18a2b059ba55\runtime-1.0.0\AndroidManifest.xml:25:9-27:47
+117            android:name="android.arch.lifecycle.VERSION"
+117-->[android.arch.lifecycle:runtime:1.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\45ba4bd0be68a45317ff18a2b059ba55\runtime-1.0.0\AndroidManifest.xml:26:13-58
+118            android:value="27.0.0-SNAPSHOT" />
+118-->[android.arch.lifecycle:runtime:1.0.0] C:\Users\user\.gradle\caches\transforms-2\files-2.1\45ba4bd0be68a45317ff18a2b059ba55\runtime-1.0.0\AndroidManifest.xml:27:13-44
+119    </application>
+120
+121</manifest>

@@ -3,6 +3,7 @@ package com.liadk.android.pushit;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
@@ -16,6 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.UUID;
 
 public class PageSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -26,6 +33,8 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
     private static final String PAGE_LOGO = "pageLogo";
 
     private Page mPage;
+    private DatabaseReference mPagesDatabase;
+
     private ListPreference mLayoutPreference;
     private EditTextPreference mNamePreference;
     private EditTextPreference mDescPreference;
@@ -37,8 +46,23 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
         setHasOptionsMenu(true);
         getActivity().setTitle(R.string.page_settings);
 
-        UUID id = (UUID) getArguments().getSerializable(PageFragment.EXTRA_ID);
-        mPage = PageCollection.get(getActivity()).getPage(id);
+        mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
+
+        final UUID id = (UUID) getArguments().getSerializable(PageFragment.EXTRA_ID);
+        mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
+        mPagesDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() == null) return;
+
+                mPage = Page.getPageSettingsFromDB(dataSnapshot.child(id.toString()));
+                if(mNamePreference != null && mDescPreference != null && mLayoutPreference != null)
+                    updatePreferences();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 
     @Override
@@ -69,6 +93,19 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
     public void onResume() {
         super.onResume();
 
+        if(mPage != null)
+            updatePreferences();
+
+        else {
+            mNamePreference.setSummary(R.string.choose_name_summary);
+            mDescPreference.setSummary(R.string.choose_description_summary);
+        }
+
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);  // Set up a listener whenever a key changes
+
+    }
+
+    private void updatePreferences() {
         mNamePreference.setText(mPage.getName());
         mNamePreference.setSummary(mPage.getName());
         if(mPage.getName().equals(""))
@@ -83,9 +120,6 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
         int index = mLayoutPreference.findIndexOfValue(mPage.settings.design.toString());
         mLayoutPreference.setValueIndex(index);
         mLayoutPreference.setSummary(mLayoutPreference.getEntry());
-
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);  // Set up a listener whenever a key changes
-
     }
 
     @Override
@@ -95,14 +129,11 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
     }
 
     @Override
-    public boolean onPreferenceTreeClick(Preference preference) {
-        return super.onPreferenceTreeClick(preference);
-    }
-
-    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key.equals(PAGE_LAYOUT)) {
             mPage.settings.design = Page.Design.getDesign(mLayoutPreference.getEntry().toString());
+            mPagesDatabase.child(mPage.getId().toString()).child("settings").child("design").setValue(mPage.settings.design.toString()); // update database
+
             mLayoutPreference.setSummary(mLayoutPreference.getEntry());
         }
 
@@ -116,11 +147,15 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
                 mNamePreference.setSummary(mNamePreference.getText());
                 if (mPage.getName().equals(""))
                     mNamePreference.setSummary(R.string.choose_name_summary);
+                else
+                    mPagesDatabase.child(mPage.getId().toString()).child("name").setValue(mPage.getName()); // update database
             }
         }
 
         else if (key.equals(PAGE_DESC)) {
             mPage.setDescription(mDescPreference.getText());
+            mPagesDatabase.child(mPage.getId().toString()).child("description").setValue(mPage.getDescription()); // update database
+
             mDescPreference.setSummary(mDescPreference.getText());
             if(mPage.getDescription().equals(""))
                 mDescPreference.setSummary(R.string.choose_description_summary);
@@ -144,7 +179,7 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
 
     public static Fragment newInstance(UUID id) {
         Bundle args = new Bundle();
-        args.putSerializable(ItemFragment.EXTRA_ID, id);
+        args.putSerializable(PageFragment.EXTRA_ID, id);
 
         PageSettingsFragment fragment = new PageSettingsFragment();
         fragment.setArguments(args);

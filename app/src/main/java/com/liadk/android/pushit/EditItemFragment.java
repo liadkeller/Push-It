@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,8 +31,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.liadk.android.pushit.Item.State;
-
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
@@ -55,6 +59,9 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
     private Item mItem;
     private Item mOriginalItem;
+
+    private DatabaseReference mItemsDatabase;
+    private DatabaseReference mPagesDatabase;
 
     private boolean mRecentlySaved = true;
 
@@ -98,12 +105,27 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setHasOptionsMenu(true);
-
-        UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
-        mOriginalItem = ItemCollection.get(getActivity()).getItem(id);
-        mItem = mOriginalItem.getEditItem();
-
         ((EditItemActivity) getActivity()).setOnBackPressedListener((EditItemFragment) this);
+
+        final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
+
+        mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
+        mItemsDatabase = FirebaseDatabase.getInstance().getReference("items");
+        mItemsDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) return;
+
+                mItem = Item.fromDB(dataSnapshot.child(id.toString()));
+
+                if(getView() != null)
+                    configureView(getView());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     @Nullable
@@ -149,13 +171,13 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         draftButton = (Button) v.findViewById(R.id.draftButton);
         deleteButton = (Button) v.findViewById(R.id.deleteButton);
 
+        if(mItem != null)
+            configureView(v);
 
-        // Configure
-        titleEditText.setText(mItem.getTitle());
-        authorEditText.setText(mItem.getAuthor());
-        mainEditText.setText(mItem.getText());
-        timeTextView.setText(mItem.getTime());
-        imageView.setImageBitmap(mItem.getImage());
+        return v;
+    }
+
+    private void configureView(View v) {
 
         titleEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -332,7 +354,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent i = new Intent(getActivity(), CreateNotificationActivity.class);
-                            i.putExtra(ItemFragment.EXTRA_ID, mOriginalItem.getId());
+                            i.putExtra(ItemFragment.EXTRA_ID, mItem.getId());
                             startActivity(i);
                         }
                     });
@@ -396,31 +418,45 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         onEditTextsUpdated();
         onMediaSegmentsUpdated();
         mRecentlySaved = true;        // onStateUpdated() sets Recently Saved to false
-
-        return v;
     }
 
     private void updateState(Item.State newState) {
-        Item.State oldState = mItem.getState();
+        if(mItem.getState() == NEW || mItem.getState() == DRAFT)
+            mItem.updateOnPost();
         mItem.setState(newState);
         onStateUpdated();
         saveChanges();
-        mOriginalItem.addToPage(oldState);
         exit();
+    }
+
+    private void addToPage(Item.State oldState) {
+
+        switch(oldState) {
+            case DRAFT:
+            case NEW:   mItem.updateOnPost();
+                        DatabaseReference pageItemsDatabase = mPagesDatabase.child(mItem.getOwnerId().toString()).child("items");
+
+                        mItem.pushToDB(mItemsDatabase);
+                        mItem.pushToDB(pageItemsDatabase);
+                        break;
+        }
     }
 
     private void saveChanges() {
         mRecentlySaved = true;
-        mOriginalItem.edit();
-        // getActivity().setResult(Activity.RESULT_OK, null); TODO track on: (setResult(Activity.RESULT_OK))
+
+        DatabaseReference pageItemsDatabase = mPagesDatabase.child(mItem.getOwnerId().toString()).child("items");
+
+        mItem.pushToDB(mItemsDatabase);
+        mItem.pushToDB(pageItemsDatabase);
     }
 
     // deletes this item from ItemCollection and from it's owner
     private void delete() {
-        Page owner = mOriginalItem.getOwner();
-        if(owner != null)
-            owner.removeItem(mOriginalItem);
-        ItemCollection.get(getActivity()).delete(mItem);
+        DatabaseReference pageItemsDatabase = mPagesDatabase.child(mItem.getOwnerId().toString()).child("items");
+
+        mItemsDatabase.child(mItem.getId().toString()).removeValue();
+        pageItemsDatabase.child(mItem.getId().toString()).removeValue();
     }
 
     private class SetMediaListener implements View.OnClickListener {
@@ -663,6 +699,8 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         publishItem.setVisible(false);
         saveItem.setVisible(true);
 
+        if(mItem == null) return;
+
         switch (mItem.getState()) {
             case NEW:
                 saveItem.setVisible(false);
@@ -702,7 +740,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
     public void exit() {
         if (NavUtils.getParentActivityName(getActivity()) != null) {
             Intent intent = NavUtils.getParentActivityIntent(getActivity());
-            intent.putExtra(ItemFragment.EXTRA_ID, mOriginalItem.getId());
+            intent.putExtra(ItemFragment.EXTRA_ID, mItem.getId());
 
             NavUtils.navigateUpTo(getActivity(), intent);
         }
@@ -750,8 +788,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                 .setPositiveButton(R.string.exit_no_save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mOriginalItem.setNewEditItem();
-                        mItem = mOriginalItem.getEditItem();
                         exit();
                     }
                 })

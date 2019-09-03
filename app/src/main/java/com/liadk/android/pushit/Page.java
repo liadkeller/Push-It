@@ -61,16 +61,45 @@ public class Page {
         settings = new PageSettings();
     }
 
+    // only details needed for explore/follow tabs
+    public static Page getPageDetailsFromDB(DataSnapshot ds) {
+        Page page = new Page();
+        page.mId = UUID.fromString(ds.getKey());
+        page.mName = (String) ds.child("name").getValue();
+        page.mDescription = (String) ds.child("description").getValue();
+        return page;
+    }
+
+    // details needed for page setting screen
+    public static Page getPageSettingsFromDB(DataSnapshot ds) {
+        Page page = getPageDetailsFromDB(ds);
+        page.settings.design = Design.getDesign((String) ds.child("settings").child("design").getValue());
+
+        return page;
+    }
+
     public static Page fromDB(DataSnapshot ds) {
         Page page = new Page();
         page.mId = UUID.fromString(ds.getKey());
         page.mName = (String) ds.child("name").getValue();
         page.mDescription = (String) ds.child("description").getValue();
         for(DataSnapshot dataSnapshot : ds.child("items").getChildren()) {
-            Item item = Item.fromDB(dataSnapshot, page);
+            Item item = Item.fromDB(dataSnapshot);
             page.mPageItems.add(item);
-            // TODO sort mPageItems according to time
+
         }
+        page.settings.design = Design.getDesign((String) ds.child("settings").child("design").getValue());
+
+        // TODO sort mPageItems according to time
+        /*Collections.sort(page.mPageItems, new Comparator<Item>() {
+            @Override
+            public int compare(Item i1, Item i2) {
+                if(i1 == null && i2 == null) return 0;
+                else if (i1 != null) return 1;
+                else if (i2 != null) return -1;
+                return (int) (i1.getTimeLong() - i2.getTimeLong());
+            }
+        }); */
 
         return page;
     }
@@ -129,5 +158,6 @@ public class Page {
         db.child(getId().toString()).child("description").setValue(getDescription());
         for(Item item : getItems())
             item.pushToDB(db.child(getId().toString()).child("items"));
+        db.child(getId().toString()).child("settings").child("design").setValue(settings.design.toString());
     }
 }

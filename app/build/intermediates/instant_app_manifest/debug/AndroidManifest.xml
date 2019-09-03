@@ -7,14 +7,15 @@
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="24" />
+        android:targetSdkVersion="26" />
 
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Although the *SdkVersion is captured in gradle build files, this is required for non gradle builds -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- Although the *SdkVersion is captured in gradle build files, this is required for non gradle builds -->
     <!-- <uses-sdk android:minSdkVersion="14"/> -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -29,7 +30,9 @@
         android:supportsRtl="true"
         android:testOnly="true"
         android:theme="@style/AppTheme" >
-        <activity android:name="com.liadk.android.pushit.ExploreActivity" >
+        <activity
+            android:name="com.liadk.android.pushit.HomeActivity"
+            android:theme="@style/AppTheme.SettingsTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,43 +41,28 @@
         </activity>
         <activity
             android:name="com.liadk.android.pushit.PageActivity"
-            android:parentActivityName="com.liadk.android.pushit.ExploreActivity" />
+            android:parentActivityName="com.liadk.android.pushit.HomeActivity" />
         <activity
             android:name="com.liadk.android.pushit.PageSettingsActivity"
-            android:parentActivityName="com.liadk.android.pushit.PageActivity" >
-
-            <!--
-                <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".PageActivity"/>
-            -->
-        </activity>
+            android:parentActivityName="com.liadk.android.pushit.PageActivity"
+            android:theme="@style/AppTheme.SettingsTheme" />
         <activity
             android:name="com.liadk.android.pushit.PageLogoActivity"
             android:parentActivityName="com.liadk.android.pushit.PageSettingsActivity" />
         <activity
             android:name="com.liadk.android.pushit.ItemActivity"
-            android:parentActivityName="com.liadk.android.pushit.PageActivity" >
-
-            <!--
-                <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".PageActivity"/>
-            -->
-        </activity>
+            android:parentActivityName="com.liadk.android.pushit.PageActivity" />
         <activity
             android:name="com.liadk.android.pushit.EditItemActivity"
             android:parentActivityName="com.liadk.android.pushit.ItemActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize" >
-
-            <!--
-            <meta-data android:name="android.support.PARENT_ACTIVITY" TODO Take Care Of.
-            android:value=".ItemActivity"/>
-            -->
-        </activity>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name="com.liadk.android.pushit.CreateNotificationActivity"
             android:parentActivityName="com.liadk.android.pushit.EditItemActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize" >
-        </activity>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name="com.liadk.android.pushit.LoginActivity"
+            android:parentActivityName="com.liadk.android.pushit.HomeActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -85,6 +73,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/picker_provider_paths" />
         </provider>
+
+        <meta-data
+            android:name="android.support.VERSION"
+            android:value="26.1.0" />
 
         <activity
             android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
@@ -103,6 +95,9 @@
             <meta-data
                 android:name="com.google.firebase.components:com.google.firebase.database.DatabaseRegistrar"
                 android:value="com.google.firebase.components.ComponentRegistrar" />
+            <meta-data
+                android:name="com.google.firebase.components:com.google.firebase.storage.StorageRegistrar"
+                android:value="com.google.firebase.components.ComponentRegistrar" />
         </service>
 
         <activity
@@ -119,9 +114,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="android.support.VERSION"
-            android:value="26.1.0" />
         <meta-data
             android:name="android.arch.lifecycle.VERSION"
             android:value="27.0.0-SNAPSHOT" />
