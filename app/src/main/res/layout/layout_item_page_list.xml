@@ -13,8 +13,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_margin="6dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/netanyahu" />
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,15 +28,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            android:textSize="16sp"
-            tools:text="Lidi Lidi Lidi Lidi Lidi Lidi " />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/pageDescTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            tools:text="Yada Yada Yada Yada Yada Yada Yada Yada Yada Yada Yada Yada Yada Yada Yada " />
+            android:textSize="12sp" />
     </LinearLayout>
 
 

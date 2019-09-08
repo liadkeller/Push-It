@@ -21,6 +21,7 @@
 
     <application
         android:allowBackup="true"
+        android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
         android:configChanges="orientation"
         android:debuggable="true"
         android:icon="@mipmap/ic_launcher"
@@ -54,7 +55,8 @@
         <activity
             android:name="com.liadk.android.pushit.EditItemActivity"
             android:parentActivityName="com.liadk.android.pushit.ItemActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
         <activity
             android:name="com.liadk.android.pushit.CreateNotificationActivity"
             android:parentActivityName="com.liadk.android.pushit.EditItemActivity"
@@ -62,6 +64,10 @@
         <activity
             android:name="com.liadk.android.pushit.LoginActivity"
             android:parentActivityName="com.liadk.android.pushit.HomeActivity" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -72,10 +78,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/picker_provider_paths" />
         </provider>
-
-        <meta-data
-            android:name="android.support.VERSION"
-            android:value="26.1.0" />
 
         <activity
             android:name="com.google.firebase.auth.internal.FederatedSignInActivity"
@@ -114,8 +116,8 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
-            android:name="android.arch.lifecycle.VERSION"
-            android:value="27.0.0-SNAPSHOT" />
+            android:name="android.support.VERSION"
+            android:value="26.1.0" />
     </application>
 
 </manifest>

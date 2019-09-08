@@ -1,7 +1,6 @@
 package com.liadk.android.pushit;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -22,16 +21,16 @@ public class PageCollection {
         // TODO Delete From Here:
         Page page = new Page();
         //Page page2 = new Page();
-        ArrayList<Item> pageItems = new ArrayList<>();
+        ArrayList<UUID> pageItems = new ArrayList<>();
 
-        page.setItems(pageItems);
+        page.setItemsIdentifiers(pageItems);
         page.setName("Lidi News - Best News in Town");
         page.setDescription("Lidi's here for ya");
         mPages.add(page);
 
         
 /*
-        page2.setItems(pageItems);
+        page2.setItemsIdentifiers(pageItems);
         page2.setName("Breaking News All Night");
         page2.setDescription("Here to Break it everything right as it comes");
         page2.settings.design = Page.Design.NO_IMAGES;
@@ -44,19 +43,19 @@ public class PageCollection {
 
         Item bibiBreaking = new Item(page.getId());
         bibiBreaking.setTitle("Opinion: Netanyahu Gains Victory in the North, Humilliated in the South");
-        bibiBreaking.setImage(BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.bibi_face));
+        //bibiBreaking.setImage(BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.bibi_face));
 
         ItemCollection.get(mAppContext).add(bibiBreaking);
-        page.addItem(bibiBreaking);
+        page.addItem(bibiBreaking.getId());
 
 
 
         Item sderotBreaking = new Item(page.getId());
         sderotBreaking.setTitle("Siren Strikes Fear in Sderot During Massive City Event");
-        sderotBreaking.setImage(BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.iron_dome));
+        //sderotBreaking.setImage(BitmapFactory.decodeResource(mAppContext.getResources(), R.drawable.iron_dome));
 
         ItemCollection.get(mAppContext).add(sderotBreaking);
-        page.addItem(sderotBreaking);
+        page.addItem(sderotBreaking.getId());
 
         
 /*

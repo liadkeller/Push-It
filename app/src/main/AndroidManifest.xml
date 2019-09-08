@@ -33,13 +33,19 @@
         <activity
             android:name=".EditItemActivity"
             android:parentActivityName=".ItemActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+            android:windowSoftInputMode="stateHidden|adjustResize">
+        </activity>
         <activity
             android:name=".CreateNotificationActivity"
             android:parentActivityName=".EditItemActivity"
             android:windowSoftInputMode="stateHidden|adjustResize"></activity>
         <activity android:name=".LoginActivity"
             android:parentActivityName=".HomeActivity"/>
+
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

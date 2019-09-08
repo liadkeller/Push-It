@@ -15,6 +15,8 @@
     <string name="add_text_hint">Add Text Segment</string>
 
     <string name="set_image">Set Article Image</string>
+    <string name="remove_image">Remove Image</string>
+    <string name="remove_image_dialog">Are you sure you want to delete this image? It can not be recovered.</string>
 
     <string name="set_time">Set Publication Time</string>
     <string name="set_current_time">Set Current Time</string>
@@ -24,18 +26,17 @@
 
 
     <string name="add_photo">Add Photo</string>
-    <string name="add_video">Add Video</string>
-
-    <string name="set_image_1">Set Image 1</string>
-    <string name="set_image_2">Set Image 2</string>
-    <string name="set_video_1">Set Video 1</string>
-    <string name="set_video_2">Set Video 2</string>
-    <string name="remove_image">Remove Image</string>
-    <string name="remove_video">Remove Video</string>
     <string name="image_1">Image 1</string>
     <string name="image_2">Image 2</string>
+    <string name="set_image_1">Set Image 1</string>
+    <string name="set_image_2">Set Image 2</string>
+
+    <string name="add_video">Add Video</string>
+    <string name="remove_video">Remove Video</string>
     <string name="video_1">Video 1</string>
     <string name="video_2">Video 2</string>
+    <string name="set_video_1">Set Video 1</string>
+    <string name="set_video_2">Set Video 2</string>
 
 
     <string name="item_save_label">Save Article</string>
@@ -120,4 +121,5 @@
     <string name="account_page">My Page Settings</string>
     <string name="create">Create</string>
     <string name="login">Login</string>
+    <string name="sign_out">Sign Out</string>
 </resources>

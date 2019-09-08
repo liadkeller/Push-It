@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:adjustViewBounds="true"
-        android:scaleType="fitStart" />
+        android:scaleType="fitStart"/>
 
     <ImageButton
         android:id="@+id/pageLogoButton"

@@ -1,17 +1,11 @@
 package com.liadk.android.pushit;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.provider.MediaStore;
+import android.net.Uri;
 import android.text.format.DateFormat;
-import android.util.Base64;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -42,13 +36,13 @@ public class Item {
         public String toString() {
             switch (this) {
                 case DRAFT:
-                    return "DRAFT";
+                    return "Draft";
                 case CREATED:
-                    return "CREATED";
+                    return "Created";
                 case PUBLISHED:
-                    return "PUBLISHED";
+                    return "Published";
                 default:
-                    return "NEW";
+                    return "New";
             }
         }
     }
@@ -57,13 +51,14 @@ public class Item {
 
     String mTitle = "";
     String mAuthor = "";
-    Bitmap mImage; // TODO TAKE CARE OF new Bitmap() TODO add to Database
+    Uri mImageUrl;
+    int mOrder;
     Date mOriginalTime; // original creation time
     Date mTime;                  // creation time
     UUID mOwnerId;
 
     ArrayList<String> mTextSegments;
-    ArrayList<Object> mMediaSegments;             // TODO add to Database
+    ArrayList<Uri> mMediaSegments;
 
     int mCounter;
 
@@ -94,15 +89,14 @@ public class Item {
         mId = UUID.randomUUID();
 
         mTitle = item.mTitle;
-        mImage = item.mImage;
+        mImageUrl = item.mImageUrl;
         mAuthor = item.mAuthor;
+        mOrder = item.mOrder;
         mOriginalTime = item.mOriginalTime;
         mTime = item.mTime;
         mOwnerId = item.mOwnerId;
         mTextSegments = new ArrayList<>(item.mTextSegments);
         mMediaSegments = new ArrayList<>(item.mMediaSegments);
-        //mImages = item.mImages;
-        //mVideos = item.mVideos;
         mCounter = item.mCounter;
 
         mState = item.mState;
@@ -112,12 +106,16 @@ public class Item {
         mTitle = title;
     }
 
-    public void setImage(Bitmap image) {
-        mImage = image;
+    public void setImageUrl(Uri imageUrl) {
+        this.mImageUrl = imageUrl;
     }
 
     public void setAuthor(String author) {
         mAuthor = author;
+    }
+
+    public void setOrder(int order) {
+        this.mOrder = order;
     }
 
     public void setTime(Date time) {
@@ -140,14 +138,9 @@ public class Item {
         mTextSegments.add(text);
     }
 
-    public void addImage(Bitmap image) {
-        mMediaSegments.add(image);
-        mTextSegments.add("");
-        mCounter++;
-    }
-
-    public void addVideo(MediaStore.Video video) {
-        mMediaSegments.add(video);
+    // promotes mCounter and adds a text segment
+    public void addImage() {
+        mMediaSegments.add(null);
         mTextSegments.add("");
         mCounter++;
     }
@@ -187,12 +180,16 @@ public class Item {
         return mTitle;
     }
 
-    public Bitmap getImage() {
-        return mImage;
+    public Uri getImageUrl() {
+        return mImageUrl;
     }
 
     public String getText() {
         return mTextSegments.get(0);
+    }
+
+    public int getOrder() {
+        return mOrder;
     }
 
     protected Date getOriginalTime() {
@@ -238,7 +235,7 @@ public class Item {
         return mTextSegments;
     }
 
-    public ArrayList<Object> getMediaSegments() {
+    public ArrayList<Uri> getMediaSegments() {
         return mMediaSegments;
     }
 
@@ -262,12 +259,16 @@ public class Item {
 
 
     public static Item fromDB(DataSnapshot ds) {
+        if (ds.getValue() == null) return null;
+
         Item item = new Item();
 
         item.mId = UUID.fromString(ds.getKey());
         item.mTitle = (String) ds.child("title").getValue();
         item.mAuthor = (String) ds.child("author").getValue();
-        //item.mImage = bitmapFromBlob((String) ds.child("image").getValue());
+
+        //if (ds.child("image-url").getValue() != null) // TODO DECIDE!
+        //    item.mImageUrl = Uri.parse((String) ds.child("image-url").getValue());
 
         if(ds.child("owner").getValue() != null)
             item.mOwnerId = UUID.fromString((String) ds.child("owner").getValue());
@@ -282,15 +283,12 @@ public class Item {
         if(ds.child("counter").getValue() != null)
             item.mCounter = (int) ds.child("counter").getValue(Integer.class);
         for (int i = 0; i <= item.mCounter; i++)
-            //if(ds.child("text").child(i + "").getValue() != null) Todo decide about adding mTextSegments list including nulls or not
             item.mTextSegments.add((String) ds.child("text").child(i + "").getValue());
 
         if(ds.child("time").getValue() != null)
             item.mTime = new Date( (long) ds.child("time").getValue());
         if(ds.child("original-time").getValue() != null)
             item.mOriginalTime = new Date((long) ds.child("original-time").getValue());
-
-        downloadMedia(item);
 
         return item;
     }
@@ -299,7 +297,7 @@ public class Item {
     public void pushToDB(DatabaseReference db) {
         db.child(getId().toString()).child("title").setValue(getTitle());
         db.child(getId().toString()).child("author").setValue(getAuthor());
-        //db.child(getId().toString()).child("image").setValue(getBlob(getImage())); TODO Add image to DB
+        db.child(getId().toString()).child("has-image").setValue(false); // triggers refreshing images after upload to storage
         db.child(getId().toString()).child("time").setValue(getTimeLong());
         db.child(getId().toString()).child("original-time").setValue(getOriginalTimeLong());
         db.child(getId().toString()).child("owner").setValue(getOwnerId().toString());
@@ -308,57 +306,5 @@ public class Item {
         db.child(getId().toString()).child("counter").setValue(getSegmentsCounter());
         for(int i = 0; i <= getSegmentsCounter(); i++)
             db.child(getId().toString()).child("text").child(i+"").setValue(getTextSegments().get(i));
-        /* for(int i = 0; i < getSegmentsCounter(); i++)
-            db.child(getId().toString()).child("media").child(i+"").setValue(getTextSegments().get(i));  TODO Add Media to DB */
-
-        uploadMedia();
-    }
-
-    private void uploadMedia() {
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference("items").child(getId().toString());
-        //UploadTask uploadTask = storageRef.child("image.png").putBytes(getImageBytes(mImage)); // TODO Tremendously Pricey
-    }
-
-    private static void downloadMedia(final Item item) {
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference("items").child(item.getId().toString());
-
-        final long MAX_SIZE = 100 * 1024;
-
-        /*storageRef.child("image.png").getBytes(MAX_SIZE).addOnSuccessListener(new OnSuccessListener<byte[]>() { // TODO Tremendously Pricey
-           @Override
-           public void onSuccess(byte[] bytes) {
-               item.mImage = bitmapFromBytes(bytes); // TODO Check IF NOT CONTRADICTS FINAL DECLARATION
-           }
-        });
-        */
-    }
-
-
-
-    // image processing - blob
-    public String getBlob(Bitmap image) {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
-        String imageB64 = Base64.encodeToString(byteStream.toByteArray(), Base64.DEFAULT);
-
-        return imageB64;
-    }
-
-    public static Bitmap bitmapFromBlob(String blob)
-    {
-        byte[] bytes = Base64.decode(blob, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-    }
-
-    // image processing - bytes
-    private byte[] getImageBytes(Bitmap image) {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
-        return byteStream.toByteArray();
-    }
-
-    public static Bitmap bitmapFromBytes(byte[] bytes)
-    {
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 }

@@ -39,21 +39,45 @@
             android:paddingRight="8dp"
             android:paddingBottom="8dp">
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/set_image"
-                    android:id="@+id/setImageButton"
-                    android:layout_gravity="center_vertical"
-                    android:layout_margin="16dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
 
-                <ImageView
+                <Button
+                    android:id="@+id/setImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/itemImageView"
-                    android:scaleType="fitStart"
-                    android:adjustViewBounds="true"
-                    android:layout_marginLeft="8dp"/>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/set_image" />
+
+                <Button
+                    android:id="@+id/removeImageButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/remove_image"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/itemImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart"
+                android:src="@drawable/image_template" />
         </LinearLayout>
 
         <TextView
@@ -104,59 +128,60 @@
             android:layout_marginBottom="8dp"/>
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/image1LinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:paddingTop="8dp"
             android:paddingRight="8dp"
             android:paddingBottom="8dp"
-            android:id="@+id/image1LinearLayout"
             android:visibility="gone">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/image_1"/>
+                    android:text="@string/image_1" />
 
                 <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/set_image_1"
                     android:id="@+id/setImage1Button"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="4dp"/>
-
-                <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/remove_image"
-                    android:id="@+id/removeImage1Button"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="4dp"
                     android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/set_image_1" />
+
+                <Button
+                    android:id="@+id/removeImage1Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/remove_image" />
 
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/image1ImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/image1ImageView"
-                android:scaleType="fitStart"
+                android:layout_marginLeft="8dp"
                 android:adjustViewBounds="true"
-                android:layout_marginLeft="8dp"/>
+                android:scaleType="fitStart" />
 
         </LinearLayout>
 
+        <!--
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -206,6 +231,7 @@
                 android:id="@+id/video1SurfaceView"/>
 
         </LinearLayout>
+        -->
 
         <EditText
             android:layout_width="match_parent"
@@ -269,6 +295,7 @@
                 android:layout_marginLeft="8dp"/>
         </LinearLayout>
 
+        <!--
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -318,6 +345,7 @@
                 android:id="@+id/video2SurfaceView"/>
 
         </LinearLayout>
+        -->
 
         <EditText
             android:layout_width="match_parent"
@@ -337,6 +365,7 @@
             android:layout_marginLeft="64dp"
             android:layout_marginRight="64dp"/>
 
+        <!--
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -344,6 +373,7 @@
             android:id="@+id/addVideoButton"
             android:layout_marginLeft="64dp"
             android:layout_marginRight="64dp"/>
+        -->
 
         <LinearLayout
             android:layout_width="match_parent"

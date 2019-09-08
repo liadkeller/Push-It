@@ -3,7 +3,7 @@ package com.liadk.android.pushit;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,23 +24,34 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
+import com.yalantis.ucrop.UCrop;
 
+import java.io.File;
 import java.util.UUID;
+
+import static android.app.Activity.RESULT_OK;
 
 public class CreateNotificationFragment extends Fragment implements EditItemActivity.OnBackPressedListener {
 
     private Item mItem;
-    private DatabaseReference mItemsDatabase;
     private PushNotification mNotification;
+    private Uri mLocalImageUri;
+
+    private DatabaseReference mItemsDatabase;
+    StorageManager mStorageManager;
 
     private EditText mTitleEditText;
     private CheckBox mTitleCheckBox;
@@ -51,14 +62,16 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
 
 
     private class PushNotification {
+        private UUID mId;
         private String mEditTextTitle = new String();
         private String mItemTitle;
         private boolean mSame = false;
-        private Bitmap mImage;
+        private Uri mImageUrl;
 
         public PushNotification(Item item) {
+            mId = item.getId();
             mItemTitle = item.getTitle();
-            mImage = item.getImage();
+            mImageUrl = item.getImageUrl();
         }
 
         public void setEditTextTitle(String mTitle) {
@@ -69,20 +82,28 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
             this.mSame = mSame;
         }
 
-        public void setImage(Bitmap mImage) {
-            this.mImage = mImage;
+        public void setImageUrl(Uri imageUrl) {
+            this.mImageUrl = imageUrl;
+        }
+
+        public UUID getId() {
+            return mId;
         }
 
         public String getEditTextTitle() {
             return mEditTextTitle;
         }
 
+        public String getItemTitle() {
+            return mItemTitle;
+        }
+
         public boolean isSame() {
             return mSame;
         }
 
-        public Bitmap getImage() {
-            return mImage;
+        public Uri getImageUrl() {
+            return mImageUrl;
         }
 
         public String getNotificationTitle() {
@@ -97,6 +118,8 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         getActivity().setTitle(R.string.create_notification);
         ((CreateNotificationActivity) getActivity()).setOnBackPressedListener((EditItemActivity.OnBackPressedListener) this);  // this class has a "onBackPressed()" method as needed
         setHasOptionsMenu(true);
+
+        mStorageManager = StorageManager.get(getActivity());
 
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
@@ -132,7 +155,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         mPublishButton = (Button) v.findViewById(R.id.publishButton);
 
         // Configuring
-        if(mItem != null)
+        if(mNotification != null)
             configureView(v);
 
         return v;
@@ -158,7 +181,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
                     mTitleEditText.setEnabled(false);
-                    mTitleEditText.setText(mItem.getTitle());
+                    mTitleEditText.setText(mNotification.getItemTitle());
                     mNotification.setSame(true);
                 }
 
@@ -167,26 +190,6 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
                     mTitleEditText.setText(mNotification.getEditTextTitle());
                     mNotification.setSame(false);
                 }
-            }
-        });
-
-        mImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-
-                PickImageDialog.build(new PickSetup()
-                        .setTitle(getString(R.string.set_push_image))
-                        .setSystemDialog(true))
-                        .setOnPickResult(new IPickResult() {
-                            @Override
-                            public void onPickResult(PickResult r) {
-                                if(r.getError() == null) {
-                                    mNotification.setImage(r.getBitmap());
-                                    onImageUpdated();
-                                }
-                            }
-                        }).show(fm);
             }
         });
 
@@ -218,14 +221,72 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
             }
         });
 
+        mImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+
+                PickImageDialog.build(new PickSetup()
+                        .setTitle(getString(R.string.set_push_image))
+                        .setSystemDialog(true))
+                        .setOnPickResult(new IPickResult() {
+                            @Override
+                            public void onPickResult(PickResult r) {
+                                if(r.getError() == null)
+                                    launchCrop(r.getUri());
+                            }
+                        }).show(fm);
+            }
+        });
+
         onImageUpdated();
     }
 
-        private void onImageUpdated() {
-        Bitmap image = mNotification.getImage();
-        if(image != null) {
-            mImageView.setImageBitmap(image);
+    private void launchCrop(Uri uri) {
+        String filename = uri.getLastPathSegment();
+        Uri destUri = Uri.fromFile(new File(getActivity().getCacheDir(), filename));
+
+        UCrop.of(uri, destUri)
+                .withAspectRatio(8, 5)
+                .withMaxResultSize(400, 250)
+                .start(getActivity(), this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            final Uri resultUri = UCrop.getOutput(data);
+            mItem.setImageUrl(resultUri);
+            onImageUpdated(resultUri);
         }
+
+        else if (resultCode == UCrop.RESULT_ERROR) {
+            final Throwable cropError = UCrop.getError(data);
+        }
+    }
+
+    private void onImageUpdated(Uri localImageUri) {
+        if(localImageUri != null)
+            mImageView.setImageURI(localImageUri);
+
+        else
+            onImageUpdated();
+    }
+
+    private void onImageUpdated() {
+         FirebaseStorage.getInstance().getReference("items").child(mNotification.getId().toString()).child("notification-image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if(task.getException() == null) {
+                    mNotification.setImageUrl(task.getResult());
+                    Glide.with(getActivity()).load(mNotification.getImageUrl()).into(mImageView);
+                }
+
+                else {
+                    FirebaseStorage.getInstance().getReference("items").child(mNotification.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(this);
+                }
+            }
+        });
     }
 
     private void showTimeDialog() {
@@ -263,10 +324,10 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
     }
 
     private void saveChanges() {
-        DatabaseReference pageItemsDatabase = FirebaseDatabase.getInstance().getReference("pages/" + mItem.getOwnerId().toString() + "/items");
+        mItemsDatabase.child(mItem.getId().toString()).child("state").setValue(mItem.getState().toString());
+        mStorageManager.uploadNotificationImage(mItem); // Saves Notification Image
 
-        mItem.pushToDB(mItemsDatabase);
-        mItem.pushToDB(pageItemsDatabase);
+        // TODO save Notification on DB
     }
 
     @Override

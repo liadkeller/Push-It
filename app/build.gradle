@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     buildToolsVersion "28.0.3"
 
     defaultConfig {
@@ -30,7 +30,8 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
 
 
-    implementation 'com.github.jrvansuita:PickImage:2.1.0'
+    implementation 'com.github.jrvansuita:PickImage:2.1.1'
+    implementation 'com.github.yalantis:ucrop:2.2.3-native'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
 
     implementation 'com.android.support:preference-v14:23.4.0'
@@ -39,6 +40,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:17.0.0'
     implementation 'com.google.firebase:firebase-database:17.0.0'
     implementation 'com.google.firebase:firebase-storage:17.0.0'
+
+    implementation 'com.github.bumptech.glide:glide:4.3.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

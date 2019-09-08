@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -21,11 +22,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.UUID;
 
@@ -39,6 +44,7 @@ public class ItemFragment extends Fragment {
 
     private Item mItem;
     private DatabaseReference mItemsDatabase;
+    private ValueEventListener mValueEventListener;
 
     ImageView mImageView;
     TextView mTitleTextView;
@@ -57,13 +63,14 @@ public class ItemFragment extends Fragment {
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
         mItemsDatabase = FirebaseDatabase.getInstance().getReference("items");
-        mItemsDatabase.addValueEventListener(new ValueEventListener() {
+        mValueEventListener = mItemsDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) return;
 
                 mItem = Item.fromDB(dataSnapshot.child(id.toString()));
-                updateUI();
+                if(mItem != null)
+                    updateUI();
             }
 
             @Override
@@ -100,6 +107,19 @@ public class ItemFragment extends Fragment {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        mItemsDatabase.removeEventListener(mValueEventListener);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(mValueEventListener != null)
+            mItemsDatabase.removeEventListener(mValueEventListener);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_item, menu);
     }
@@ -123,9 +143,12 @@ public class ItemFragment extends Fragment {
                             getActivity().finish();
 
                             DatabaseReference pageItemsDatabase = FirebaseDatabase.getInstance().getReference("pages/" + mItem.getOwnerId().toString() + "/items");
+                            StorageManager storageManager = StorageManager.get(getActivity());
 
                             mItemsDatabase.child(mItem.getId().toString()).removeValue();
                             pageItemsDatabase.child(mItem.getId().toString()).removeValue();
+
+                            storageManager.deleteItem(mItem);
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, null)
@@ -157,7 +180,7 @@ public class ItemFragment extends Fragment {
     }
 
     public void updateUI() {
-        mImageView.setImageBitmap(mItem.getImage());
+        loadMainImage(mImageView);
         mTitleTextView.setText(mItem.getTitle());
         mDetailsTextView.setText(mItem.getDetails());
         mTextView.setText(mItem.getText());
@@ -187,6 +210,18 @@ public class ItemFragment extends Fragment {
                 mSegmentTextViews[i].setText(mItem.getTextSegments().get(i+1));
             }
         }
+    }
+
+    private void loadMainImage(final ImageView imageView) {
+        FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if(task.getException() == null) {
+                    mItem.setImageUrl(task.getResult());
+                    Glide.with(getActivity()).load(mItem.getImageUrl()).into(imageView);
+                }
+            }
+        });
     }
 
     public static ItemFragment newInstance(UUID id) {

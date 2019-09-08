@@ -4,9 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -31,19 +29,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.UploadTask;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
+import com.yalantis.ucrop.UCrop;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static android.app.Activity.RESULT_OK;
 import static com.liadk.android.pushit.Item.State.CREATED;
 import static com.liadk.android.pushit.Item.State.DRAFT;
 import static com.liadk.android.pushit.Item.State.NEW;
@@ -54,14 +60,15 @@ import static com.liadk.android.pushit.Item.State.PUBLISHED;
  */
 public class EditItemFragment extends Fragment implements EditItemActivity.OnBackPressedListener {
     private static final String TAG = "EditItemFragment";
-    private static final int PICK_IMAGE = 0;
-    private static final int CREATE_NOTIFICATION_REQUEST = 1;
+    private static final int MAIN_IMAGE_REQUEST = 2; // 0, 1 are MEDIA_REQUEST indexes
+
 
     private Item mItem;
-    private Item mOriginalItem;
+    private ArrayList<Uri> mLocalMediasUri = new ArrayList<>(MAX_MEDIA);
 
     private DatabaseReference mItemsDatabase;
     private DatabaseReference mPagesDatabase;
+    private StorageManager mStorageManager;
 
     private boolean mRecentlySaved = true;
 
@@ -71,24 +78,30 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
     private EditText mainEditText;
 
     private Button setImageButton;
+    private Button removeImageButton;
     private ImageView imageView;
 
     private Button setTimeButton;
     private TextView timeTextView;
 
-    private Button[] setImageButtons;
-    private Button[] setVideoButtons;
-    private Button[] removeImageButtons;
-    private Button[] removeVideoButtons;
-    private ImageView[] imageImageViews;
-    private SurfaceView[] videoSurfaceViews;
-    private LinearLayout[] imageLinearLayouts;
-    private LinearLayout[] videoLinearLayouts;
-    private EditText[] editTexts;
+
     protected final static int MAX_MEDIA = 2; // maximum media segments
 
+    private EditText[] editTexts;
+
+    private Button[] setImageButtons;
+    private Button[] removeImageButtons;
+    private ImageView[] imageImageViews;
+    private LinearLayout[] imageLinearLayouts;
     private Button addPhotoButton;
+
+    /* Videos are currently unsupported
+    private Button[] setVideoButtons;
+    private Button[] removeVideoButtons;
+    private SurfaceView[] videoSurfaceViews;
+    private LinearLayout[] videoLinearLayouts;
     private Button addVideoButton;
+    */
 
     private LinearLayout saveChangesLayout;
     private Button confirmChangesButton;
@@ -107,6 +120,8 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         setHasOptionsMenu(true);
         ((EditItemActivity) getActivity()).setOnBackPressedListener((EditItemFragment) this);
 
+        mStorageManager = StorageManager.get(getActivity());
+
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
         mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
@@ -118,7 +133,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
                 mItem = Item.fromDB(dataSnapshot.child(id.toString()));
 
-                if(getView() != null)
+                if(mItem != null && getView() != null)
                     configureView(getView());
             }
 
@@ -143,24 +158,27 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         mainEditText = (EditText) v.findViewById(R.id.mainItemEditText);
 
         setImageButton = (Button) v.findViewById(R.id.setImageButton);
+        removeImageButton = (Button) v.findViewById(R.id.removeImageButton);
         imageView = (ImageView) v.findViewById(R.id.itemImageView);
 
         setTimeButton = (Button) v.findViewById(R.id.setTimeButton);
         timeTextView = (TextView) v.findViewById(R.id.cardTime);
 
+        editTexts = new EditText[]{ (EditText) v.findViewById(R.id.seg1EditText), (EditText) v.findViewById(R.id.seg2EditText) };
+
         setImageButtons = new Button[] { (Button) v.findViewById(R.id.setImage1Button), (Button) v.findViewById(R.id.setImage2Button) };
-        setVideoButtons = new Button[] { (Button) v.findViewById(R.id.setVideo1Button), (Button) v.findViewById(R.id.setVideo2Button) };
         removeImageButtons = new Button[] { (Button) v.findViewById(R.id.removeImage1Button), (Button) v.findViewById(R.id.removeImage2Button) };
-        removeVideoButtons = new Button[] { (Button) v.findViewById(R.id.removeVideo1Button), (Button) v.findViewById(R.id.removeVideo2Button) };
         imageImageViews = new ImageView[] { (ImageView) v.findViewById(R.id.image1ImageView), (ImageView) v.findViewById(R.id.image2ImageView)};
-        videoSurfaceViews = new SurfaceView[] { (SurfaceView) v.findViewById(R.id.video1SurfaceView), (SurfaceView) v.findViewById(R.id.video2SurfaceView)};
-
         imageLinearLayouts = new LinearLayout[] { (LinearLayout) v.findViewById(R.id.image1LinearLayout), (LinearLayout) v.findViewById(R.id.image2LinearLayout)};
-        videoLinearLayouts = new LinearLayout[] { (LinearLayout) v.findViewById(R.id.video1LinearLayout), (LinearLayout) v.findViewById(R.id.video2LinearLayout)};
-        editTexts          = new EditText[]     { (EditText) v.findViewById(R.id.seg1EditText), (EditText) v.findViewById(R.id.seg2EditText) };
-
         addPhotoButton = (Button) v.findViewById(R.id.addPhotoButton);
-        addVideoButton = (Button) v.findViewById(R.id.addVideoButton);
+
+        /* Videos are currently unsupported
+            setVideoButtons = new Button[] { (Button) v.findViewById(R.id.setVideo1Button), (Button) v.findViewById(R.id.setVideo2Button) };
+            removeVideoButtons = new Button[] { (Button) v.findViewById(R.id.removeVideo1Button), (Button) v.findViewById(R.id.removeVideo2Button) };
+            videoSurfaceViews = new SurfaceView[] { (SurfaceView) v.findViewById(R.id.video1SurfaceView), (SurfaceView) v.findViewById(R.id.video2SurfaceView)};
+            videoLinearLayouts = new LinearLayout[] { (LinearLayout) v.findViewById(R.id.video1LinearLayout), (LinearLayout) v.findViewById(R.id.video2LinearLayout)};
+            addVideoButton = (Button) v.findViewById(R.id.addVideoButton);
+        */
 
         saveChangesLayout = (LinearLayout) v.findViewById(R.id.saveChangesLayout);
         confirmChangesButton = (Button) v.findViewById(R.id.confirmChangesButton);
@@ -232,26 +250,32 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                         .setOnPickResult(new IPickResult() {
                             @Override
                             public void onPickResult(PickResult r) {
-                                if(r.getError() == null) {
-                                    mItem.setImage(r.getBitmap());
-                                    onImageUpdated();
-                                }
+                                if(r.getError() == null)
+                                    launchCrop(r.getUri(), MAIN_IMAGE_REQUEST);
                             }
                         })
                         .show(fm);
-
-            /*
-                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setType("image/*");
-                intent.putExtra("crop", "true");
-                intent.putExtra("scale", true);
-                intent.putExtra("aspectX", 16);
-                intent.putExtra("aspectY", 9);
-                startActivityForResult(intent, PICK_IMAGE);
-                */
             }
         });
 
+        removeImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showClickDialog(R.string.remove_image, R.string.delete, R.string.remove_image_dialog, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mStorageManager.deleteItemIImage(mItem, new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                boolean recentlySaved = mRecentlySaved;
+                                onImageUpdated();
+                                mRecentlySaved = recentlySaved;
+                            }
+                        });
+                    }
+                });
+            }
+        });
 
         setTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -288,24 +312,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
                 if(counter > MAX_MEDIA) return;
 
-                mItem.addImage(null);
-                // TODO take care of mRecentlySaved (adding field should not trigger this boolean, but editing the text or setting an image should)
-
-                onMediaSegmentsUpdated();
-                onEditTextsUpdated();
-            }
-        });
-
-        addVideoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int counter = mItem.getSegmentsCounter();
-                counter++;
-
-                if(counter > MAX_MEDIA) return;
-
-                mItem.addVideo(new MediaStore.Video());
-                // TODO take care of mRecentlySaved (adding field should not trigger this boolean, but editing the text or setting an image should)
+                mItem.addImage();
 
                 onMediaSegmentsUpdated();
                 onEditTextsUpdated();
@@ -313,11 +320,13 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         });
 
         for(int i = 0; i < MAX_MEDIA; i++) {
-            setImageButtons[i].setOnClickListener(new SetMediaListener(i, true));
-            // TODO setVideoButtons[i].setOnClickListener(new SetMediaListener(i, false));
-            removeImageButtons[i].setOnClickListener(new RemoveMediaListener(i));
-            removeVideoButtons[i].setOnClickListener(new RemoveMediaListener(i));
             editTexts[i].addTextChangedListener(new EditTextListener(i));
+
+            setImageButtons[i].setOnClickListener(new SetMediaListener(i));
+            removeImageButtons[i].setOnClickListener(new RemoveMediaListener(i));
+
+            // setVideoButtons[i].setOnClickListener(new SetMediaListener(i));
+            // removeVideoButtons[i].setOnClickListener(new RemoveMediaListener(i));
         }
 
         confirmChangesButton.setOnClickListener(new View.OnClickListener() {
@@ -350,6 +359,10 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                     Toast.makeText(getActivity(), R.string.no_title_toast, Toast.LENGTH_SHORT).show();
 
                 else {
+                    if(mItem.getState() == NEW) {
+                        mItem.pushToDB(mItemsDatabase); // saves changes in the db without adding to page
+                    }
+
                     showClickDialog(R.string.publish_article, R.string.publish, R.string.publish_article_dialog, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -403,9 +416,9 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                 showClickDialog(R.string.delete_article, R.string.delete, R.string.delete_article_dialog, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        delete();
                         getActivity().setResult(Activity.RESULT_CANCELED);
                         getActivity().finish();
+                        delete();
                     }
                 });
             }
@@ -420,6 +433,40 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         mRecentlySaved = true;        // onStateUpdated() sets Recently Saved to false
     }
 
+    private void launchCrop(Uri uri, int requestCode) {
+        String filename = uri.getLastPathSegment();
+        Uri destUri = Uri.fromFile(new File(getActivity().getCacheDir(), filename));
+
+        UCrop.of(uri, destUri)
+                .withAspectRatio(8, 5)
+                .withMaxResultSize(400, 250)
+                .start(getActivity(), this, requestCode);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if(requestCode == MAIN_IMAGE_REQUEST) {
+                final Uri resultUri = UCrop.getOutput(data);
+                mItem.setImageUrl(resultUri);
+                mRecentlySaved = false;
+                onImageUpdated(resultUri);
+            }
+
+            else if (requestCode < MAX_MEDIA) { // 0 or 1
+                final Uri resultUri = UCrop.getOutput(data);
+                mItem.getMediaSegments().set(requestCode, resultUri);
+                mRecentlySaved = false;
+                onMediaSegmentsUpdated();
+            }
+
+        }
+
+        else if (resultCode == UCrop.RESULT_ERROR) {
+            final Throwable cropError = UCrop.getError(data);
+        }
+    }
+
     private void updateState(Item.State newState) {
         if(mItem.getState() == NEW || mItem.getState() == DRAFT)
             mItem.updateOnPost();
@@ -429,26 +476,20 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         exit();
     }
 
-    private void addToPage(Item.State oldState) {
-
-        switch(oldState) {
-            case DRAFT:
-            case NEW:   mItem.updateOnPost();
-                        DatabaseReference pageItemsDatabase = mPagesDatabase.child(mItem.getOwnerId().toString()).child("items");
-
-                        mItem.pushToDB(mItemsDatabase);
-                        mItem.pushToDB(pageItemsDatabase);
-                        break;
-        }
-    }
-
     private void saveChanges() {
         mRecentlySaved = true;
 
         DatabaseReference pageItemsDatabase = mPagesDatabase.child(mItem.getOwnerId().toString()).child("items");
 
         mItem.pushToDB(mItemsDatabase);
-        mItem.pushToDB(pageItemsDatabase);
+        pageItemsDatabase.child(mItem.getId().toString()).setValue(true);
+
+        mStorageManager.uploadItemImages(mItem, new OnCompleteListener<UploadTask.TaskSnapshot>() {  // upload image to storage
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                mItemsDatabase.child(mItem.getId().toString()).child("has-image").setValue(true);
+            }
+        });
     }
 
     // deletes this item from ItemCollection and from it's owner
@@ -457,58 +498,34 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
         mItemsDatabase.child(mItem.getId().toString()).removeValue();
         pageItemsDatabase.child(mItem.getId().toString()).removeValue();
+
+        mStorageManager.deleteItem(mItem);
     }
 
     private class SetMediaListener implements View.OnClickListener {
         int i;
-        boolean isImage;
-        String setImage;
-        String setVideo;
-        ArrayList<Object> mediaSegments = mItem.getMediaSegments();
+        String setImageString;
+        ArrayList<Object> mediaSegments;
 
-        public SetMediaListener(int i, boolean isImage) {
+        public SetMediaListener(int i) {
             this.i = i;
-            this.isImage = isImage;
-            if(this.isImage)
-                setImage = getString(getResources().getIdentifier("set_image_" + (i+1), "string", getActivity().getPackageName()));
-            else
-                setVideo = getString(getResources().getIdentifier("set_video_" + (i+1), "string", getActivity().getPackageName()));
+            this.setImageString = getString(getResources().getIdentifier("set_image_" + (i+1), "string", getActivity().getPackageName()));
         }
 
         @Override
         public void onClick(View v) {
             FragmentManager fm = getActivity().getSupportFragmentManager();
 
-            if(isImage) {
-                PickImageDialog.build(new PickSetup()
-                        .setTitle(setImage)
-                        .setSystemDialog(true))
-                        .setOnPickResult(new IPickResult() {
-                            @Override
-                            public void onPickResult(PickResult r) {
-                                if (r.getError() == null) {
-                                    mediaSegments.set(i, r.getBitmap());
-                                    onMediaSegmentsUpdated();
-                                }
-                            }
-                        }).show(fm);
-            }
-
-            else {
-                PickImageDialog.build(new PickSetup()
-                        .setTitle(setVideo)
-                        .setSystemDialog(true))
-                        //.setVideo(true)) TODO Enable Video
-                        .setOnPickResult(new IPickResult() {
-                            @Override
-                            public void onPickResult(PickResult r) {
-                                if (r.getError() == null) {
-                                    mediaSegments.set(i, r.getBitmap());
-                                    onMediaSegmentsUpdated();
-                                }
-                            }
-                        }).show(fm);
-            }
+            PickImageDialog.build(new PickSetup()
+                    .setTitle(setImageString)
+                    .setSystemDialog(true))
+                    .setOnPickResult(new IPickResult() {
+                        @Override
+                        public void onPickResult(PickResult r) {
+                            if (r.getError() == null)
+                                launchCrop(r.getUri(), i);
+                        }
+                    }).show(fm);
         }
 
     }
@@ -596,33 +613,43 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
     private void onMediaSegmentsUpdated() {
         for(int i = 0; i < MAX_MEDIA; i++) {
 
-            imageLinearLayouts[i].setVisibility(View.GONE);
-            videoLinearLayouts[i].setVisibility(View.GONE);
             editTexts[i].setVisibility(View.GONE);
+            imageLinearLayouts[i].setVisibility(View.GONE);
             addPhotoButton.setVisibility(View.GONE);
-            addVideoButton.setVisibility(View.GONE);
+            //videoLinearLayouts[i].setVisibility(View.GONE);
+            //addVideoButton.setVisibility(View.GONE);
 
             if(i < mItem.getSegmentsCounter()) {
-                Object mediaSegment = mItem.getMediaSegments().get(i);
-
-                if (mediaSegment instanceof MediaStore.Video) {
-                    videoLinearLayouts[i].setVisibility(View.VISIBLE);
-                    if(mediaSegment != null) {
-                        // TODO add Video
-                    }
-                }
-                else {
-                    imageLinearLayouts[i].setVisibility(View.VISIBLE);
-                    if(mediaSegment != null && mediaSegment instanceof Bitmap) {
-                        imageImageViews[i].setImageBitmap((Bitmap) mediaSegment);
-                    }
-                }
+                imageLinearLayouts[i].setVisibility(View.VISIBLE);
                 editTexts[i].setVisibility(View.VISIBLE);
+
+                final int index = i;
+                Uri mediaUri = mItem.getMediaSegments().get(i);
+                final String filename = "image" + (i+1) + ".png";
+
+                if(mediaUri != null) {
+                    imageImageViews[i].setImageURI(mediaUri);
+                }
+
+                else {
+                    FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child(filename).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.getException() == null) {
+                                mItem.getMediaSegments().set(index, task.getResult());
+                                Glide.with(getActivity()).load(mItem.getMediaSegments().get(index)).into(imageImageViews[index]);
+
+                            } else { // No Image
+                                imageImageViews[index].setImageResource(R.drawable.image_template);
+                            }
+                        }
+                    });
+                }
             }
 
             if(mItem.getSegmentsCounter() < MAX_MEDIA) {
                 addPhotoButton.setVisibility(View.VISIBLE);
-                addVideoButton.setVisibility(View.VISIBLE);
+                //addVideoButton.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -632,8 +659,32 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         authorEditText.setText(mItem.getAuthor());
     }
 
+    private void onImageUpdated(Uri localImageUri) {
+        if(localImageUri != null) {
+            imageView.setImageURI(localImageUri);
+            removeImageButton.setVisibility(View.VISIBLE);
+        }
+
+        else
+            onImageUpdated();
+    }
+
     private void onImageUpdated() {
-        imageView.setImageBitmap(mItem.getImage());
+        FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.getException() == null) {
+                    mItem.setImageUrl(task.getResult());
+                    Glide.with(getActivity()).load(mItem.getImageUrl()).into(imageView);
+
+                    removeImageButton.setVisibility(View.VISIBLE);
+                } else { // No Image
+                    imageView.setImageResource(R.drawable.image_template);
+                    removeImageButton.setVisibility(View.GONE);
+                }
+            }
+        });
+
         mRecentlySaved = false;
     }
 
@@ -754,6 +805,10 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
         if(mRecentlySaved) {
             exit();
+
+            if(mItem.getState() == NEW)
+                delete(); // item hasn't been added to his owner page but was added to the items db, and shall be deleted
+
             return;
         }
 
@@ -764,8 +819,8 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                     .setPositiveButton(R.string.exit, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            delete(); // item should not be attached to any page yet, but just in case
                             exit();
+                            delete(); // item should not be attached to any page yet, but just in case
                         }
                     })
                     .setNegativeButton(R.string.save_draft, new DialogInterface.OnClickListener() {

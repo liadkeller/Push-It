@@ -2,6 +2,7 @@ package com.liadk.android.pushit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,11 +17,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -60,8 +65,8 @@ public class ExploreFragment extends Fragment {
         });
 
 
-        //resetDatabase();
-        //addDataToDatabase();
+        resetDatabase();
+        addDataToDatabase();
     }
 
     private void resetDatabase() {
@@ -76,11 +81,15 @@ public class ExploreFragment extends Fragment {
         DatabaseReference pagesDatabase = mDatabase.getReference("pages");
         DatabaseReference itemsDatabase = mDatabase.getReference("items");
 
-        for(Page page : PageCollection.get(getActivity()).getPages())
+        for(Page page : PageCollection.get(getActivity()).getPages()) {
             page.pushToDB(pagesDatabase);
+            //page.uploadLogoImage(BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.bibi_face); TODO TAKE CARE OF IMAGES UPLOAD
+        }
 
-        for(Item item : ItemCollection.get(getActivity()).getItems())
+        for(Item item : ItemCollection.get(getActivity()).getItems()) {
             item.pushToDB(itemsDatabase);
+            //item.uploadImage(item.getImage());  TODO TAKE CARE OF IMAGES UPLOAD
+        }
     }
 
     @Nullable
@@ -133,8 +142,7 @@ public class ExploreFragment extends Fragment {
                 }
             });
 
-            if(page.getLogoImage() != null) // TODO Take care of default logo (including default Bibi image in the xml layout file)
-                ((ViewHolder)holder).mImageView.setImageBitmap(page.getLogoImage());
+            loadLogoImage(page, ((ViewHolder)holder).mImageView);
         }
 
         @Override
@@ -157,5 +165,17 @@ public class ExploreFragment extends Fragment {
                 mDescTextView = (TextView) v.findViewById(R.id.pageDescTextView);
             }
         }
+    }
+
+    private void loadLogoImage(final Page page, final ImageView imageView) {
+        FirebaseStorage.getInstance().getReference("pages").child(page.getId().toString()).child("logo.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if(task.getException() == null) {
+                    page.setLogoImageUrl(task.getResult());
+                    Glide.with(getActivity()).load(page.getLogoImageUrl()).into(imageView);
+                }
+            }
+        });
     }
 }

@@ -44,6 +44,7 @@
         android:layout_height="180dp"
         android:layout_margin="16dp"
         android:adjustViewBounds="true"
+        android:src="@drawable/notification_template"
         android:scaleType="fitCenter" />
 
     <Button

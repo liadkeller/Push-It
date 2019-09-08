@@ -1,6 +1,6 @@
 package com.liadk.android.pushit;
 
-import android.graphics.Bitmap;
+import android.net.Uri;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -15,8 +15,8 @@ public class Page {
     UUID mId;
     String mName = "";
     String mDescription = "";
-    Bitmap mLogoImage;
-    ArrayList<Item> mPageItems;
+    Uri mLogoImageUrl;
+    ArrayList<UUID> mItemsIdentifiers;
 
     PageSettings settings;
 
@@ -57,7 +57,7 @@ public class Page {
 
     public Page() {
         mId = UUID.randomUUID();
-        mPageItems = new ArrayList<>();
+        mItemsIdentifiers = new ArrayList<>();
         settings = new PageSettings();
     }
 
@@ -84,14 +84,13 @@ public class Page {
         page.mName = (String) ds.child("name").getValue();
         page.mDescription = (String) ds.child("description").getValue();
         for(DataSnapshot dataSnapshot : ds.child("items").getChildren()) {
-            Item item = Item.fromDB(dataSnapshot);
-            page.mPageItems.add(item);
-
+            UUID itemId = UUID.fromString(dataSnapshot.getKey());
+            page.mItemsIdentifiers.add(itemId);
         }
         page.settings.design = Design.getDesign((String) ds.child("settings").child("design").getValue());
 
-        // TODO sort mPageItems according to time
-        /*Collections.sort(page.mPageItems, new Comparator<Item>() {
+        // TODO sort mItemsIdentifiers according to time
+        /*Collections.sort(page.mItemsIdentifiers, new Comparator<Item>() {
             @Override
             public int compare(Item i1, Item i2) {
                 if(i1 == null && i2 == null) return 0;
@@ -112,25 +111,18 @@ public class Page {
         this.mDescription = description;
     }
 
-    public void setLogoImage(Bitmap logoImage) {
-        this.mLogoImage = logoImage;
+    public void setLogoImageUrl(Uri logoImageUrl) {
+        this.mLogoImageUrl = logoImageUrl;
     }
 
-    public void setItems(ArrayList<Item> mPageItems) {
-        this.mPageItems = mPageItems;
+    public void setItemsIdentifiers(ArrayList<UUID> itemsIdentifiers) {
+        this.mItemsIdentifiers = itemsIdentifiers;
     }
 
-    public void addItem(Item item) {
-        mPageItems.add(item);
+    public void addItem(UUID id) {
+        mItemsIdentifiers.add(id);
     }
 
-    public void removeItem(Item item) {
-        mPageItems.remove(item);
-    }
-
-    public boolean has(Item item) {
-        return mPageItems.contains(item);
-    }
 
     public UUID getId() {
         return mId;
@@ -144,20 +136,20 @@ public class Page {
         return mDescription;
     }
 
-    public Bitmap getLogoImage() {
-        return mLogoImage;
+    public Uri getLogoImageUrl() {
+        return mLogoImageUrl;
     }
 
-    public ArrayList<Item> getItems() {
-        return mPageItems;
+    public ArrayList<UUID> getItemsIdentifiers() {
+        return mItemsIdentifiers;
     }
     
     
     public void pushToDB(DatabaseReference db) {
         db.child(getId().toString()).child("name").setValue(getName());
         db.child(getId().toString()).child("description").setValue(getDescription());
-        for(Item item : getItems())
-            item.pushToDB(db.child(getId().toString()).child("items"));
+        for(UUID itemId : getItemsIdentifiers())
+            db.child(getId().toString()).child("items").child(itemId.toString()).setValue(true);
         db.child(getId().toString()).child("settings").child("design").setValue(settings.design.toString());
     }
 }

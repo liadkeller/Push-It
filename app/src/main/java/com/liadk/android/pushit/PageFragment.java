@@ -2,6 +2,7 @@ package com.liadk.android.pushit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,12 +22,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -41,6 +47,8 @@ public class PageFragment extends Fragment {
     private static final int NO_IMAGE_TYPE = 2;
 
     private Page mPage;
+    private ArrayList<Item> mItems;
+    private DatabaseReference mDatabase;
     private DatabaseReference mPagesDatabase;
 
     private RecyclerView mRecyclerView;
@@ -53,14 +61,18 @@ public class PageFragment extends Fragment {
 
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
-        mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
-        //mPagesDatabase.child(id.toString()).child("items").orderByChild("time"); TODO Sort Items By Time
-        mPagesDatabase.addValueEventListener(new ValueEventListener() {
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) return;
 
-                mPage = Page.fromDB(dataSnapshot.child(id.toString()));
+                mPage = Page.fromDB(dataSnapshot.child("pages").child(id.toString())); // TODO No need to download all media segments for all items, only photos are needed
+                mItems = getItems(mPage.getItemsIdentifiers(), dataSnapshot);
+
+                if(mRecyclerView != null)
+                    ((PageRecycleViewAdapter) mRecyclerView.getAdapter()).setItems(mItems);
+
                 onPageChanged();
             }
 
@@ -69,15 +81,23 @@ public class PageFragment extends Fragment {
         });
     }
 
+    // gets a list of items IDs and a snapshot of the db and returns a list of the actual items
+    private ArrayList<Item> getItems(ArrayList<UUID> itemsIds, DataSnapshot ds) {
+        ArrayList<Item> items = new ArrayList<>();
+        for(UUID id : itemsIds) {
+            Item item = Item.fromDB(ds.child("items").child(id.toString()));
+            items.add(item);
+        }
+
+        return items;
+    }
+
     private void onPageChanged() {
         if(!"".equals(mPage.getName()) && getActivity() != null) {
             getActivity().setTitle(mPage.getName());
         }
 
-        Log.d(TAG, "Page items number: " + mPage.getItems().size());
-
-        if(mRecyclerView != null)
-            ((PageRecycleViewAdapter) mRecyclerView.getAdapter()).setPage(mPage);
+        Log.d(TAG, "Page items number: " + mPage.getItemsIdentifiers().size());
     }
 
 
@@ -89,8 +109,8 @@ public class PageFragment extends Fragment {
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(new PageRecycleViewAdapter(getActivity()));
-        if(mPage != null)
-            ((PageRecycleViewAdapter) mRecyclerView.getAdapter()).setPage(mPage);
+        if(mItems != null)
+            ((PageRecycleViewAdapter) mRecyclerView.getAdapter()).setItems(mItems);
 
         final int PADDING_SIZE = (int) (4 * (getResources().getDisplayMetrics().density) + 0.5f); // 4dp
         mRecyclerView.setPadding(0, PADDING_SIZE, 0, PADDING_SIZE);
@@ -123,8 +143,8 @@ public class PageFragment extends Fragment {
             mContext = context;
         }
 
-        public void setPage(Page page) {
-            mItems = page.getItems();
+        public void setItems(ArrayList<Item> items) {
+            mItems = items;
             notifyDataSetChanged();
         }
 
@@ -176,7 +196,8 @@ public class PageFragment extends Fragment {
 
             if(getItemViewType(position) == HEADER_TYPE) {
                 HeaderViewHolder viewHolder = (HeaderViewHolder) holder;
-                viewHolder.mImageView.setImageBitmap(item.getImage());
+
+                loadItemImage(item, viewHolder.mImageView);
                 viewHolder.mTextView.setText(item.getTitle());
                 viewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -186,11 +207,21 @@ public class PageFragment extends Fragment {
                         startActivity(i);
                     }
                 });
+
+                // Item Status Toast - Should be limited to page owner only
+                viewHolder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        Toast.makeText(mContext, "Article Status: " + item.getState().toString(), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
             }
 
             else if(getItemViewType(position) == NO_HEADER_TYPE) {
                 NoHeaderViewHolder viewHolder = (NoHeaderViewHolder) holder;
-                viewHolder.mImageView.setImageBitmap(item.getImage());
+
+                loadItemImage(item, viewHolder.mImageView);
                 viewHolder.mTextView.setText(item.getTitle());
                 viewHolder.mTimeTextView.setText(item.getShortTime());
                 viewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
@@ -199,6 +230,15 @@ public class PageFragment extends Fragment {
                         Intent i = new Intent(getActivity(), ItemActivity.class);
                         i.putExtra(ItemFragment.EXTRA_ID, item.getId());
                         startActivity(i);
+                    }
+                });
+
+                // Item Status Toast - Should be limited to page owner only
+                viewHolder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        Toast.makeText(mContext, "Article Status: " + item.getState().toString(), Toast.LENGTH_SHORT).show();
+                        return true;
                     }
                 });
             }
@@ -214,6 +254,15 @@ public class PageFragment extends Fragment {
                         Intent i = new Intent(getActivity(), ItemActivity.class);
                         i.putExtra(ItemFragment.EXTRA_ID, item.getId());
                         startActivity(i);
+                    }
+                });
+
+                // Item Status Toast - Should be limited to page owner only
+                viewHolder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        Toast.makeText(mContext, "Article Status: " + item.getState().toString(), Toast.LENGTH_SHORT).show();
+                        return true;
                     }
                 });
             }
@@ -290,6 +339,23 @@ public class PageFragment extends Fragment {
                 });
             }
         }
+    }
+
+    private void loadItemImage(final Item item, final ImageView imageView) {
+        Task loadingTask = FirebaseStorage.getInstance().getReference("items").child(item.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if(task.getException() == null) {
+                    item.setImageUrl(task.getResult());
+                    Glide.with(getActivity()).load(item.getImageUrl()).into(imageView);
+
+                    imageView.setVisibility(View.VISIBLE);
+                }
+
+                else
+                    imageView.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override

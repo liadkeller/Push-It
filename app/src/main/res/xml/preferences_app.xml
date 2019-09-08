@@ -7,16 +7,24 @@
     <PreferenceCategory android:title="@string/account_title">
         <Preference
             android:key="accountEmail"
+            android:icon="@drawable/mail_gray"
             android:title="mail@host.com"/> <!-- TODO -->
 
         <SwitchPreference
             android:key="accountStatus"
             android:defaultValue="true"
             android:title="@string/account_status"
+            android:icon="@drawable/status_gray"
             android:summary="@string/status_creator"/> <!-- TODO -->
 
         <Preference
             android:key="pageSettings"
+            android:icon="@drawable/page_gray"
             android:title="@string/account_page"/>
+
+        <Preference
+            android:key="signOut"
+            android:icon="@drawable/signout_gray"
+            android:title="@string/sign_out"/>
     </PreferenceCategory>
 </PreferenceScreen>

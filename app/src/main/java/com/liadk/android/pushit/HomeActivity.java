@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-    final UUID RANDOM_FAMILIAR_ID = UUID.fromString("48003ff7-f0a1-4556-be70-b42cf4298bc1"); // TODO DELETE
+    final UUID RANDOM_FAMILIAR_ID = UUID.fromString("7b55f657-d186-4a37-953b-90c4a2e8c3"); // TODO DELETE
 
     BottomNavigationView mBottomNavigationView;
     boolean mUserStatus = true;
@@ -24,9 +24,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
 
         mBottomNavigationView = findViewById(R.id.bottomNavigation);
         mBottomNavigationView.inflateMenu(R.menu.bottom_nav_menu);
-
         updateMenu();
-
 
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);
 
