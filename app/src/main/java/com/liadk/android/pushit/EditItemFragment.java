@@ -64,7 +64,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
 
     private Item mItem;
-    private ArrayList<Uri> mLocalMediasUri = new ArrayList<>(MAX_MEDIA);
+    private ValueEventListener mValueEventListener;
 
     private DatabaseReference mItemsDatabase;
     private DatabaseReference mPagesDatabase;
@@ -126,7 +126,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
         mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
         mItemsDatabase = FirebaseDatabase.getInstance().getReference("items");
-        mItemsDatabase.addValueEventListener(new ValueEventListener() {
+        mValueEventListener = mItemsDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) return;
@@ -448,7 +448,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         if (resultCode == RESULT_OK) {
             if(requestCode == MAIN_IMAGE_REQUEST) {
                 final Uri resultUri = UCrop.getOutput(data);
-                mItem.setImageUrl(resultUri);
+                mItem.setImageUri(resultUri);
                 mRecentlySaved = false;
                 onImageUpdated(resultUri);
             }
@@ -465,6 +465,19 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         else if (resultCode == UCrop.RESULT_ERROR) {
             final Throwable cropError = UCrop.getError(data);
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mItemsDatabase.removeEventListener(mValueEventListener);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(mValueEventListener != null)
+            mItemsDatabase.removeEventListener(mValueEventListener);
     }
 
     private void updateState(Item.State newState) {
@@ -674,8 +687,8 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.getException() == null) {
-                    mItem.setImageUrl(task.getResult());
-                    Glide.with(getActivity()).load(mItem.getImageUrl()).into(imageView);
+                    mItem.setImageUri(task.getResult());
+                    Glide.with(getActivity()).load(mItem.getImageUri()).into(imageView);
 
                     removeImageButton.setVisibility(View.VISIBLE);
                 } else { // No Image

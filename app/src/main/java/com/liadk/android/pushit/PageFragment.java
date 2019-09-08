@@ -48,6 +48,8 @@ public class PageFragment extends Fragment {
 
     private Page mPage;
     private ArrayList<Item> mItems;
+
+    private ValueEventListener mValueEventListener;
     private DatabaseReference mDatabase;
     private DatabaseReference mPagesDatabase;
 
@@ -62,7 +64,7 @@ public class PageFragment extends Fragment {
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        mValueEventListener = mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) return;
@@ -132,6 +134,19 @@ public class PageFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mRecyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mDatabase.removeEventListener(mValueEventListener);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(mValueEventListener != null)
+            mDatabase.removeEventListener(mValueEventListener);
     }
 
     private class PageRecycleViewAdapter extends RecyclerView.Adapter {
@@ -346,8 +361,8 @@ public class PageFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if(task.getException() == null) {
-                    item.setImageUrl(task.getResult());
-                    Glide.with(getActivity()).load(item.getImageUrl()).into(imageView);
+                    item.setImageUri(task.getResult());
+                    Glide.with(getActivity()).load(item.getImageUri()).into(imageView);
 
                     imageView.setVisibility(View.VISIBLE);
                 }

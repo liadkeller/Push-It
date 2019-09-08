@@ -50,6 +50,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
     private PushNotification mNotification;
     private Uri mLocalImageUri;
 
+    private ValueEventListener mValueEventListener;
     private DatabaseReference mItemsDatabase;
     StorageManager mStorageManager;
 
@@ -71,7 +72,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         public PushNotification(Item item) {
             mId = item.getId();
             mItemTitle = item.getTitle();
-            mImageUrl = item.getImageUrl();
+            mImageUrl = item.getImageUri();
         }
 
         public void setEditTextTitle(String mTitle) {
@@ -124,7 +125,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
         mItemsDatabase = FirebaseDatabase.getInstance().getReference("items");
-        mItemsDatabase.addValueEventListener(new ValueEventListener() {
+        mValueEventListener = mItemsDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) return;
@@ -256,7 +257,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             final Uri resultUri = UCrop.getOutput(data);
-            mItem.setImageUrl(resultUri);
+            mItem.setImageUri(resultUri);
             onImageUpdated(resultUri);
         }
 
@@ -338,6 +339,19 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mItemsDatabase.removeEventListener(mValueEventListener);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(mValueEventListener != null)
+            mItemsDatabase.removeEventListener(mValueEventListener);
     }
 
     // The onBackPressed of the OnBackPressedListener Interface

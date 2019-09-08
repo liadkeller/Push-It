@@ -51,7 +51,7 @@ public class Item {
 
     String mTitle = "";
     String mAuthor = "";
-    Uri mImageUrl;
+    Uri mImageUri;
     int mOrder;
     Date mOriginalTime; // original creation time
     Date mTime;                  // creation time
@@ -89,7 +89,7 @@ public class Item {
         mId = UUID.randomUUID();
 
         mTitle = item.mTitle;
-        mImageUrl = item.mImageUrl;
+        mImageUri = item.mImageUri;
         mAuthor = item.mAuthor;
         mOrder = item.mOrder;
         mOriginalTime = item.mOriginalTime;
@@ -106,8 +106,8 @@ public class Item {
         mTitle = title;
     }
 
-    public void setImageUrl(Uri imageUrl) {
-        this.mImageUrl = imageUrl;
+    public void setImageUri(Uri imageUrl) {
+        this.mImageUri = imageUrl;
     }
 
     public void setAuthor(String author) {
@@ -180,8 +180,8 @@ public class Item {
         return mTitle;
     }
 
-    public Uri getImageUrl() {
-        return mImageUrl;
+    public Uri getImageUri() {
+        return mImageUri;
     }
 
     public String getText() {
@@ -268,7 +268,7 @@ public class Item {
         item.mAuthor = (String) ds.child("author").getValue();
 
         //if (ds.child("image-url").getValue() != null) // TODO DECIDE!
-        //    item.mImageUrl = Uri.parse((String) ds.child("image-url").getValue());
+        //    item.mImageUri = Uri.parse((String) ds.child("image-url").getValue());
 
         if(ds.child("owner").getValue() != null)
             item.mOwnerId = UUID.fromString((String) ds.child("owner").getValue());

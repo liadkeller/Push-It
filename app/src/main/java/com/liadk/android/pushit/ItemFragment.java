@@ -217,8 +217,8 @@ public class ItemFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if(task.getException() == null) {
-                    mItem.setImageUrl(task.getResult());
-                    Glide.with(getActivity()).load(mItem.getImageUrl()).into(imageView);
+                    mItem.setImageUri(task.getResult());
+                    Glide.with(getActivity()).load(mItem.getImageUri()).into(imageView);
                 }
             }
         });

@@ -34,6 +34,7 @@ public class ExploreFragment extends Fragment {
 
     private FirebaseDatabase mDatabase;
     private DatabaseReference mPagesDatabase;
+    private ValueEventListener mValueEventListener;
 
     private ArrayList<Page> mPages;
     private RecyclerView mRecyclerView;
@@ -45,7 +46,7 @@ public class ExploreFragment extends Fragment {
         mDatabase = FirebaseDatabase.getInstance();
 
         mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
-        mPagesDatabase.addValueEventListener(new ValueEventListener() {
+        mValueEventListener = mPagesDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) return;
@@ -65,8 +66,8 @@ public class ExploreFragment extends Fragment {
         });
 
 
-        resetDatabase();
-        addDataToDatabase();
+        //resetDatabase();
+        //addDataToDatabase();
     }
 
     private void resetDatabase() {
@@ -103,6 +104,19 @@ public class ExploreFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         
         return v;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mPagesDatabase.removeEventListener(mValueEventListener);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(mValueEventListener != null)
+            mPagesDatabase.removeEventListener(mValueEventListener);
     }
 
     public static Fragment newInstance(UUID id) {

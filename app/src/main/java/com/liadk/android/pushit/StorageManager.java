@@ -44,9 +44,9 @@ public class StorageManager {
 
 
     public void uploadItemImages(Item item, OnCompleteListener<UploadTask.TaskSnapshot> onCompleteListener) {
-        if(item.getImageUrl() == null) return;
+        if(item.getImageUri() == null) return;
         StorageReference storageRef = mItemsStorage.child(item.getId().toString());
-        storageRef.child("image.png").putBytes(getBytesFromUri(item.getImageUrl())).addOnCompleteListener(onCompleteListener); // TODO Tremendously Pricey
+        storageRef.child("image.png").putBytes(getBytesFromUri(item.getImageUri())).addOnCompleteListener(onCompleteListener); // TODO Tremendously Pricey
         //storageRef.child("image1.png").putBytes(getBytesFromUri(item.getMediaSegments().get(0))).addOnCompleteListener(onCompleteListener);
         //storageRef.child("image2.png").putBytes(getBytesFromUri(item.getMediaSegments().get(1))).addOnCompleteListener(onCompleteListener);
     }
@@ -54,7 +54,7 @@ public class StorageManager {
 
 
     public void uploadNotificationImage(Item item) {
-        uploadNotificationImage(item, item.getImageUrl());
+        uploadNotificationImage(item, item.getImageUri());
     }
 
     public void uploadNotificationImage(Item item, Uri imageUri) {
