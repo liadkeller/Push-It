@@ -148,6 +148,8 @@ public class PageLogoFragment extends Fragment {
         FirebaseStorage.getInstance().getReference("pages").child(mPage.getId().toString()).child("logo.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
+            if(getActivity() == null) return;
+
             if(task.getException() == null) {
                 mNoLogoTextView.setVisibility(View.GONE);
                 mImageView.setVisibility(View.VISIBLE);

@@ -65,11 +65,13 @@
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
+        <!--
         <SurfaceView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/itemSurfaceView1"
             android:visibility="gone"/>
+            -->
 
         <TextView
             android:layout_width="wrap_content"
@@ -91,11 +93,13 @@
             android:id="@+id/itemImageView2"
             android:visibility="gone"/>
 
+        <!--
         <SurfaceView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/itemSurfaceView2"
             android:visibility="gone"/>
+            -->
 
         <TextView
             android:layout_width="wrap_content"

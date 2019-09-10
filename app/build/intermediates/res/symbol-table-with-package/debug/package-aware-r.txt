@@ -1355,8 +1355,6 @@ id italic
 id itemImageView
 id itemImageView1
 id itemImageView2
-id itemSurfaceView1
-id itemSurfaceView2
 id item_touch_helper_previous_elevation
 id labeled
 id largeLabel

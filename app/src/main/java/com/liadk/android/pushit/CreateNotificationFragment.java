@@ -275,9 +275,13 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
     }
 
     private void onImageUpdated() {
-         FirebaseStorage.getInstance().getReference("items").child(mNotification.getId().toString()).child("notification-image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+
+
+        FirebaseStorage.getInstance().getReference("items").child(mNotification.getId().toString()).child("notification-image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
+                if(getActivity() == null) return;
+
                 if(task.getException() == null) {
                     mNotification.setImageUrl(task.getResult());
                     Glide.with(getActivity()).load(mNotification.getImageUrl()).into(mImageView);

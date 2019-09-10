@@ -500,7 +500,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         mStorageManager.uploadItemImages(mItem, new OnCompleteListener<UploadTask.TaskSnapshot>() {  // upload image to storage
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                mItemsDatabase.child(mItem.getId().toString()).child("has-image").setValue(true);
+                mItemsDatabase.child(mItem.getId().toString()).child("has-image").setValue(true);    // triggers refreshing image
             }
         });
     }
@@ -638,26 +638,28 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
                 final int index = i;
                 Uri mediaUri = mItem.getMediaSegments().get(i);
-                final String filename = "image" + (i+1) + ".png";
+                final String filename = "image" + i + ".png";
 
+                /*
                 if(mediaUri != null) {
-                    imageImageViews[i].setImageURI(mediaUri);
-                }
+                    //imageImageViews[i].setImageURI(mediaUri);
+                    Glide.with(getActivity()).load(mediaUri).into(imageImageViews[i]);
 
-                else {
-                    FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child(filename).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.getException() == null) {
-                                mItem.getMediaSegments().set(index, task.getResult());
-                                Glide.with(getActivity()).load(mItem.getMediaSegments().get(index)).into(imageImageViews[index]);
+                }*/
 
-                            } else { // No Image
-                                imageImageViews[index].setImageResource(R.drawable.image_template);
-                            }
+                FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child(filename).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(getActivity() == null) return;
+
+                        if (task.getException() == null && index < mItem.getSegmentsCounter()) {
+                            mItem.getMediaSegments().set(index, task.getResult());
+                            Glide.with(getActivity()).load(mItem.getMediaSegments().get(index)).into(imageImageViews[index]);
+                        } else { // No Image
+                            imageImageViews[index].setImageResource(R.drawable.image_template);
                         }
-                    });
-                }
+                    }
+                });
             }
 
             if(mItem.getSegmentsCounter() < MAX_MEDIA) {
@@ -686,6 +688,8 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
+                if(getActivity() == null) return;
+
                 if (task.getException() == null) {
                     mItem.setImageUri(task.getResult());
                     Glide.with(getActivity()).load(mItem.getImageUri()).into(imageView);

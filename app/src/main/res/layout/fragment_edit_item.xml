@@ -177,6 +177,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:adjustViewBounds="true"
+                android:src="@drawable/image_template"
                 android:scaleType="fitStart" />
 
         </LinearLayout>
@@ -292,6 +293,7 @@
                 android:id="@+id/image2ImageView"
                 android:scaleType="fitStart"
                 android:adjustViewBounds="true"
+                android:src="@drawable/image_template"
                 android:layout_marginLeft="8dp"/>
         </LinearLayout>
 

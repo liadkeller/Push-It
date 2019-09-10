@@ -46,7 +46,22 @@ public class StorageManager {
     public void uploadItemImages(Item item, OnCompleteListener<UploadTask.TaskSnapshot> onCompleteListener) {
         if(item.getImageUri() == null) return;
         StorageReference storageRef = mItemsStorage.child(item.getId().toString());
-        storageRef.child("image.png").putBytes(getBytesFromUri(item.getImageUri())).addOnCompleteListener(onCompleteListener); // TODO Tremendously Pricey
+
+        uploadImage(getBytesFromUri(item.getImageUri()), storageRef.child("image.png"), onCompleteListener);
+
+        // upload all media segments
+        for(int i = 0; i < item.getSegmentsCounter(); i++) {
+            String imageName = "image" + i + ".png";
+            uploadImage(getBytesFromUri(item.getMediaSegments().get(i)), storageRef.child(imageName), onCompleteListener);
+        }
+
+        // remove all media segments which aren't currently registered (usually because deleted)
+        for(int i = item.getSegmentsCounter(); i < EditItemFragment.MAX_MEDIA; i++) {
+            String imageName = "image" + i + ".png";
+            storageRef.child(imageName).delete();
+        }
+
+        //storageRef.child("image.png").putBytes(getBytesFromUri(item.getImageUri())).addOnCompleteListener(onCompleteListener); // TODO Tremendously Pricey
         //storageRef.child("image1.png").putBytes(getBytesFromUri(item.getMediaSegments().get(0))).addOnCompleteListener(onCompleteListener);
         //storageRef.child("image2.png").putBytes(getBytesFromUri(item.getMediaSegments().get(1))).addOnCompleteListener(onCompleteListener);
     }
@@ -85,7 +100,15 @@ public class StorageManager {
 
 
     public void uploadImage(byte[] imageBytes, StorageReference storageRef) {
-        UploadTask uploadTask = storageRef.putBytes(imageBytes); // TODO Tremendously Pricey
+        if(imageBytes != null) {
+            UploadTask uploadTask = storageRef.putBytes(imageBytes); // TODO Tremendously Pricey
+        }
+    }
+
+    public void uploadImage(byte[] imageBytes, StorageReference storageRef, OnCompleteListener<UploadTask.TaskSnapshot> onCompleteListener) {
+        if(imageBytes != null) {
+            UploadTask uploadTask = (UploadTask) storageRef.putBytes(imageBytes).addOnCompleteListener(onCompleteListener); // TODO Tremendously Pricey
+        }
     }
 
 

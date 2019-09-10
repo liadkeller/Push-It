@@ -360,6 +360,8 @@ public class PageFragment extends Fragment {
         Task loadingTask = FirebaseStorage.getInstance().getReference("items").child(item.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
+                if(getActivity() == null) return;
+
                 if(task.getException() == null) {
                     item.setImageUri(task.getResult());
                     Glide.with(getActivity()).load(item.getImageUri()).into(imageView);

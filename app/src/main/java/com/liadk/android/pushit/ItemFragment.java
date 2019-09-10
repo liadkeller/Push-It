@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
@@ -16,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -52,7 +49,7 @@ public class ItemFragment extends Fragment {
     TextView mTextView;
     TextView[] mSegmentTextViews;
     ImageView[] mImageViews;
-    SurfaceView[] mSurfaceViews;
+    //SurfaceView[] mSurfaceViews;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,7 +89,7 @@ public class ItemFragment extends Fragment {
         mTextView = (TextView) v.findViewById(R.id.mainTextView);
         mSegmentTextViews = new TextView[] { (TextView) v.findViewById(R.id.seg1TextView), (TextView) v.findViewById(R.id.seg2TextView) };
         mImageViews = new ImageView[] { (ImageView) v.findViewById(R.id.itemImageView1), (ImageView) v.findViewById(R.id.itemImageView2) };
-        mSurfaceViews = new SurfaceView[] { (SurfaceView) v.findViewById(R.id.itemSurfaceView1), (SurfaceView) v.findViewById(R.id.itemSurfaceView2) };
+        //mSurfaceViews = new SurfaceView[] { (SurfaceView) v.findViewById(R.id.itemSurfaceView1), (SurfaceView) v.findViewById(R.id.itemSurfaceView2) };
 
         if(mItem != null)
             updateUI();
@@ -188,26 +185,29 @@ public class ItemFragment extends Fragment {
         for(int i = 0; i < EditItemFragment.MAX_MEDIA; i++) {
 
             mImageViews[i].setVisibility(View.GONE);
-            mSurfaceViews[i].setVisibility(View.GONE);
             mSegmentTextViews[i].setVisibility(View.GONE);
 
             if(i < mItem.getSegmentsCounter()) {
-                Object mediaSegment = mItem.getMediaSegments().get(i);
-
-                if (mediaSegment instanceof MediaStore.Video) {
-                    mSurfaceViews[i].setVisibility(View.VISIBLE);
-                    if(mediaSegment != null) {
-                        // TODO add Video
-                    }
-                }
-                else if (mediaSegment instanceof Bitmap) { // TODO check if "instanceOf bitmap" check needs to be done on the second if similarly to EditItemFragment
-                    mImageViews[i].setVisibility(View.VISIBLE);
-                    if(mediaSegment != null) {
-                        mImageViews[i].setImageBitmap((Bitmap) mediaSegment);
-                    }
-                }
                 mSegmentTextViews[i].setVisibility(View.VISIBLE);
                 mSegmentTextViews[i].setText(mItem.getTextSegments().get(i+1));
+
+                mImageViews[i].setVisibility(View.VISIBLE);
+
+                final int index = i;
+                Uri mediaUri = mItem.getMediaSegments().get(i);
+                final String filename = "image" + i + ".png";
+
+                FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child(filename).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(getActivity() == null) return;
+
+                        if (task.getException() == null && index < mItem.getSegmentsCounter()) {
+                            mItem.getMediaSegments().set(index, task.getResult());
+                            Glide.with(getActivity()).load(mItem.getMediaSegments().get(index)).into(mImageViews[index]);
+                        }
+                    }
+                });
             }
         }
     }
@@ -216,6 +216,8 @@ public class ItemFragment extends Fragment {
         FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
+                if(getActivity() == null) return;
+
                 if(task.getException() == null) {
                     mItem.setImageUri(task.getResult());
                     Glide.with(getActivity()).load(mItem.getImageUri()).into(imageView);

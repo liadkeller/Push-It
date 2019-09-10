@@ -185,6 +185,8 @@ public class ExploreFragment extends Fragment {
         FirebaseStorage.getInstance().getReference("pages").child(page.getId().toString()).child("logo.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
+                if(getActivity() == null) return;
+
                 if(task.getException() == null) {
                     page.setLogoImageUrl(task.getResult());
                     Glide.with(getActivity()).load(page.getLogoImageUrl()).into(imageView);

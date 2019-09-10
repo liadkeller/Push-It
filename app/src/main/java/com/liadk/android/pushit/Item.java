@@ -284,6 +284,8 @@ public class Item {
             item.mCounter = (int) ds.child("counter").getValue(Integer.class);
         for (int i = 0; i <= item.mCounter; i++)
             item.mTextSegments.add((String) ds.child("text").child(i + "").getValue());
+        for(int i = 0; i < item.mCounter; i++)
+            item.mMediaSegments.add(null);     // fill the MediaSegments with nulls (as many as mCounter)
 
         if(ds.child("time").getValue() != null)
             item.mTime = new Date( (long) ds.child("time").getValue());
