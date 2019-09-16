@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference
-        android:key="accountLogin"
-        android:title="@string/account_login"/>
-
-    <PreferenceCategory android:title="@string/account_title">
+    <PreferenceCategory android:title="@string/account_title"
+        android:key="myAccount">
         <Preference
             android:key="accountEmail"
-            android:icon="@drawable/mail_gray"
-            android:title="mail@host.com"/> <!-- TODO -->
+            android:icon="@drawable/mail_gray" />
 
         <SwitchPreference
             android:key="accountStatus"
             android:defaultValue="true"
             android:title="@string/account_status"
             android:icon="@drawable/status_gray"
-            android:summary="@string/status_creator"/> <!-- TODO -->
+            android:summary="@string/status_creator"/>
 
         <Preference
             android:key="pageSettings"
@@ -26,5 +22,11 @@
             android:key="signOut"
             android:icon="@drawable/signout_gray"
             android:title="@string/sign_out"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/delete_account">
+        <Preference
+            android:key="accountDelete"
+            android:title="@string/delete_account"/> <!-- android:icon="@drawable/delete_red" -->
     </PreferenceCategory>
 </PreferenceScreen>

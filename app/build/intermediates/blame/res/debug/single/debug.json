@@ -12,12 +12,12 @@
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable\\abc_cab_background_top_material.xml"
     },
     {
-        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\layout_fragment_recycler_view.xml.flat",
-        "source": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\src\\main\\res\\layout\\fragment_recycler_view.xml"
-    },
-    {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_abc_tab_indicator_mtrl_alpha.9.png.flat",
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable-xhdpi-v4\\abc_tab_indicator_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\layout_fragment_recycler_view.xml.flat",
+        "source": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\src\\main\\res\\layout\\fragment_recycler_view.xml"
     },
     {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\layout_design_bottom_sheet_dialog.xml.flat",
@@ -28,12 +28,16 @@
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable-mdpi-v4\\abc_btn_check_to_on_mtrl_015.png"
     },
     {
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v21_abc_action_bar_item_background_material.xml.flat",
+        "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable-v21\\abc_action_bar_item_background_material.xml"
+    },
+    {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\layout_select_dialog_multichoice_material.xml.flat",
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\layout\\select_dialog_multichoice_material.xml"
     },
     {
-        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v21_abc_action_bar_item_background_material.xml.flat",
-        "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable-v21\\abc_action_bar_item_background_material.xml"
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable_pushit_banner.png.flat",
+        "source": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\src\\main\\res\\drawable\\pushit_banner.png"
     },
     {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-ldrtl-xxhdpi-v17_abc_spinner_mtrl_am_alpha.9.png.flat",
@@ -60,12 +64,12 @@
         "source": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\src\\main\\res\\layout\\fragment_edit_item.xml"
     },
     {
-        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_abc_btn_check_to_on_mtrl_000.png.flat",
-        "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable-xhdpi-v4\\abc_btn_check_to_on_mtrl_000.png"
-    },
-    {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-ldrtl-xhdpi-v17_abc_ic_menu_cut_mtrl_alpha.png.flat",
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable-ldrtl-xhdpi-v17\\abc_ic_menu_cut_mtrl_alpha.png"
+    },
+    {
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_abc_btn_check_to_on_mtrl_000.png.flat",
+        "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable-xhdpi-v4\\abc_btn_check_to_on_mtrl_000.png"
     },
     {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi-v4_abc_list_pressed_holo_dark.9.png.flat",
@@ -84,20 +88,20 @@
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable-xhdpi-v4\\abc_list_pressed_holo_light.9.png"
     },
     {
-        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable_abc_ic_go_search_api_material.xml.flat",
-        "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable\\abc_ic_go_search_api_material.xml"
-    },
-    {
-        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-ldrtl-mdpi-v17_abc_ic_menu_cut_mtrl_alpha.png.flat",
-        "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable-ldrtl-mdpi-v17\\abc_ic_menu_cut_mtrl_alpha.png"
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable_floating_add_button.png.flat",
+        "source": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\src\\main\\res\\drawable\\floating_add_button.png"
     },
     {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_design_ic_visibility.png.flat",
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\b3d60b373e7225f59945903817b9cc92\\design-28.0.0\\res\\drawable-xhdpi-v4\\design_ic_visibility.png"
     },
     {
-        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable_floating_add_button.png.flat",
-        "source": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\src\\main\\res\\drawable\\floating_add_button.png"
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-ldrtl-mdpi-v17_abc_ic_menu_cut_mtrl_alpha.png.flat",
+        "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable-ldrtl-mdpi-v17\\abc_ic_menu_cut_mtrl_alpha.png"
+    },
+    {
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable_abc_ic_go_search_api_material.xml.flat",
+        "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable\\abc_ic_go_search_api_material.xml"
     },
     {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_abc_switch_track_mtrl_alpha.9.png.flat",
@@ -472,6 +476,10 @@
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable-ldrtl-xhdpi-v17\\abc_spinner_mtrl_am_alpha.9.png"
     },
     {
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\layout_dialog_page_details.xml.flat",
+        "source": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\src\\main\\res\\layout\\dialog_page_details.xml"
+    },
+    {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi-v4_camera_colored.png.flat",
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\1f1c25cc496c9078c88614d44709c554\\PickImage-2.1.1\\res\\mipmap-hdpi-v4\\camera_colored.png"
     },
@@ -638,6 +646,10 @@
     {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_notification_bg_normal_pressed.9.png.flat",
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\436e9855e10f874bdacf5f9bd8c8f7ac\\support-compat-28.0.0\\res\\drawable-mdpi-v4\\notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\layout_fragment_login.xml.flat",
+        "source": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\src\\main\\res\\layout\\fragment_login.xml"
     },
     {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxxhdpi-v4_ucrop_ic_angle.png.flat",
@@ -1080,6 +1092,10 @@
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\anim\\abc_grow_fade_in_from_bottom.xml"
     },
     {
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\xml_preferences_login.xml.flat",
+        "source": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\src\\main\\res\\xml\\preferences_login.xml"
+    },
+    {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxxhdpi-v4_design_ic_visibility_off.png.flat",
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\b3d60b373e7225f59945903817b9cc92\\design-28.0.0\\res\\drawable-xxxhdpi-v4\\design_ic_visibility_off.png"
     },
@@ -1338,6 +1354,10 @@
     {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\layout-v17_preference_information_material.xml.flat",
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\ee35928106aa9100508aa5cde6faf98a\\preference-v14-23.4.0\\res\\layout-v17\\preference_information_material.xml"
+    },
+    {
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\menu_bottom_nav_menu_creator.xml.flat",
+        "source": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\src\\main\\res\\menu\\bottom_nav_menu_creator.xml"
     },
     {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\color_mtrl_text_btn_text_color_selector.xml.flat",
@@ -2084,6 +2104,10 @@
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\ee35928106aa9100508aa5cde6faf98a\\preference-v14-23.4.0\\res\\layout-v21\\preference_category_material.xml"
     },
     {
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\layout_dialog_image.xml.flat",
+        "source": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\src\\main\\res\\layout\\dialog_image.xml"
+    },
+    {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\layout_preference_widget_switch_compat.xml.flat",
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\040acbf5b4b9fc84e0f408ce253f6fe3\\preference-v7-23.4.0\\res\\layout\\preference_widget_switch_compat.xml"
     },
@@ -2158,6 +2182,10 @@
     {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_abc_ic_menu_selectall_mtrl_alpha.png.flat",
         "source": "C:\\Users\\user\\.gradle\\caches\\transforms-2\\files-2.1\\f073d19f21db26252b74dfb911d504ba\\appcompat-v7-28.0.0\\res\\drawable-xhdpi-v4\\abc_ic_menu_selectall_mtrl_alpha.png"
+    },
+    {
+        "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\layout_fragment_create_account.xml.flat",
+        "source": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\src\\main\\res\\layout\\fragment_create_account.xml"
     },
     {
         "merged": "C:\\Users\\user\\AndroidStudioProjects\\PushIt\\app\\build\\intermediates\\res\\merged\\debug\\drawable_abc_item_background_holo_dark.xml.flat",

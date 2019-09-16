@@ -22,8 +22,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -32,9 +30,8 @@ import java.util.UUID;
 
 public class ExploreFragment extends Fragment {
 
-    private FirebaseDatabase mDatabase;
-    private DatabaseReference mPagesDatabase;
-    private ValueEventListener mValueEventListener;
+    private DatabaseManager mDatabaseManager;
+    private ValueEventListener mDatabaseListener;
 
     private ArrayList<Page> mPages;
     private RecyclerView mRecyclerView;
@@ -43,10 +40,9 @@ public class ExploreFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.explore);
-        mDatabase = FirebaseDatabase.getInstance();
 
-        mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
-        mValueEventListener = mPagesDatabase.addValueEventListener(new ValueEventListener() {
+        mDatabaseManager = DatabaseManager.get(getActivity());
+        mDatabaseListener = mDatabaseManager.addPagesListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) return;
@@ -70,29 +66,6 @@ public class ExploreFragment extends Fragment {
         //addDataToDatabase();
     }
 
-    private void resetDatabase() {
-        DatabaseReference pagesDatabase = mDatabase.getReference("pages");
-        DatabaseReference itemsDatabase = mDatabase.getReference("items");
-
-        pagesDatabase.setValue(null);
-        itemsDatabase.setValue(null);
-    }
-
-    private void addDataToDatabase() { // TODO GET RID OF
-        DatabaseReference pagesDatabase = mDatabase.getReference("pages");
-        DatabaseReference itemsDatabase = mDatabase.getReference("items");
-
-        for(Page page : PageCollection.get(getActivity()).getPages()) {
-            page.pushToDB(pagesDatabase);
-            //page.uploadLogoImage(BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.bibi_face); TODO TAKE CARE OF IMAGES UPLOAD
-        }
-
-        for(Item item : ItemCollection.get(getActivity()).getItems()) {
-            item.pushToDB(itemsDatabase);
-            //item.uploadImage(item.getImage());  TODO TAKE CARE OF IMAGES UPLOAD
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -109,14 +82,14 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mPagesDatabase.removeEventListener(mValueEventListener);
+        mDatabaseManager.removePagesListener(mDatabaseListener);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(mValueEventListener != null)
-            mPagesDatabase.removeEventListener(mValueEventListener);
+        if(mDatabaseListener != null)
+            mDatabaseManager.removePagesListener(mDatabaseListener);
     }
 
     public static Fragment newInstance(UUID id) {
@@ -188,8 +161,8 @@ public class ExploreFragment extends Fragment {
                 if(getActivity() == null) return;
 
                 if(task.getException() == null) {
-                    page.setLogoImageUrl(task.getResult());
-                    Glide.with(getActivity()).load(page.getLogoImageUrl()).into(imageView);
+                    Uri logoUri = task.getResult();
+                    Glide.with(getActivity()).load(logoUri).into(imageView);
                 }
             }
         });

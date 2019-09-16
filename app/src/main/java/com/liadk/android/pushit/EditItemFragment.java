@@ -34,8 +34,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.UploadTask;
@@ -64,10 +62,9 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
 
     private Item mItem;
-    private ValueEventListener mValueEventListener;
 
-    private DatabaseReference mItemsDatabase;
-    private DatabaseReference mPagesDatabase;
+    private DatabaseManager mDatabaseManager;
+    private ValueEventListener mDatabaseListener;
     private StorageManager mStorageManager;
 
     private boolean mRecentlySaved = true;
@@ -120,13 +117,12 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         setHasOptionsMenu(true);
         ((EditItemActivity) getActivity()).setOnBackPressedListener((EditItemFragment) this);
 
+        mDatabaseManager = DatabaseManager.get(getActivity());
         mStorageManager = StorageManager.get(getActivity());
 
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
-        mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
-        mItemsDatabase = FirebaseDatabase.getInstance().getReference("items");
-        mValueEventListener = mItemsDatabase.addValueEventListener(new ValueEventListener() {
+        mDatabaseListener = mDatabaseManager.addItemsListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) return;
@@ -360,7 +356,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
                 else {
                     if(mItem.getState() == NEW) {
-                        mItem.pushToDB(mItemsDatabase); // saves changes in the db without adding to page
+                        mDatabaseManager.pushItemToDB(mItem); // saves changes in the db without adding to page
                     }
 
                     showClickDialog(R.string.publish_article, R.string.publish, R.string.publish_article_dialog, new DialogInterface.OnClickListener() {
@@ -470,14 +466,14 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
     @Override
     public void onDetach() {
         super.onDetach();
-        mItemsDatabase.removeEventListener(mValueEventListener);
+        mDatabaseManager.removeItemsListener(mDatabaseListener);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(mValueEventListener != null)
-            mItemsDatabase.removeEventListener(mValueEventListener);
+        if(mDatabaseListener != null)
+            mDatabaseManager.removeItemsListener(mDatabaseListener);
     }
 
     private void updateState(Item.State newState) {
@@ -492,26 +488,20 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
     private void saveChanges() {
         mRecentlySaved = true;
 
-        DatabaseReference pageItemsDatabase = mPagesDatabase.child(mItem.getOwnerId().toString()).child("items");
-
-        mItem.pushToDB(mItemsDatabase);
-        pageItemsDatabase.child(mItem.getId().toString()).setValue(true);
+        mDatabaseManager.pushItemToDB(mItem);  // adds item data to the items table
+        mDatabaseManager.addItemToPage(mItem); // adds the item id to the owner page's items list
 
         mStorageManager.uploadItemImages(mItem, new OnCompleteListener<UploadTask.TaskSnapshot>() {  // upload image to storage
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                mItemsDatabase.child(mItem.getId().toString()).child("has-image").setValue(true);    // triggers refreshing image
+                mDatabaseManager.refreshItemImage(mItem); // triggers refreshing image
             }
         });
     }
 
     // deletes this item from ItemCollection and from it's owner
     private void delete() {
-        DatabaseReference pageItemsDatabase = mPagesDatabase.child(mItem.getOwnerId().toString()).child("items");
-
-        mItemsDatabase.child(mItem.getId().toString()).removeValue();
-        pageItemsDatabase.child(mItem.getId().toString()).removeValue();
-
+        mDatabaseManager.deleteItem(mItem);
         mStorageManager.deleteItem(mItem);
     }
 

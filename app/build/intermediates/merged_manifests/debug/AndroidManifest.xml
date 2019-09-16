@@ -65,6 +65,9 @@
             android:name="com.liadk.android.pushit.LoginActivity"
             android:parentActivityName="com.liadk.android.pushit.HomeActivity" />
         <activity
+            android:name="com.liadk.android.pushit.CreateAccountActivity"
+            android:parentActivityName="com.liadk.android.pushit.HomeActivity" />
+        <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

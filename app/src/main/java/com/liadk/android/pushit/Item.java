@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.text.format.DateFormat;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -296,17 +295,5 @@ public class Item {
     }
 
 
-    public void pushToDB(DatabaseReference db) {
-        db.child(getId().toString()).child("title").setValue(getTitle());
-        db.child(getId().toString()).child("author").setValue(getAuthor());
-        db.child(getId().toString()).child("has-image").setValue(false); // triggers refreshing images after upload to storage
-        db.child(getId().toString()).child("time").setValue(getTimeLong());
-        db.child(getId().toString()).child("original-time").setValue(getOriginalTimeLong());
-        db.child(getId().toString()).child("owner").setValue(getOwnerId().toString());
-        db.child(getId().toString()).child("state").setValue(getState().toString());
-
-        db.child(getId().toString()).child("counter").setValue(getSegmentsCounter());
-        for(int i = 0; i <= getSegmentsCounter(); i++)
-            db.child(getId().toString()).child("text").child(i+"").setValue(getTextSegments().get(i));
-    }
+    //public void pushToDB(DatabaseReference db) { }
 }

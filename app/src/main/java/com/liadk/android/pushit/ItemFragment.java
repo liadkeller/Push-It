@@ -24,8 +24,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -40,8 +38,9 @@ public class ItemFragment extends Fragment {
     private static final int REQUEST_EDIT = 0;
 
     private Item mItem;
-    private DatabaseReference mItemsDatabase;
-    private ValueEventListener mValueEventListener;
+
+    private DatabaseManager mDatabaseManager;
+    private ValueEventListener mDatabaseListener;
 
     ImageView mImageView;
     TextView mTitleTextView;
@@ -59,13 +58,14 @@ public class ItemFragment extends Fragment {
 
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
-        mItemsDatabase = FirebaseDatabase.getInstance().getReference("items");
-        mValueEventListener = mItemsDatabase.addValueEventListener(new ValueEventListener() {
+        mDatabaseManager = DatabaseManager.get(getActivity());
+        mDatabaseListener = mDatabaseManager.addItemsListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) return;
 
                 mItem = Item.fromDB(dataSnapshot.child(id.toString()));
+
                 if(mItem != null)
                     updateUI();
             }
@@ -106,14 +106,14 @@ public class ItemFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mItemsDatabase.removeEventListener(mValueEventListener);
+        mDatabaseManager.removeItemsListener(mDatabaseListener);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(mValueEventListener != null)
-            mItemsDatabase.removeEventListener(mValueEventListener);
+        if(mDatabaseListener != null)
+            mDatabaseManager.removeItemsListener(mDatabaseListener);
     }
 
     @Override
@@ -139,13 +139,10 @@ public class ItemFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             getActivity().finish();
 
-                            DatabaseReference pageItemsDatabase = FirebaseDatabase.getInstance().getReference("pages/" + mItem.getOwnerId().toString() + "/items");
                             StorageManager storageManager = StorageManager.get(getActivity());
-
-                            mItemsDatabase.child(mItem.getId().toString()).removeValue();
-                            pageItemsDatabase.child(mItem.getId().toString()).removeValue();
-
                             storageManager.deleteItem(mItem);
+
+                            mDatabaseManager.deleteItem(mItem);
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, null)

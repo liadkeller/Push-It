@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/bottom_nav_create"
+        android:title="@string/create"
+        android:icon="@drawable/create_white">
+    </item>
+
+    <item android:id="@+id/bottom_nav_explore"
+        android:title="@string/explore"
+        android:icon="@drawable/explore_white">
+    </item>
+
+    <item android:id="@+id/bottom_nav_settings"
+    android:title="@string/settings"
+        android:icon="@drawable/settings_white">
+    </item>
+</menu>

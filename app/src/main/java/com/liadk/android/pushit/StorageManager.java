@@ -84,13 +84,9 @@ public class StorageManager {
 
 
 
-    public void uploadPageLogoImage(Page page, Uri imageUri) {
+    public void uploadPageLogoImage(UUID pageId, Uri imageUri) {
         if(imageUri == null) return;
-        uploadPageLogoImage(page.getId(), getBytesFromUri(imageUri));
-    }
-
-    public void uploadPageLogoImage(Page page, Bitmap image) {
-        uploadPageLogoImage(page.getId(), getImageBytes(image));
+        uploadPageLogoImage(pageId, getBytesFromUri(imageUri));
     }
 
     public void uploadPageLogoImage(UUID pageId, byte[] imageBytes) {

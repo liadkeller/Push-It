@@ -1196,6 +1196,7 @@ drawable notify_panel_notification_icon_bg
 drawable page_gray
 drawable peretz_bibi
 drawable preference_list_divider_material
+drawable pushit_banner
 drawable rockets_gaza
 drawable rockets_gaza2
 drawable settings_white
@@ -1230,6 +1231,7 @@ id FUNCTION
 id META
 id SHIFT
 id SYM
+id accountStatusSwitch
 id action0
 id action_bar
 id action_bar_activity_content
@@ -1287,6 +1289,7 @@ id clip_horizontal
 id clip_vertical
 id collapseActionView
 id confirmChangesButton
+id confirmPasswordEditText
 id container
 id content
 id contentPanel
@@ -1307,11 +1310,13 @@ id design_menu_item_action_area_stub
 id design_menu_item_text
 id design_navigation_view
 id detailsTextView
+id dialogImageView
 id dimensions
 id direct
 id disableHome
 id draftButton
 id edit_query
+id emailEditText
 id end
 id end_padder
 id enterAlways
@@ -1370,6 +1375,7 @@ id listMode
 id list_container
 id list_item
 id loading_text
+id loginTextView
 id logoImageView
 id mainImageView
 id mainItemEditText
@@ -1407,11 +1413,14 @@ id pageImageView
 id pageListItemLayout
 id pageLogoButton
 id pageLogoImageView
+id pageNameEditText
+id pageNameLayout
 id pageNameTextView
 id parallax
 id parent
 id parentPanel
 id parent_matrix
+id passwordEditText
 id percent
 id pin
 id placeHolder
@@ -1470,6 +1479,7 @@ id shortcut
 id showCustom
 id showHome
 id showTitle
+id signUpButton
 id smallLabel
 id snackbar_action
 id snackbar_text
@@ -1502,6 +1512,7 @@ id text2
 id textSpacerNoButtons
 id textSpacerNoTitle
 id textStart
+id textView
 id text_input_password_toggle
 id text_view_crop
 id text_view_rotate
@@ -1609,9 +1620,13 @@ layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_password_icon
 layout dialog
+layout dialog_image
+layout dialog_page_details
+layout fragment_create_account
 layout fragment_create_notification
 layout fragment_edit_item
 layout fragment_item
+layout fragment_login
 layout fragment_page_logo
 layout fragment_page_settings
 layout fragment_recycler_view
@@ -1661,6 +1676,7 @@ layout ucrop_layout_rotate_wheel
 layout ucrop_layout_scale_wheel
 layout ucrop_view
 menu bottom_nav_menu
+menu bottom_nav_menu_creator
 menu context_menu_page
 menu fragment_edit_item
 menu fragment_item
@@ -1708,6 +1724,7 @@ string abc_searchview_description_voice
 string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
+string account_created
 string account_login
 string account_page
 string account_status
@@ -1748,14 +1765,25 @@ string common_open_on_phone
 string common_signin_button_text
 string common_signin_button_text_long
 string confirm_changes
+string confirm_password
+string continue_button
 string create
 string create_article
+string create_new_page
 string create_notification
+string create_page
+string create_page_dialog
+string create_page_done_dialog
 string default_web_client_id
 string delete
+string delete_account
+string delete_account_dialog_creator
+string delete_account_dialog_follower
 string delete_article
 string delete_article_dialog
+string done
 string edit_item
+string email
 string exit
 string exit_edit_dialog
 string exit_edit_dialog_new
@@ -1788,7 +1816,10 @@ string item_time_label
 string item_title_hint
 string item_title_label
 string loading
+string logged_in
 string login
+string login_account
+string login_progress_dialog
 string mtrl_chip_close_icon_content_description
 string no
 string no_logo
@@ -1799,10 +1830,13 @@ string no_text_toast
 string no_title_toast
 string page_description
 string page_design
+string page_details_dialog_1
+string page_details_dialog_2
 string page_layout
 string page_logo
 string page_name
 string page_settings
+string password
 string password_toggle_content_description
 string path_password_eye
 string path_password_eye_mask_strike_through
@@ -1851,7 +1885,12 @@ string set_time
 string set_video_1
 string set_video_2
 string settings
+string sign_in
 string sign_out
+string sign_out_dialog
+string sign_out_progress_dialog
+string sign_up
+string sign_up_progress_dialog
 string status_bar_notification_info_overflow
 string status_creator
 string status_follower
@@ -1868,6 +1907,7 @@ string v7_preference_on
 string video_1
 string video_2
 string wrong_authority
+string wrong_credentials
 string yes
 style AlertDialog_AppCompat
 style AlertDialog_AppCompat_Light
@@ -2504,4 +2544,5 @@ styleable ucrop_AspectRatioTextView ucrop_artv_ratio_title ucrop_artv_ratio_x uc
 styleable ucrop_UCropView ucrop_aspect_ratio_x ucrop_aspect_ratio_y ucrop_circle_dimmed_layer ucrop_dimmed_color ucrop_frame_color ucrop_frame_stroke_size ucrop_grid_color ucrop_grid_column_count ucrop_grid_row_count ucrop_grid_stroke_size ucrop_show_frame ucrop_show_grid ucrop_show_oval_crop_frame
 xml picker_provider_paths
 xml preferences_app
+xml preferences_login
 xml preferences_page

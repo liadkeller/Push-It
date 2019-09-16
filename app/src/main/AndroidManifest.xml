@@ -41,6 +41,8 @@
             android:windowSoftInputMode="stateHidden|adjustResize"></activity>
         <activity android:name=".LoginActivity"
             android:parentActivityName=".HomeActivity"/>
+        <activity android:name=".CreateAccountActivity"
+            android:parentActivityName=".HomeActivity"/>
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"

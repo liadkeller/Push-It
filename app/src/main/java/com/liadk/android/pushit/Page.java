@@ -3,7 +3,6 @@ package com.liadk.android.pushit;
 import android.net.Uri;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -15,7 +14,7 @@ public class Page {
     UUID mId;
     String mName = "";
     String mDescription = "";
-    Uri mLogoImageUrl;
+    Uri mLogoImageUri;
     ArrayList<UUID> mItemsIdentifiers;
 
     PageSettings settings;
@@ -60,6 +59,12 @@ public class Page {
         mItemsIdentifiers = new ArrayList<>();
         settings = new PageSettings();
     }
+
+    public Page(String name) {
+        this();
+        mName = name;
+    }
+
 
     // only details needed for explore/follow tabs
     public static Page getPageDetailsFromDB(DataSnapshot ds) {
@@ -112,7 +117,7 @@ public class Page {
     }
 
     public void setLogoImageUrl(Uri logoImageUrl) {
-        this.mLogoImageUrl = logoImageUrl;
+        this.mLogoImageUri = logoImageUrl;
     }
 
     public void setItemsIdentifiers(ArrayList<UUID> itemsIdentifiers) {
@@ -137,7 +142,7 @@ public class Page {
     }
 
     public Uri getLogoImageUrl() {
-        return mLogoImageUrl;
+        return mLogoImageUri;
     }
 
     public ArrayList<UUID> getItemsIdentifiers() {
@@ -145,11 +150,5 @@ public class Page {
     }
     
     
-    public void pushToDB(DatabaseReference db) {
-        db.child(getId().toString()).child("name").setValue(getName());
-        db.child(getId().toString()).child("description").setValue(getDescription());
-        for(UUID itemId : getItemsIdentifiers())
-            db.child(getId().toString()).child("items").child(itemId.toString()).setValue(true);
-        db.child(getId().toString()).child("settings").child("design").setValue(settings.design.toString());
-    }
+    //public void pushToDB(DatabaseReference db) { }
 }

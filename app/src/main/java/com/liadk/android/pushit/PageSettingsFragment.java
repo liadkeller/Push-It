@@ -19,8 +19,6 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.UUID;
@@ -33,7 +31,7 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
     private static final String PAGE_LOGO = "pageLogo";
 
     private Page mPage;
-    private DatabaseReference mPagesDatabase;
+    private DatabaseManager mDatabaseManager;
 
     private ListPreference mLayoutPreference;
     private EditTextPreference mNamePreference;
@@ -46,11 +44,10 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
         setHasOptionsMenu(true);
         getActivity().setTitle(R.string.page_settings);
 
-        mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
-
         final UUID id = (UUID) getArguments().getSerializable(PageFragment.EXTRA_ID);
-        mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
-        mPagesDatabase.addValueEventListener(new ValueEventListener() {
+
+        mDatabaseManager = DatabaseManager.get(getActivity());
+        mDatabaseManager.addPagesListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) return;
@@ -108,12 +105,12 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
     private void updatePreferences() {
         mNamePreference.setText(mPage.getName());
         mNamePreference.setSummary(mPage.getName());
-        if(mPage.getName().equals(""))
+        if(mPage.getName() == null || mPage.getName().equals(""))
             mNamePreference.setSummary(R.string.choose_name_summary);
 
         mDescPreference.setText(mPage.getDescription());
         mDescPreference.setSummary(mPage.getDescription());
-        if(mPage.getDescription().equals(""))
+        if(mPage.getDescription() == null || mPage.getDescription().equals(""))
             mDescPreference.setSummary(R.string.choose_description_summary);
 
 
@@ -132,7 +129,7 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key.equals(PAGE_LAYOUT)) {
             mPage.settings.design = Page.Design.getDesign(mLayoutPreference.getEntry().toString());
-            mPagesDatabase.child(mPage.getId().toString()).child("settings").child("design").setValue(mPage.settings.design.toString()); // update database
+            mDatabaseManager.setPageDesign(mPage); // update database
 
             mLayoutPreference.setSummary(mLayoutPreference.getEntry());
         }
@@ -148,13 +145,13 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
                 if (mPage.getName().equals(""))
                     mNamePreference.setSummary(R.string.choose_name_summary);
                 else
-                    mPagesDatabase.child(mPage.getId().toString()).child("name").setValue(mPage.getName()); // update database
+                    mDatabaseManager.setPageName(mPage); // update database
             }
         }
 
         else if (key.equals(PAGE_DESC)) {
             mPage.setDescription(mDescPreference.getText());
-            mPagesDatabase.child(mPage.getId().toString()).child("description").setValue(mPage.getDescription()); // update database
+            mDatabaseManager.setPageDescription(mPage); // update database
 
             mDescPreference.setSummary(mDescPreference.getText());
             if(mPage.getDescription().equals(""))

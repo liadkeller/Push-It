@@ -29,8 +29,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -49,9 +47,8 @@ public class PageFragment extends Fragment {
     private Page mPage;
     private ArrayList<Item> mItems;
 
-    private ValueEventListener mValueEventListener;
-    private DatabaseReference mDatabase;
-    private DatabaseReference mPagesDatabase;
+    private DatabaseManager mDatabaseManager;
+    private ValueEventListener mDatabaseListener;
 
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefresh;
@@ -60,16 +57,17 @@ public class PageFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        getActivity().setTitle("");
 
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mValueEventListener = mDatabase.addValueEventListener(new ValueEventListener() {
+        mDatabaseManager = DatabaseManager.get(getActivity());
+        mDatabaseListener = mDatabaseManager.addDatabaseListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) return;
 
-                mPage = Page.fromDB(dataSnapshot.child("pages").child(id.toString())); // TODO No need to download all media segments for all items, only photos are needed
+                mPage = Page.fromDB(dataSnapshot.child("pages").child(id.toString()));
                 mItems = getItems(mPage.getItemsIdentifiers(), dataSnapshot);
 
                 if(mRecyclerView != null)
@@ -78,20 +76,20 @@ public class PageFragment extends Fragment {
                 onPageChanged();
             }
 
+            // gets a list of items IDs and a snapshot of the db and returns a list of the actual items
+            private ArrayList<Item> getItems(ArrayList<UUID> itemsIdentifiers, DataSnapshot dataSnapshot) {
+                ArrayList<Item> items = new ArrayList<>();
+                for(UUID id : itemsIdentifiers) {
+                    Item item = Item.fromDB(dataSnapshot.child("items").child(id.toString()));
+                    items.add(item);
+                }
+
+                return items;
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
-    }
-
-    // gets a list of items IDs and a snapshot of the db and returns a list of the actual items
-    private ArrayList<Item> getItems(ArrayList<UUID> itemsIds, DataSnapshot ds) {
-        ArrayList<Item> items = new ArrayList<>();
-        for(UUID id : itemsIds) {
-            Item item = Item.fromDB(ds.child("items").child(id.toString()));
-            items.add(item);
-        }
-
-        return items;
     }
 
     private void onPageChanged() {
@@ -139,14 +137,14 @@ public class PageFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mDatabase.removeEventListener(mValueEventListener);
+        mDatabaseManager.removeDatabaseListener(mDatabaseListener);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(mValueEventListener != null)
-            mDatabase.removeEventListener(mValueEventListener);
+        if(mDatabaseListener != null)
+            mDatabaseManager.removeDatabaseListener(mDatabaseListener);
     }
 
     private class PageRecycleViewAdapter extends RecyclerView.Adapter {
@@ -383,10 +381,9 @@ public class PageFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_item_create_article) {
-            DatabaseReference itemsDatabase = FirebaseDatabase.getInstance().getReference("items");
 
             Item newItem = new Item(mPage.getId());
-            newItem.pushToDB(itemsDatabase); // we add only to itemsDatabase and not to pagesDatabase - we'll add it there when we save the item in EditItemFragment
+            mDatabaseManager.pushItemToDB(newItem); // we add only to itemsDatabase and not to pagesDatabase - we'll add it there when we save the item in EditItemFragment
 
             Intent intent = new Intent(getActivity(), EditItemActivity.class);
             intent.putExtra(ItemFragment.EXTRA_ID, newItem.getId());

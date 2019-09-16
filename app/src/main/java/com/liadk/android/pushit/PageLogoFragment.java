@@ -19,11 +19,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
@@ -38,8 +33,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class PageLogoFragment extends Fragment {
 
-    private Page mPage;
-    private DatabaseReference mPagesDatabase;
+    UUID mPageId;
     private StorageManager mStorageManager;
 
     private ImageView mImageView;
@@ -54,24 +48,7 @@ public class PageLogoFragment extends Fragment {
 
         mStorageManager = StorageManager.get(getActivity());
 
-        final UUID id = (UUID) getArguments().getSerializable(PageFragment.EXTRA_ID);
-
-        mPagesDatabase = FirebaseDatabase.getInstance().getReference("pages");
-        mPagesDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() == null) return;
-
-                mPage = Page.getPageSettingsFromDB(dataSnapshot.child(id.toString()));
-                if(getView() != null) {
-                    configureImageButtonListener();
-                    onImageUpdated();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        });
+        mPageId = (UUID) getArguments().getSerializable(PageFragment.EXTRA_ID);
     }
 
     @Nullable
@@ -85,10 +62,8 @@ public class PageLogoFragment extends Fragment {
         mNoLogoTextView = (TextView) v.findViewById(R.id.noLogoTextView);
 
         // Configuring
-        if(mPage != null) {
-            configureImageButtonListener();
-            onImageUpdated();
-        }
+        configureImageButtonListener();
+        onImageUpdated();
 
         return v;
     }
@@ -127,7 +102,7 @@ public class PageLogoFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             final Uri resultUri = UCrop.getOutput(data);
-            mStorageManager.uploadPageLogoImage(mPage, resultUri); // upload image to storage
+            mStorageManager.uploadPageLogoImage(mPageId, resultUri); // upload image to storage
             onImageUpdated(resultUri);
         }
 
@@ -145,7 +120,7 @@ public class PageLogoFragment extends Fragment {
     }
 
     private void onImageUpdated() {
-        FirebaseStorage.getInstance().getReference("pages").child(mPage.getId().toString()).child("logo.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+        FirebaseStorage.getInstance().getReference("pages").child(mPageId.toString()).child("logo.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
             if(getActivity() == null) return;
@@ -154,8 +129,8 @@ public class PageLogoFragment extends Fragment {
                 mNoLogoTextView.setVisibility(View.GONE);
                 mImageView.setVisibility(View.VISIBLE);
 
-                mPage.setLogoImageUrl(task.getResult());
-                Glide.with(getActivity()).load(mPage.getLogoImageUrl()).into(mImageView);
+                Uri logoUri = task.getResult();
+                Glide.with(getActivity()).load(logoUri).into(mImageView);
             }
 
             else {
@@ -171,7 +146,7 @@ public class PageLogoFragment extends Fragment {
         if (item.getItemId() == android.R.id.home) {
             if (NavUtils.getParentActivityName(getActivity()) != null) {
                 Intent intent = NavUtils.getParentActivityIntent(getActivity());
-                intent.putExtra(PageFragment.EXTRA_ID, mPage.getId());
+                intent.putExtra(PageFragment.EXTRA_ID, mPageId);
 
                 NavUtils.navigateUpTo(getActivity(), intent);
             }

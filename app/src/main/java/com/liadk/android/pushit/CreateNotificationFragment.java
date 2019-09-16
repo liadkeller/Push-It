@@ -29,8 +29,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.vansuita.pickimage.bean.PickResult;
@@ -50,8 +48,8 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
     private PushNotification mNotification;
     private Uri mLocalImageUri;
 
-    private ValueEventListener mValueEventListener;
-    private DatabaseReference mItemsDatabase;
+    private DatabaseManager mDatabaseManager;
+    private ValueEventListener mDatabaseListener;
     StorageManager mStorageManager;
 
     private EditText mTitleEditText;
@@ -120,12 +118,12 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         ((CreateNotificationActivity) getActivity()).setOnBackPressedListener((EditItemActivity.OnBackPressedListener) this);  // this class has a "onBackPressed()" method as needed
         setHasOptionsMenu(true);
 
+        mDatabaseManager = DatabaseManager.get(getActivity());
         mStorageManager = StorageManager.get(getActivity());
 
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
-        mItemsDatabase = FirebaseDatabase.getInstance().getReference("items");
-        mValueEventListener = mItemsDatabase.addValueEventListener(new ValueEventListener() {
+        mDatabaseListener = mDatabaseManager.addItemsListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) return;
@@ -275,8 +273,6 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
     }
 
     private void onImageUpdated() {
-
-
         FirebaseStorage.getInstance().getReference("items").child(mNotification.getId().toString()).child("notification-image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
@@ -329,7 +325,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
     }
 
     private void saveChanges() {
-        mItemsDatabase.child(mItem.getId().toString()).child("state").setValue(mItem.getState().toString());
+        mDatabaseManager.updateItemState(mItem);
         mStorageManager.uploadNotificationImage(mItem); // Saves Notification Image
 
         // TODO save Notification on DB
@@ -348,14 +344,14 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
     @Override
     public void onDetach() {
         super.onDetach();
-        mItemsDatabase.removeEventListener(mValueEventListener);
+        mDatabaseManager.removeItemsListener(mDatabaseListener);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(mValueEventListener != null)
-            mItemsDatabase.removeEventListener(mValueEventListener);
+        if(mDatabaseListener != null)
+            mDatabaseManager.removeItemsListener(mDatabaseListener);
     }
 
     // The onBackPressed of the OnBackPressedListener Interface
