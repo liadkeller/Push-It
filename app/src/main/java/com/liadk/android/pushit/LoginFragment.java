@@ -104,7 +104,7 @@ public class LoginFragment extends Fragment {
         boolean valid = true;
 
         if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            mEmailEditText.setError("Enter a valid email address"); // TODO Make String Resources
+            mEmailEditText.setError(getString(R.string.enter_valid_email));
             mEmailEditText.requestFocus();
             valid = false;
         } else {
@@ -112,7 +112,7 @@ public class LoginFragment extends Fragment {
         }
 
         if (password.isEmpty() || password.length() < 6 || password.length() > 16) {
-            mPasswordEditText.setError("Enter a 6-characters password");
+            mPasswordEditText.setError(getString(R.string.enter_valid_password));
             mPasswordEditText.requestFocus();
             valid = false;
         } else {

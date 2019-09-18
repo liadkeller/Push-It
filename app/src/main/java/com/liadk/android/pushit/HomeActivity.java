@@ -133,27 +133,4 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 .replace(R.id.fragmentContainer, fragment)
                 .commit();
     }
-
-
-/*
-    public void setStatus(boolean status) {
-        if(true) setContentCreator();
-        else     setContentFollower();
-    }
-
-    public boolean getStatus() {
-        return mUserStatus;
-    }
-
-    private void setContentCreator() {
-        mUserStatus = true;
-        updateMenu();
-    }
-
-    private void setContentFollower() {
-        mUserStatus = false;
-        updateMenu();
-    }
-
- */
 }

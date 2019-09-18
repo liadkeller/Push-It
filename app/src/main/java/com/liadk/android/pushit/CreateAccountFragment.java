@@ -1,6 +1,8 @@
 package com.liadk.android.pushit;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,6 +26,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.UUID;
 
 public class CreateAccountFragment extends Fragment {
     private static final String TAG = "LoginFragment";
@@ -112,6 +116,8 @@ public class CreateAccountFragment extends Fragment {
                         progressDialog.dismiss();
 
                         if (task.isSuccessful()) {
+                            Log.d(TAG, "signUpWithEmail:success");
+
                             String userId = mAuth.getCurrentUser().getUid();
                             String pageId = null;
 
@@ -125,7 +131,32 @@ public class CreateAccountFragment extends Fragment {
                             PushItUser user = new PushItUser(email, status, pageId);
                             mDatabaseManager.pushUserToDB(user, userId);
 
-                            onSignUpSuccess();
+
+                            if(status) {
+                                final UUID finalPageId = UUID.fromString(pageId);
+
+                                AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                                        .setTitle(R.string.account_created)
+                                        .setMessage(R.string.create_page_done_dialog)
+                                        .setPositiveButton(R.string.done, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // launch Page Settings Activity of the new page
+                                                Intent i = new Intent(getActivity(), PageSettingsActivity.class);
+                                                i.putExtra(PageFragment.EXTRA_ID, finalPageId);
+                                                startActivity(i);
+                                            }
+                                        })
+                                        .create();
+
+                                alertDialog.show();
+                            }
+
+                            else {
+                                Toast.makeText(getActivity(), R.string.account_created, Toast.LENGTH_SHORT).show();
+                                NavUtils.navigateUpTo(getActivity(), new Intent(getActivity(), HomeActivity.class)); // launches HomeActivity
+
+                            }
                         }
 
                         else if(task.getException() != null) {
@@ -150,7 +181,7 @@ public class CreateAccountFragment extends Fragment {
         boolean valid = true;
 
         if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            mEmailEditText.setError("Enter a valid email address"); // TODO Make String Resources
+            mEmailEditText.setError(getString(R.string.enter_valid_email));
             mEmailEditText.requestFocus();
             valid = false;
         }
@@ -161,7 +192,7 @@ public class CreateAccountFragment extends Fragment {
 
 
         if (password.isEmpty() || password.length() < 6 || password.length() > 16) {
-            mPasswordEditText.setError("Enter a 6-characters password");
+            mPasswordEditText.setError(getString(R.string.enter_valid_password));
             mPasswordEditText.requestFocus();
             valid = false;
         }
@@ -172,7 +203,7 @@ public class CreateAccountFragment extends Fragment {
 
 
         if(!password.equals(confirmPassword)) {
-            mConfirmPasswordEditText.setError("Passwords don't match");
+            mConfirmPasswordEditText.setError(getString(R.string.passwords_dont_match));
             mConfirmPasswordEditText.requestFocus();
             valid = false;
         }
@@ -183,7 +214,7 @@ public class CreateAccountFragment extends Fragment {
 
 
         if(status && pageName.isEmpty()) {
-            mPageNameEditText.setError("Enter page name");
+            mPageNameEditText.setError(getString(R.string.enter_page_name));
             mPageNameEditText.requestFocus();
             valid = false;
         }
@@ -194,12 +225,6 @@ public class CreateAccountFragment extends Fragment {
 
 
         return valid;
-    }
-
-    private void onSignUpSuccess() {
-        Log.d(TAG, "signUpWithEmail:success");
-        Toast.makeText(getActivity(), R.string.account_created, Toast.LENGTH_SHORT).show();
-        NavUtils.navigateUpTo(getActivity(), new Intent(getActivity(), HomeActivity.class)); // launches HomeActivity
     }
 
     private void onSignUpFailed(String errorMsg) {

@@ -119,6 +119,7 @@
     <string name="status_creator">Content Creator</string>
     <string name="status_follower">Content Follower</string>
     <string name="account_page">My Page Settings</string>
+    <string name="delete_page">Delete Page</string>
     <string name="delete_account">Delete Account</string>
     <string name="sign_out">Sign Out</string>
 
@@ -133,12 +134,14 @@
     <string name="login_account">Login to Existing Account</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="sign_up_progress_dialog">Creating New Account...</string>
-    <string name="account_created">Account was successfully created.</string>
+    <string name="account_created">Account Created</string>
+    <string name="account_created_toast">Account was successfully created.</string>
     <string name="logged_in">Successfully logged in.</string>
     <string name="sign_out_progress_dialog">Signing Out...</string>
 
-    <string name="delete_account_dialog_creator">Are you sure you want to delete this account?\n\nAll of your page data including all articles you created will be lost forever.</string>
+    <string name="delete_account_dialog_creator">Are you sure you want to delete this account?\n\nAll of your page data including all of the articles you created will be lost forever.</string>
     <string name="delete_account_dialog_follower">Are you sure you want to delete this account?\n\nAll of your account data including the pages you follow will be lost.</string>
+    <string name="delete_page_dialog">Are you sure you want to delete this page?\n\nAll of your page data including all of the articles you created will be lost.</string>
     <string name="create_page">Create Page</string>
     <string name="create_page_dialog">Would you like to create your own page and become a Content Creator?</string>
     <string name="continue_button">Continue</string>
@@ -148,5 +151,14 @@
     <string name="page_details_dialog_1">Pick a name for your new page.</string>
     <string name="page_details_dialog_2">You can change your page name and description at any time at the page settings screen.</string>
     <string name="sign_out_dialog">Are you sure you want to sign out?</string>
+    <string name="page_created">Page Created</string>
+    <string name="restore_page">Restore Page</string>
+    <string name="restore_page_dialog">Would you like to restore your previous page?\n\nIf you choose to create a new page, it won\'t be possible to recover your previous data.</string>
+    <string name="restore">Restore</string>
+    <string name="enter_valid_email">Enter a valid email address</string>
+    <string name="enter_valid_password">Enter a 6-characters password</string>
+    <string name="passwords_dont_match">Passwords don\'t match</string>
+    <string name="enter_page_name">Enter page name</string>
+    <string name="enter_valid_page_name">You must enter a valid page name</string>
 
 </resources>

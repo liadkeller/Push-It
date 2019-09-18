@@ -44,7 +44,15 @@ public class PushItUser {
     }
 
     public void addPage(String pageId) {
-        status = true;
+        this.status = true;
         this.pageId = pageId;
+    }
+
+    public void setContentCreator() {
+        this.status = true;
+    }
+
+    public void setContentFollower() {
+        this.status = false;
     }
 }

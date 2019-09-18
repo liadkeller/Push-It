@@ -135,7 +135,12 @@ public class DatabaseManager {
         // if(user.getStatus()) deletePage(user.getPageId());                      TODO Tremendously DANGEROUS!
     }
 
-    private void deletePage(final String pageId) {
+    public void deletePage(final String pageId) {
+        // Currently deletes the page entry but doesn't delete the items data (title, article text, images)
+        // This means the page can be easily recovered, but that the data keeps using the cloud space (might wanna delete the items data 30 days after user deletion)
+        // If a decision to commit hard delete of the items data is made, including all text and media files, you should consider very cautiously whether to call this function (i. e. in deleteUser())
+        // You should also consider whether the items media should be deleted from the storage
+
         if(pageId == null) return;
 
         mPagesDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -143,10 +148,10 @@ public class DatabaseManager {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Page page = Page.fromDB(dataSnapshot.child("pages").child(pageId));
 
-                mPagesDatabase.child(pageId).removeValue();                                        // delete page
+                mPagesDatabase.child(pageId).removeValue();                                         // delete page
 
-                for(UUID itemId : page.getItemsIdentifiers())                                      // delete page items
-                    mItemsDatabase.child(itemId.toString()).child("owner-deleted").setValue(true); // instead of deleting the items for good, keep them for temp period
+                for(UUID itemId : page.getItemsIdentifiers())                                       // delete page items
+                    mItemsDatabase.child(itemId.toString()).child("owner-deleted").setValue(true);  // instead of deleting the items for good, keep them for temp period
             }
 
             @Override

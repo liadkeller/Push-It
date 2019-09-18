@@ -1725,6 +1725,7 @@ string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
 string account_created
+string account_created_toast
 string account_login
 string account_page
 string account_status
@@ -1781,9 +1782,15 @@ string delete_account_dialog_creator
 string delete_account_dialog_follower
 string delete_article
 string delete_article_dialog
+string delete_page
+string delete_page_dialog
 string done
 string edit_item
 string email
+string enter_page_name
+string enter_valid_email
+string enter_valid_page_name
+string enter_valid_password
 string exit
 string exit_edit_dialog
 string exit_edit_dialog_new
@@ -1828,6 +1835,7 @@ string no_page_name_toast
 string no_providers
 string no_text_toast
 string no_title_toast
+string page_created
 string page_description
 string page_design
 string page_details_dialog_1
@@ -1838,6 +1846,7 @@ string page_name
 string page_settings
 string password
 string password_toggle_content_description
+string passwords_dont_match
 string path_password_eye
 string path_password_eye_mask_strike_through
 string path_password_eye_mask_visible
@@ -1865,6 +1874,9 @@ string push_title_label
 string remove_image
 string remove_image_dialog
 string remove_video
+string restore
+string restore_page
+string restore_page_dialog
 string save
 string save_changes
 string save_changes_dialog
@@ -2544,5 +2556,6 @@ styleable ucrop_AspectRatioTextView ucrop_artv_ratio_title ucrop_artv_ratio_x uc
 styleable ucrop_UCropView ucrop_aspect_ratio_x ucrop_aspect_ratio_y ucrop_circle_dimmed_layer ucrop_dimmed_color ucrop_frame_color ucrop_frame_stroke_size ucrop_grid_color ucrop_grid_column_count ucrop_grid_row_count ucrop_grid_stroke_size ucrop_show_frame ucrop_show_grid ucrop_show_oval_crop_frame
 xml picker_provider_paths
 xml preferences_app
+xml preferences_app_content_creator
 xml preferences_login
 xml preferences_page

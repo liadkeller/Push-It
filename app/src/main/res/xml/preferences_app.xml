@@ -14,11 +14,6 @@
             android:summary="@string/status_creator"/>
 
         <Preference
-            android:key="pageSettings"
-            android:icon="@drawable/page_gray"
-            android:title="@string/account_page"/>
-
-        <Preference
             android:key="signOut"
             android:icon="@drawable/signout_gray"
             android:title="@string/sign_out"/>

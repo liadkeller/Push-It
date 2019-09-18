@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceCategory;
@@ -35,7 +36,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private static final String MY_ACCOUNT = "myAccount";
     private static final String ACCOUNT_EMAIL = "accountEmail";
     private static final String ACCOUNT_STATUS = "accountStatus";
-    private static final String PAGE_SETTINGS = "pageSettings";
     private static final String ACCOUNT_SIGN_OUT = "signOut";
     private static final String ACCOUNT_DELETE = "accountDelete";
 
@@ -49,9 +49,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private PreferenceCategory mMyAccountCategory;
     private Preference mEmailPreference;
     private SwitchPreference mStatusPreference;
-    private Preference mPageSettingsPreference;
     private Preference mSignOutPreference;
-    private Preference mDeletePreference;
+    private Preference mDeleteAccountPreference;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,22 +61,22 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
-        mAuth = FirebaseAuth.getInstance();
         mDatabaseManager = DatabaseManager.get(getActivity());
+        mAuth = FirebaseAuth.getInstance();
 
         addPreferencesFromResource(R.xml.preferences_app);
 
         mMyAccountCategory = (PreferenceCategory) findPreference(MY_ACCOUNT);
         mEmailPreference = findPreference(ACCOUNT_EMAIL);
         mStatusPreference = (SwitchPreference) findPreference(ACCOUNT_STATUS);
-        mPageSettingsPreference = findPreference(PAGE_SETTINGS);
         mSignOutPreference = findPreference(ACCOUNT_SIGN_OUT);
-        mDeletePreference = findPreference(ACCOUNT_DELETE);
+        mDeleteAccountPreference = findPreference(ACCOUNT_DELETE);
+
 
         FirebaseUser user = mAuth.getCurrentUser();
 
         if(user == null) {
-            replaceFragment();
+            replaceFragment(null);
             return;
         }
 
@@ -87,6 +86,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
+
+                if(replaceFragment(user)) return;
                 updatePreferences(user, userId);
             }
 
@@ -95,19 +96,37 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
     }
 
-    private void replaceFragment() {
+    // replaced fragment according to user status if necessary
+    private boolean replaceFragment(PushItUser user) {
+        Fragment fragment = null;
+
+        if(user == null)
+            fragment = new LoginSettingsFragment();
+
+        else if(user.getStatus())
+            fragment = new ContentCreatorSettingsFragment();
+
+        else
+            return false; // user status = false (content follower) thus current fragment ok
+
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, new LoginSettingsFragment())
+                .replace(R.id.fragmentContainer, fragment)
                 .commit();
+
+        return true;
     }
 
-    private void updatePreferences(final PushItUser user, final String userId) {
+    private void refreshUserStatus(PushItUser user) {
+        replaceFragment(user);
+        ((HomeActivity) getActivity()).getUserStatus();
+    }
+
+    protected void updatePreferences(final PushItUser user, final String userId) {
         mEmailPreference.setTitle(user.getEmail());
 
         int statusSummary = (user.getStatus()) ? R.string.status_creator : R.string.status_follower;
         mStatusPreference.setChecked(user.getStatus());
-        //mStatusPreference.setEnabled(!user.getStatus()); // if status is true, we would like to disable it. if false, we want to let the user have the option of creating a page
         mStatusPreference.setSummary(statusSummary);
 
         mStatusPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -115,20 +134,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 boolean status = (boolean) newValue;
 
-                if(status)
-                    showCreatePageDialog();
+                if(status) {
+                    if(user.getPageId() != null)
+                        showRestorePageDialog(user, userId);   // TODO Decide if restoration can be done that easily, might be if page entries aren't deleted from db but only status is set to false. If ARE deleted, restoring the page entry might not be THAT hard
 
-                return false; // TODO Check
-            }
-        });
+                    else
+                        showCreatePageDialog();
+                }
 
-        mPageSettingsPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(getActivity(), PageSettingsActivity.class);
-                i.putExtra(PageFragment.EXTRA_ID, UUID.fromString(user.getPageId()));
-                startActivity(i);
-                return true;
+                return false;
             }
         });
 
@@ -154,11 +168,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
 
-            private void onSignedOut() {
-                replaceFragment();
-                ((HomeActivity) getActivity()).getUserStatus();
-            }
-
             private ProgressDialog showProgressDialog(String string) {
                 final ProgressDialog progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setIndeterminate(true);
@@ -172,13 +181,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         new Runnable() {
                             public void run() {
                                 progressDialog.dismiss();
-                                onSignedOut();
+                                refreshUserStatus(null);
                             }
                         }, delayMillis);
             }
         });
 
-        mDeletePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        mDeleteAccountPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 int dialogMsg = mStatusPreference.isChecked() ? R.string.delete_account_dialog_creator : R.string.delete_account_dialog_follower;
@@ -205,6 +214,35 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
     }
 
+    private void showRestorePageDialog(final PushItUser user, final String userId) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.restore_page)
+                .setMessage(R.string.restore_page_dialog)
+                .setPositiveButton(R.string.restore, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        user.setContentCreator();
+
+                        mDatabaseManager.pushUserToDB(user, userId, new OnCompleteListener() {
+                            @Override
+                            public void onComplete(@NonNull Task task) {
+                                refreshUserStatus(user);
+                            }
+                        });
+                    }
+                })
+                .setNeutralButton(android.R.string.cancel, null)
+                .setNegativeButton(R.string.create_new_page, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        showCreatePageDialog();
+                    }
+                })
+                .create();
+
+        alertDialog.show();
+    }
+
     private void showCreatePageDialog() {
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_image, null);
         ((ImageView) v.findViewById(R.id.dialogImageView)).setImageResource(R.drawable.pushit_banner);
@@ -223,7 +261,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 PageDetailsDialogFragment pageDetailsDialogFragment = new PageDetailsDialogFragment();
                 pageDetailsDialogFragment.setArguments(args);
-                pageDetailsDialogFragment.setTargetFragment(SettingsFragment.this, REQUEST_PAGE_DETAILS);
+                pageDetailsDialogFragment.setTargetFragment(
+                        SettingsFragment.this, REQUEST_PAGE_DETAILS);
                 pageDetailsDialogFragment.show(fm, DIALOG_PAGE);
 
                 alertDialog.dismiss();
@@ -237,9 +276,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_PAGE_DETAILS) {
             if(resultCode == Activity.RESULT_OK) {
-                mStatusPreference.setChecked(true);
-                mStatusPreference.setSummary(R.string.status_creator);  // TODO Check
-
                 String pageName = data.getStringExtra(PageDetailsDialogFragment.EXTRA_NAME);
                 Page newPage = new Page(pageName);
 
@@ -253,31 +289,33 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         if(mAuth.getCurrentUser() == null) return;
 
                         String userId = mAuth.getCurrentUser().getUid();
-                        PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
-                        user.addPage(pageId);
+                        final PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
+                        user.addPage(pageId); // from here, user status is 'Creator'
 
                         mDatabaseManager.pushUserToDB(user, userId, new OnCompleteListener() {
                             @Override
                             public void onComplete(@NonNull Task task) {
                                 ((HomeActivity) getActivity()).getUserStatus();
+
+                                AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                                        .setTitle(R.string.page_created)
+                                        .setMessage(R.string.create_page_done_dialog)
+                                        .setPositiveButton(R.string.done, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                replaceFragment(user);
+
+                                                // launch Page Settings Activity of the new page
+                                                Intent i = new Intent(getActivity(), PageSettingsActivity.class);
+                                                i.putExtra(PageFragment.EXTRA_ID, UUID.fromString(pageId));
+                                                startActivity(i);
+                                            }
+                                        })
+                                        .create();
+
+                                alertDialog.show();
                             }
                         });
-
-                        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                                .setTitle(R.string.create_page)
-                                .setMessage(R.string.create_page_done_dialog)
-                                .setPositiveButton(R.string.done, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // launch Page Settings Activity of the new page
-                                        Intent i = new Intent(getActivity(), PageSettingsActivity.class);
-                                        i.putExtra(PageFragment.EXTRA_ID, UUID.fromString(pageId));
-                                        startActivity(i);
-                                    }
-                                })
-                                .create();
-
-                        alertDialog.show();
                     }
 
                     @Override
@@ -301,10 +339,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     public static class PageDetailsDialogFragment extends DialogFragment {
 
-        private static final String EXTRA_NAME = "name";
-        private static final String EXTRA_DESC = "description";
-
-        private static final String ARG_NAME_ERROR = "nameError";
+        static final String EXTRA_NAME = "name";
+        static final String ARG_NAME_ERROR = "nameError";
 
         @NonNull
         @Override
@@ -314,7 +350,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             final EditText pageNameEditText = v.findViewById(R.id.pageNameEditText);
 
             if(getArguments().getBoolean(ARG_NAME_ERROR)) {
-                pageNameEditText.setError("You must enter a valid page name"); // TODO String Resource
+                pageNameEditText.setError(getString(R.string.enter_valid_page_name));
             }
 
             return new AlertDialog.Builder(getActivity())
