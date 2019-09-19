@@ -20,7 +20,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +53,9 @@ public class PageFragment extends Fragment {
     private ValueEventListener mDatabaseListener;
 
     private RecyclerView mRecyclerView;
+    private LinearLayout mEmptyView;
     private SwipeRefreshLayout mSwipeRefresh;
+    private Button mAddArticleButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,7 +75,7 @@ public class PageFragment extends Fragment {
                 mItems = getItems(mPage.getItemsIdentifiers(), dataSnapshot);
 
                 if(mRecyclerView != null)
-                    ((PageRecycleViewAdapter) mRecyclerView.getAdapter()).setItems(mItems);
+                    configureAdapter(mItems);
 
                 onPageChanged();
             }
@@ -104,28 +108,73 @@ public class PageFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_recycler_view_refresh, container, false);
+        View v = inflater.inflate(R.layout.fragment_page, container, false);
 
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        mRecyclerView = v.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(new PageRecycleViewAdapter(getActivity()));
+
+        mEmptyView = v.findViewById(R.id.emptyView);
+        mAddArticleButton = v.findViewById(R.id.addArticleButton);
+        mAddArticleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createNewItem();
+            }
+        });
+
+        final PageRecycleViewAdapter adapter = new PageRecycleViewAdapter(getActivity());
+        mRecyclerView.setAdapter(adapter);
+
         if(mItems != null)
-            ((PageRecycleViewAdapter) mRecyclerView.getAdapter()).setItems(mItems);
+            configureAdapter(mItems);
 
         final int PADDING_SIZE = (int) (4 * (getResources().getDisplayMetrics().density) + 0.5f); // 4dp
         mRecyclerView.setPadding(0, PADDING_SIZE, 0, PADDING_SIZE);
+
 
         mSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // TODO Refresh
                 mRecyclerView.getAdapter().notifyDataSetChanged();
                 mSwipeRefresh.setRefreshing(false);
             }
         });
 
         return v;
+    }
+
+    private void configureAdapter(ArrayList<Item> items) {
+
+        final PageRecycleViewAdapter adapter = (PageRecycleViewAdapter) mRecyclerView.getAdapter();
+
+        adapter.setItems(items);
+        mEmptyView.setVisibility(items.size() == 0 ? View.VISIBLE : View.GONE);
+
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() { // checks if recycler view empty
+
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                checkEmpty();
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                checkEmpty();
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                checkEmpty();
+            }
+
+            void checkEmpty() {
+                mEmptyView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     @Override
@@ -380,16 +429,8 @@ public class PageFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_item_create_article) {
-
-            Item newItem = new Item(mPage.getId());
-            mDatabaseManager.pushItemToDB(newItem); // we add only to itemsDatabase and not to pagesDatabase - we'll add it there when we save the item in EditItemFragment
-
-            Intent intent = new Intent(getActivity(), EditItemActivity.class);
-            intent.putExtra(ItemFragment.EXTRA_ID, newItem.getId());
-            startActivity(intent);
-            return true;
-        }
+        if(item.getItemId() == R.id.menu_item_create_article)
+            return createNewItem();
 
         else if(item.getItemId() == R.id.menu_item_page_settings) {
 
@@ -408,6 +449,16 @@ public class PageFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean createNewItem() {
+        Item newItem = new Item(mPage.getId());
+        mDatabaseManager.pushItemToDB(newItem); // we add only to itemsDatabase and not to pagesDatabase - we'll add it there when we save the item in EditItemFragment
+
+        Intent intent = new Intent(getActivity(), EditItemActivity.class);
+        intent.putExtra(ItemFragment.EXTRA_ID, newItem.getId());
+        startActivity(intent);
+        return true;
     }
 
 

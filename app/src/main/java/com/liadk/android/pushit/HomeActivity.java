@@ -35,14 +35,18 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseManager = DatabaseManager.get(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         getUserStatus();
 
         mBottomNavigationView = findViewById(R.id.bottomNavigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);
         onStatusUpdated();
 
-        // Default Fragment TODO Depends on the fact Create is the default option
-        Fragment defaultFragment = new ExploreFragment();//PageFragment.newInstance(RANDOM_FAMILIAR_ID);
+        Fragment defaultFragment = new ExploreFragment();
         loadFragment(defaultFragment);
     }
 
@@ -117,8 +121,13 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         else if(item.getItemId() == R.id.bottom_nav_explore)
             fragment = new ExploreFragment();
 
-        else if(item.getItemId() == R.id.bottom_nav_settings)
-            fragment = new SettingsFragment();
+        else if(item.getItemId() == R.id.bottom_nav_settings) {
+            if(mUserStatus)
+                fragment = new ContentCreatorSettingsFragment();
+
+            else
+                fragment = new SettingsFragment();
+        }
 
 
         if(fragment != null)

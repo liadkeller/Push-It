@@ -160,5 +160,9 @@
     <string name="passwords_dont_match">Passwords don\'t match</string>
     <string name="enter_page_name">Enter page name</string>
     <string name="enter_valid_page_name">You must enter a valid page name</string>
+    <string name="delete_page_progress_dialog">Deleting Page...</string>
+    <string name="delete_account_progress_dialog">Deleting Account...</string>
+    <string name="no_articles">No Articles</string>
+    <string name="add_article">Add Article</string>
 
 </resources>

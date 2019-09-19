@@ -257,7 +257,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         removeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showClickDialog(R.string.remove_image, R.string.delete, R.string.remove_image_dialog, new DialogInterface.OnClickListener() {
+                showOnClickDialog(R.string.remove_image, R.string.delete, R.string.remove_image_dialog, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         mStorageManager.deleteItemIImage(mItem, new OnCompleteListener<Void>() {
@@ -337,7 +337,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
                 int msg = (mItem.getState() == PUBLISHED) ? (R.string.save_changes_dialog_published) : (R.string.save_changes_dialog);
 
-                showClickDialog(R.string.save_changes, R.string.save, msg, new DialogInterface.OnClickListener() {
+                showOnClickDialog(R.string.save_changes, R.string.save, msg, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         saveChanges();
@@ -359,7 +359,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                         mDatabaseManager.pushItemToDB(mItem); // saves changes in the db without adding to page
                     }
 
-                    showClickDialog(R.string.publish_article, R.string.publish, R.string.publish_article_dialog, new DialogInterface.OnClickListener() {
+                    showOnClickDialog(R.string.publish_article, R.string.publish, R.string.publish_article_dialog, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent i = new Intent(getActivity(), CreateNotificationActivity.class);
@@ -378,7 +378,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                     Toast.makeText(getActivity(), R.string.no_title_toast, Toast.LENGTH_SHORT).show();
 
                 else {
-                    showClickDialog(R.string.post_article, R.string.post, R.string.post_article_dialog, new DialogInterface.OnClickListener() {
+                    showOnClickDialog(R.string.post_article, R.string.post, R.string.post_article_dialog, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             showTimeDialogOnStateCreated();
@@ -395,7 +395,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                     Toast.makeText(getActivity(), R.string.no_title_toast, Toast.LENGTH_SHORT).show();
 
                 else {
-                    showClickDialog(R.string.save_draft, R.string.save, R.string.save_draft_dialog, new DialogInterface.OnClickListener() {
+                    showOnClickDialog(R.string.save_draft, R.string.save, R.string.save_draft_dialog, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             updateState(DRAFT);
@@ -409,7 +409,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showClickDialog(R.string.delete_article, R.string.delete, R.string.delete_article_dialog, new DialogInterface.OnClickListener() {
+                showOnClickDialog(R.string.delete_article, R.string.delete, R.string.delete_article_dialog, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().setResult(Activity.RESULT_CANCELED);
@@ -696,7 +696,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
     }
 
 
-    private void showClickDialog(int title, int positiveButtonString, int msg, DialogInterface.OnClickListener onClickListener) {
+    private void showOnClickDialog(int title, int positiveButtonString, int msg, DialogInterface.OnClickListener onClickListener) {
 
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setTitle(title)

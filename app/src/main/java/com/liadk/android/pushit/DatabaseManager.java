@@ -131,6 +131,10 @@ public class DatabaseManager {
     }
 
     public void deleteUser(PushItUser user, String userId) {
+        // Currently Deletes the user from the db
+        // Does not delete any page linked to it
+        // If page deletion is enabled, the page entry will be deleted but the items entries will be marked as deleted and will be kept
+
         mUsersDatabase.child(userId).removeValue();
         // if(user.getStatus()) deletePage(user.getPageId());                      TODO Tremendously DANGEROUS!
     }

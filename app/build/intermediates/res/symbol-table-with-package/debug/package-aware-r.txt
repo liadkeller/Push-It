@@ -1156,6 +1156,8 @@ drawable common_google_signin_btn_text_light_focused
 drawable common_google_signin_btn_text_light_normal
 drawable common_google_signin_btn_text_light_normal_background
 drawable create_white
+drawable delete_gray
+drawable delete_red
 drawable design_bottom_navigation_item_background
 drawable design_fab_background
 drawable design_ic_visibility
@@ -1253,6 +1255,7 @@ id action_text
 id actions
 id activity_chooser_view_content
 id add
+id addArticleButton
 id addPhotoButton
 id adjust_height
 id adjust_width
@@ -1317,6 +1320,7 @@ id disableHome
 id draftButton
 id edit_query
 id emailEditText
+id emptyView
 id end
 id end_padder
 id enterAlways
@@ -1627,10 +1631,10 @@ layout fragment_create_notification
 layout fragment_edit_item
 layout fragment_item
 layout fragment_login
+layout fragment_page
 layout fragment_page_logo
 layout fragment_page_settings
 layout fragment_recycler_view
-layout fragment_recycler_view_refresh
 layout layout_item_card
 layout layout_item_card_header
 layout layout_item_card_no_image
@@ -1731,6 +1735,7 @@ string account_page
 string account_status
 string account_title
 string activity_destroyed
+string add_article
 string add_photo
 string add_text_hint
 string add_video
@@ -1780,10 +1785,12 @@ string delete
 string delete_account
 string delete_account_dialog_creator
 string delete_account_dialog_follower
+string delete_account_progress_dialog
 string delete_article
 string delete_article_dialog
 string delete_page
 string delete_page_dialog
+string delete_page_progress_dialog
 string done
 string edit_item
 string email
@@ -1829,6 +1836,7 @@ string login_account
 string login_progress_dialog
 string mtrl_chip_close_icon_content_description
 string no
+string no_articles
 string no_logo
 string no_notification_title_toast
 string no_page_name_toast

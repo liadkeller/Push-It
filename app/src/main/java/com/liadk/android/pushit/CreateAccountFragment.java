@@ -141,6 +141,8 @@ public class CreateAccountFragment extends Fragment {
                                         .setPositiveButton(R.string.done, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
+                                                getActivity().finish();
+
                                                 // launch Page Settings Activity of the new page
                                                 Intent i = new Intent(getActivity(), PageSettingsActivity.class);
                                                 i.putExtra(PageFragment.EXTRA_ID, finalPageId);
@@ -155,7 +157,6 @@ public class CreateAccountFragment extends Fragment {
                             else {
                                 Toast.makeText(getActivity(), R.string.account_created, Toast.LENGTH_SHORT).show();
                                 NavUtils.navigateUpTo(getActivity(), new Intent(getActivity(), HomeActivity.class)); // launches HomeActivity
-
                             }
                         }
 

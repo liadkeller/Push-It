@@ -20,6 +20,7 @@
 
         <Preference
             android:key="pageDelete"
+            android:icon="@drawable/delete_gray"
             android:title="@string/delete_page"/>
 
         <Preference
@@ -31,6 +32,7 @@
     <PreferenceCategory android:title="@string/delete_account">
         <Preference
             android:key="accountDelete"
+            android:icon="@drawable/delete_red"
             android:title="@string/delete_account"/> <!-- android:icon="@drawable/delete_red" -->
     </PreferenceCategory>
 </PreferenceScreen>

@@ -33,24 +33,25 @@ import java.util.UUID;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-    private static final String MY_ACCOUNT = "myAccount";
-    private static final String ACCOUNT_EMAIL = "accountEmail";
-    private static final String ACCOUNT_STATUS = "accountStatus";
-    private static final String ACCOUNT_SIGN_OUT = "signOut";
-    private static final String ACCOUNT_DELETE = "accountDelete";
+    protected static final String MY_ACCOUNT = "myAccount";
+    protected static final String ACCOUNT_EMAIL = "accountEmail";
+    protected static final String ACCOUNT_STATUS = "accountStatus";
+    protected static final String ACCOUNT_SIGN_OUT = "signOut";
+    protected static final String ACCOUNT_DELETE = "accountDelete";
 
-    private static final String DIALOG_PAGE = "pageDialog";
-    private static final int REQUEST_PAGE_DETAILS = 0;
+    protected static final String DIALOG_PAGE = "pageDialog";
+    protected static final int REQUEST_PAGE_DETAILS = 0;
+    protected static final int DELAY = 700;
 
 
-    private FirebaseAuth mAuth;
-    private DatabaseManager mDatabaseManager;
+    protected FirebaseAuth mAuth;
+    protected DatabaseManager mDatabaseManager;
 
-    private PreferenceCategory mMyAccountCategory;
-    private Preference mEmailPreference;
-    private SwitchPreference mStatusPreference;
-    private Preference mSignOutPreference;
-    private Preference mDeleteAccountPreference;
+    protected PreferenceCategory mMyAccountCategory;
+    protected Preference mEmailPreference;
+    protected SwitchPreference mStatusPreference;
+    protected Preference mSignOutPreference;
+    protected Preference mDeleteAccountPreference;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,7 +89,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
 
                 if(replaceFragment(user)) return;
-                updatePreferences(user, userId);
+
+                configureAccountPreferences(user, userId);
             }
 
             @Override
@@ -117,12 +119,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         return true;
     }
 
-    private void refreshUserStatus(PushItUser user) {
+    protected void refreshUserStatus(PushItUser user) {
         replaceFragment(user);
         ((HomeActivity) getActivity()).getUserStatus();
     }
 
-    protected void updatePreferences(final PushItUser user, final String userId) {
+    protected void configureAccountPreferences(final PushItUser user, final String userId) {
         mEmailPreference.setTitle(user.getEmail());
 
         int statusSummary = (user.getStatus()) ? R.string.status_creator : R.string.status_follower;
@@ -149,41 +151,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         mSignOutPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                showOnClickDialog(R.string.sign_out, R.string.sign_out, R.string.sign_out_dialog, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ProgressDialog progressDialog = showProgressDialog(getString(R.string.sign_out_progress_dialog));
+                        mAuth.signOut();
+                        dismissProgressDialog(progressDialog, null, DELAY);
+                    }
+                });
 
-                AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.sign_out)
-                        .setMessage(R.string.sign_out_dialog)
-                        .setPositiveButton(R.string.sign_out, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ProgressDialog progressDialog = showProgressDialog(getString(R.string.sign_out_progress_dialog));
-                                mAuth.signOut();
-                                dismissProgressDialog(progressDialog, 700);
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .create();
-
-                alertDialog.show();
                 return true;
-            }
-
-            private ProgressDialog showProgressDialog(String string) {
-                final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage(string);
-                progressDialog.show();
-                return progressDialog;
-            }
-
-            private void dismissProgressDialog(final ProgressDialog progressDialog, final int delayMillis) {
-                new android.os.Handler().postDelayed(
-                        new Runnable() {
-                            public void run() {
-                                progressDialog.dismiss();
-                                refreshUserStatus(null);
-                            }
-                        }, delayMillis);
             }
         });
 
@@ -192,26 +169,52 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             public boolean onPreferenceClick(Preference preference) {
                 int dialogMsg = mStatusPreference.isChecked() ? R.string.delete_account_dialog_creator : R.string.delete_account_dialog_follower;
 
-                AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.delete_account)
-                        .setMessage(dialogMsg)
-                        .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mDatabaseManager.deleteUser(user, userId); // delete user data from db
+                showOnClickDialog(R.string.delete_account, R.string.delete, dialogMsg, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ProgressDialog progressDialog = showProgressDialog(getString(R.string.delete_account_progress_dialog));
+                        mDatabaseManager.deleteUser(user, userId); // delete user data from db
 
-                                // delete user from authentication data source
-                                if(mAuth.getCurrentUser() != null && mAuth.getCurrentUser().getUid() == userId)
-                                    mAuth.getCurrentUser().delete();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .create();
+                        // delete user from authentication data source
+                        if(mAuth.getCurrentUser() != null && mAuth.getCurrentUser().getUid() == userId)
+                            mAuth.getCurrentUser().delete();
 
-                alertDialog.show();
+                        dismissProgressDialog(progressDialog, null, DELAY);
+                    }
+                });
+
                 return true;
             }
         });
+    }
+
+    protected void showOnClickDialog(int title, int positiveButtonString, int msg, DialogInterface.OnClickListener onClickListener) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setTitle(title)
+                .setMessage(msg)
+                .setPositiveButton(positiveButtonString, onClickListener)
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
+
+        alertDialog.show();
+    }
+
+    protected ProgressDialog showProgressDialog(String string) {
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(string);
+        progressDialog.show();
+        return progressDialog;
+    }
+
+    protected void dismissProgressDialog(final ProgressDialog progressDialog, final PushItUser user, final int delayMillis) {
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                        refreshUserStatus(user);
+                    }
+                }, delayMillis);
     }
 
     private void showRestorePageDialog(final PushItUser user, final String userId) {
