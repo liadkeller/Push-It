@@ -165,4 +165,10 @@
     <string name="no_articles">No Articles</string>
     <string name="add_article">Add Article</string>
 
+    <string name="follow_page">Follow Page</string>
+    <string name="unfollow_page">Unfollow Page</string>
+    <string name="follow">Follow</string>
+    <string name="login_to_follow">Login to Follow Pages</string>
+    <string name="no_pages">No Pages Are Followed</string>
+
 </resources>

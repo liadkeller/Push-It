@@ -9,7 +9,8 @@
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomNavigation"/>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottomNavigation"
@@ -19,5 +20,6 @@
         android:background="@color/colorPrimary"
         app:itemBackground="@color/colorPrimary"
         app:itemIconTint="@android:color/white"
-        app:itemTextColor="@android:color/white"/>
+        app:itemTextColor="@android:color/white"
+        app:labelVisibilityMode="labeled"/>
 </RelativeLayout>

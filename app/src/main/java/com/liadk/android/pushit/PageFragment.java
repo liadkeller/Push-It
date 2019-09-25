@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,12 +28,15 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.UUID;
 
 public class PageFragment extends Fragment {
@@ -48,7 +50,10 @@ public class PageFragment extends Fragment {
 
     private Page mPage;
     private ArrayList<Item> mItems;
+    private PushItUser mUser;
+    private String mUserId;
 
+    private FirebaseAuth mAuth;
     private DatabaseManager mDatabaseManager;
     private ValueEventListener mDatabaseListener;
 
@@ -65,6 +70,7 @@ public class PageFragment extends Fragment {
 
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
+        mAuth = FirebaseAuth.getInstance();
         mDatabaseManager = DatabaseManager.get(getActivity());
         mDatabaseListener = mDatabaseManager.addDatabaseListener(new ValueEventListener() {
             @Override
@@ -73,6 +79,11 @@ public class PageFragment extends Fragment {
 
                 mPage = Page.fromDB(dataSnapshot.child("pages").child(id.toString()));
                 mItems = getItems(mPage.getItemsIdentifiers(), dataSnapshot);
+
+                if(mAuth.getCurrentUser() != null) {
+                    mUserId = mAuth.getCurrentUser().getUid();
+                    mUser = dataSnapshot.child("users").child(mUserId).getValue(PushItUser.class);
+                }
 
                 if(mRecyclerView != null)
                     configureAdapter(mItems);
@@ -83,10 +94,20 @@ public class PageFragment extends Fragment {
             // gets a list of items IDs and a snapshot of the db and returns a list of the actual items
             private ArrayList<Item> getItems(ArrayList<UUID> itemsIdentifiers, DataSnapshot dataSnapshot) {
                 ArrayList<Item> items = new ArrayList<>();
-                for(UUID id : itemsIdentifiers) {
+                for (UUID id : itemsIdentifiers) {
                     Item item = Item.fromDB(dataSnapshot.child("items").child(id.toString()));
                     items.add(item);
                 }
+
+                Collections.sort(items, new Comparator<Item>() {
+                    @Override
+                    public int compare(Item i1, Item i2) {
+                        if (i1 == null && i2 == null) return 0;
+                        else if (i1 == null) return 1;
+                        else if (i2 == null) return -1;
+                        return (int) (i1.getTimeLong() - i2.getTimeLong());
+                    }
+                });
 
                 return items;
             }
@@ -113,7 +134,7 @@ public class PageFragment extends Fragment {
         mRecyclerView = v.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mEmptyView = v.findViewById(R.id.emptyView);
+        mEmptyView = v.findViewById(R.id.noUserView);
         mAddArticleButton = v.findViewById(R.id.addArticleButton);
         mAddArticleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -428,12 +449,20 @@ public class PageFragment extends Fragment {
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        if(mUser != null) {
+            MenuItem followMenuItem = menu.findItem(R.id.menu_item_follow_page);
+            if (followMenuItem != null)
+                followMenuItem.setTitle(mUser.isFollowing(mPage) ? R.string.unfollow_page : R.string.follow_page);
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_item_create_article)
             return createNewItem();
 
         else if(item.getItemId() == R.id.menu_item_page_settings) {
-
             Intent i = new Intent(getActivity(), PageSettingsActivity.class);
             i.putExtra(EXTRA_ID, mPage.getId());
             startActivity(i);
@@ -441,10 +470,27 @@ public class PageFragment extends Fragment {
         }
 
         else if(item.getItemId() == android.R.id.home) {
+            getActivity().finish();
+            return true;
+        }
 
-            if (NavUtils.getParentActivityName(getActivity()) != null) {
-                NavUtils.navigateUpFromSameTask(getActivity());
+        else if(item.getItemId() == R.id.menu_item_follow_page) {
+            if(mAuth.getCurrentUser() == null || mUser == null || mUserId == null || !mAuth.getCurrentUser().getUid().equals(mUserId)) return false;
+
+            if(item.getTitle().toString().equals(getString(R.string.follow_page))) {
+                mUser.followPage(mPage);
+                mPage.addFollower(mUserId);
             }
+
+            else if (item.getTitle().toString().equals(getString(R.string.unfollow_page))) {
+                mUser.unfollowPage(mPage);
+                mPage.removeFollower(mUserId);
+            }
+
+            else
+                return false;
+
+            mDatabaseManager.followPage(mUser, mUserId, mPage);
             return true;
         }
 

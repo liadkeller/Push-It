@@ -11,7 +11,11 @@ public class PushItUser {
     public PushItUser(String email, boolean status, String pageId, ArrayList<String> followedPages) {
         this.email = email;
         this.status = status;
-        this.followedPages = followedPages;
+
+        if(followedPages == null)
+            this.followedPages = new ArrayList<>();
+        else
+            this.followedPages = followedPages;
 
         if(status)
             this.pageId = pageId;
@@ -25,6 +29,7 @@ public class PushItUser {
 
     public PushItUser() {
         status = false;
+        followedPages = new ArrayList<>();
     }
 
     public String getEmail() {
@@ -43,9 +48,21 @@ public class PushItUser {
         return followedPages;
     }
 
-    public void addPage(String pageId) {
+    public void setPage(String pageId) {
         this.status = true;
         this.pageId = pageId;
+    }
+
+    public void followPage(Page page) {
+        this.followedPages.add(page.getId().toString());
+    }
+
+    public void unfollowPage(Page page) {
+        this.followedPages.remove(page.getId().toString());
+    }
+
+    public boolean isFollowing(Page page) {
+        return this.followedPages.contains(page.getId().toString());
     }
 
     public void setContentCreator() {

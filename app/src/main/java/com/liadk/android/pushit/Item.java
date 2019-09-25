@@ -84,23 +84,6 @@ public class Item {
         this((UUID) null);
     }
 
-    public Item(Item item) {
-        mId = UUID.randomUUID();
-
-        mTitle = item.mTitle;
-        mImageUri = item.mImageUri;
-        mAuthor = item.mAuthor;
-        mOrder = item.mOrder;
-        mOriginalTime = item.mOriginalTime;
-        mTime = item.mTime;
-        mOwnerId = item.mOwnerId;
-        mTextSegments = new ArrayList<>(item.mTextSegments);
-        mMediaSegments = new ArrayList<>(item.mMediaSegments);
-        mCounter = item.mCounter;
-
-        mState = item.mState;
-    }
-
     public void setTitle(String title) {
         mTitle = title;
     }
@@ -251,12 +234,6 @@ public class Item {
     }
 
 
-    public void updateOnPost() {
-        // TODO:
-        //  Update Creation Time and all stuff when posting/publishing a NEW/DRAFT Item
-    }
-
-
     public static Item fromDB(DataSnapshot ds) {
         if (ds.getValue() == null) return null;
 
@@ -265,9 +242,6 @@ public class Item {
         item.mId = UUID.fromString(ds.getKey());
         item.mTitle = (String) ds.child("title").getValue();
         item.mAuthor = (String) ds.child("author").getValue();
-
-        //if (ds.child("image-url").getValue() != null) // TODO DECIDE!
-        //    item.mImageUri = Uri.parse((String) ds.child("image-url").getValue());
 
         if(ds.child("owner").getValue() != null)
             item.mOwnerId = UUID.fromString((String) ds.child("owner").getValue());
@@ -293,7 +267,4 @@ public class Item {
 
         return item;
     }
-
-
-    //public void pushToDB(DatabaseReference db) { }
 }

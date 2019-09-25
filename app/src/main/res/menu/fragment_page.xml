@@ -11,4 +11,9 @@
         android:title="@string/page_settings"
         android:showAsAction="ifRoom">
     </item>
+
+    <item android:id="@+id/menu_item_follow_page"
+        android:title="@string/follow_page"
+        android:showAsAction="ifRoom">
+    </item>
 </menu>

@@ -457,10 +457,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             }
 
         }
-
-        else if (resultCode == UCrop.RESULT_ERROR) {
-            final Throwable cropError = UCrop.getError(data);
-        }
     }
 
     @Override
@@ -476,10 +472,8 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             mDatabaseManager.removeItemsListener(mDatabaseListener);
     }
 
-    private void updateState(Item.State newState) {
-        if(mItem.getState() == NEW || mItem.getState() == DRAFT)
-            mItem.updateOnPost();
-        mItem.setState(newState);
+    private void updateState(Item.State state) {
+        mItem.setState(state);
         onStateUpdated();
         saveChanges();
         exit();

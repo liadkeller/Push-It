@@ -1167,6 +1167,7 @@ drawable design_snackbar_background
 drawable explore_white
 drawable fab_add
 drawable floating_add_button
+drawable follow_white
 drawable gallery
 drawable googleg_disabled_color_18
 drawable googleg_standard_color_18
@@ -1272,6 +1273,7 @@ id bottom
 id bottomNavigation
 id bottom_nav_create
 id bottom_nav_explore
+id bottom_nav_follow
 id bottom_nav_settings
 id buttonPanel
 id buttons_holder
@@ -1320,7 +1322,7 @@ id disableHome
 id draftButton
 id edit_query
 id emailEditText
-id emptyView
+id emptyTextView
 id end
 id end_padder
 id enterAlways
@@ -1379,6 +1381,7 @@ id listMode
 id list_container
 id list_item
 id loading_text
+id loginButton
 id loginTextView
 id logoImageView
 id mainImageView
@@ -1390,6 +1393,7 @@ id menu_crop
 id menu_item_create_article
 id menu_item_delete_item
 id menu_item_edit_item
+id menu_item_follow_page
 id menu_item_page_settings
 id menu_item_post_article
 id menu_item_publish_article
@@ -1405,6 +1409,7 @@ id multiply
 id navigation_header_container
 id never
 id noLogoTextView
+id noUserView
 id none
 id normal
 id notification_background
@@ -1629,6 +1634,7 @@ layout dialog_page_details
 layout fragment_create_account
 layout fragment_create_notification
 layout fragment_edit_item
+layout fragment_follow
 layout fragment_item
 layout fragment_login
 layout fragment_page
@@ -1638,7 +1644,8 @@ layout fragment_recycler_view
 layout layout_item_card
 layout layout_item_card_header
 layout layout_item_card_no_image
-layout layout_item_page_list
+layout layout_item_explore_page_list
+layout layout_item_follow_page_list
 layout mtrl_layout_snackbar
 layout mtrl_layout_snackbar_include
 layout notification_action
@@ -1808,6 +1815,8 @@ string explore
 string fab_transformation_scrim_behavior
 string fab_transformation_sheet_behavior
 string firebase_database_url
+string follow
+string follow_page
 string gallery
 string gcm_defaultSenderId
 string google_api_key
@@ -1834,12 +1843,14 @@ string logged_in
 string login
 string login_account
 string login_progress_dialog
+string login_to_follow
 string mtrl_chip_close_icon_content_description
 string no
 string no_articles
 string no_logo
 string no_notification_title_toast
 string no_page_name_toast
+string no_pages
 string no_providers
 string no_text_toast
 string no_title_toast
@@ -1922,6 +1933,7 @@ string ucrop_menu_crop
 string ucrop_mutate_exception_hint
 string ucrop_rotate
 string ucrop_scale
+string unfollow_page
 string v7_preference_off
 string v7_preference_on
 string video_1

@@ -1,8 +1,5 @@
 package com.liadk.android.pushit;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,20 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class ExploreFragment extends Fragment {
 
@@ -52,18 +41,15 @@ public class ExploreFragment extends Fragment {
                     mPages.add(Page.getPageDetailsFromDB(ds));
                 }
 
-                if(mRecyclerView != null)
+                if(mRecyclerView != null) {
+                    ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setPages(mPages);
                     mRecyclerView.getAdapter().notifyDataSetChanged();
+                }
             }
-
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
-
-
-        //resetDatabase();
-        //addDataToDatabase();
     }
 
     @Nullable
@@ -73,8 +59,13 @@ public class ExploreFragment extends Fragment {
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        mRecyclerView.setAdapter(new PageListRecycleViewAdapter(getActivity()));
+        mRecyclerView.setAdapter(new PageListRecycleViewAdapter(getActivity(), PageListRecycleViewAdapter.PAGES_EXPLORE));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        if(mPages != null) {
+            ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setPages(mPages);
+            mRecyclerView.getAdapter().notifyDataSetChanged();
+        }
         
         return v;
     }
@@ -90,81 +81,5 @@ public class ExploreFragment extends Fragment {
         super.onDestroyView();
         if(mDatabaseListener != null)
             mDatabaseManager.removePagesListener(mDatabaseListener);
-    }
-
-    public static Fragment newInstance(UUID id) {
-        Bundle args = new Bundle();
-        args.putSerializable(ItemFragment.EXTRA_ID, id);
-
-        ExploreFragment fragment = new ExploreFragment();
-        fragment.setArguments(args);
-
-        return fragment;
-    }
-
-    public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
-        Context mContext;
-
-        PageListRecycleViewAdapter(Context context) {
-            mContext = context;
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_page_list, parent, false);
-            return new ViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            final Page page = mPages.get(position);
-            ((ViewHolder)holder).mNameTextView.setText(page.getName());
-            ((ViewHolder)holder).mDescTextView.setText(page.getDescription());
-            ((ViewHolder)holder).mLinearLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), PageActivity.class);
-                    intent.putExtra(PageFragment.EXTRA_ID, page.getId());
-                    startActivity(intent);
-                }
-            });
-
-            loadLogoImage(page, ((ViewHolder)holder).mImageView);
-        }
-
-        @Override
-        public int getItemCount() {
-            if(mPages == null) return 0;
-            return mPages.size();
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            LinearLayout mLinearLayout;
-            ImageView mImageView;
-            TextView mNameTextView;
-            TextView mDescTextView;
-
-            ViewHolder(View v) {
-                super(v);
-                mLinearLayout = (LinearLayout) v.findViewById(R.id.pageListItemLayout);
-                mImageView = (ImageView) v.findViewById(R.id.pageImageView);
-                mNameTextView = (TextView) v.findViewById(R.id.pageNameTextView);
-                mDescTextView = (TextView) v.findViewById(R.id.pageDescTextView);
-            }
-        }
-    }
-
-    private void loadLogoImage(final Page page, final ImageView imageView) {
-        FirebaseStorage.getInstance().getReference("pages").child(page.getId().toString()).child("logo.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if(getActivity() == null) return;
-
-                if(task.getException() == null) {
-                    Uri logoUri = task.getResult();
-                    Glide.with(getActivity()).load(logoUri).into(imageView);
-                }
-            }
-        });
     }
 }

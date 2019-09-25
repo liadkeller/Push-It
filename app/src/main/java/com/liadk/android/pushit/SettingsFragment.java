@@ -176,7 +176,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         mDatabaseManager.deleteUser(user, userId); // delete user data from db
 
                         // delete user from authentication data source
-                        if(mAuth.getCurrentUser() != null && mAuth.getCurrentUser().getUid() == userId)
+                        if(mAuth.getCurrentUser() != null && mAuth.getCurrentUser().getUid().equals(userId))
                             mAuth.getCurrentUser().delete();
 
                         dismissProgressDialog(progressDialog, null, DELAY);
@@ -293,7 +293,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                         String userId = mAuth.getCurrentUser().getUid();
                         final PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
-                        user.addPage(pageId); // from here, user status is 'Creator'
+                        user.setPage(pageId); // from here, user status is 'Creator'
 
                         mDatabaseManager.pushUserToDB(user, userId, new OnCompleteListener() {
                             @Override

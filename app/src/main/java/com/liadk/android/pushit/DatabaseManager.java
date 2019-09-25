@@ -43,24 +43,17 @@ public class DatabaseManager {
     }
 
 
-    public ValueEventListener addPagesListener(ValueEventListener listener) {
-        return mPagesDatabase.addValueEventListener(listener);
-    }
-
     public ValueEventListener addItemsListener(ValueEventListener listener) {
         return mItemsDatabase.addValueEventListener(listener);
+    }
+
+    public ValueEventListener addPagesListener(ValueEventListener listener) {
+        return mPagesDatabase.addValueEventListener(listener);
     }
 
     public void addUsersSingleEventListener(ValueEventListener listener) {
         mUsersDatabase.addListenerForSingleValueEvent(listener);
     }
-
-/*
-    public void addPagesSingleEventListener(ValueEventListener listener) {
-        mPagesDatabase.addListenerForSingleValueEvent(listener);
-    }
-
- */
 
     public ValueEventListener addDatabaseListener(ValueEventListener listener) {
         return mDatabase.getReference().addValueEventListener(listener);
@@ -98,6 +91,7 @@ public class DatabaseManager {
         mPagesDatabase.child(page.getId().toString()).child("description").setValue(page.getDescription());
         for(UUID itemId : page.getItemsIdentifiers())
             mPagesDatabase.child(page.getId().toString()).child("items").child(itemId.toString()).setValue(true);
+        mPagesDatabase.child(page.getId().toString()).child("followers").setValue(page.getFollowersIdentifiers());
         mPagesDatabase.child(page.getId().toString()).child("settings").child("design").setValue(page.settings.design.toString());
     }
 
@@ -112,6 +106,11 @@ public class DatabaseManager {
 
     public void pushUserToDB(PushItUser user, String userId, OnCompleteListener listener) {
         mUsersDatabase.child(userId).setValue(user).addOnCompleteListener(listener);
+    }
+
+    public void followPage(PushItUser user, String userId, Page page) {
+        mPagesDatabase.child(page.getId().toString()).child("followers").setValue(page.getFollowersIdentifiers());
+        mUsersDatabase.child(userId).child("followedPages").setValue(user.getFollowedPages());
     }
 
     public void refreshItemImage(Item item) {
@@ -175,8 +174,4 @@ public class DatabaseManager {
     public void setPageDesign(Page page) {
         mPagesDatabase.child(page.getId().toString()).child("settings").child("design").setValue(page.settings.design.toString());
     }
-
-
-
-
 }

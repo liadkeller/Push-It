@@ -1,11 +1,11 @@
 package com.liadk.android.pushit;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,7 +18,8 @@ import java.util.UUID;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-    final UUID RANDOM_FAMILIAR_ID = UUID.fromString("4cb878b1-457b-4023-949d-1856bdc7ba0b"); // TODO DELETE
+    private static final String KEY_STATUS_PREFERENCE = "statusPreference";
+    private static final String KEY_SELECTED_ITEM = "selectedItem";
 
     private FirebaseAuth mAuth;
     private DatabaseManager mDatabaseManager;
@@ -35,6 +36,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseManager = DatabaseManager.get(this);
+
+        Fragment defaultFragment = new ExploreFragment();
+        loadFragment(defaultFragment);
     }
 
     @Override
@@ -44,16 +48,21 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
 
         mBottomNavigationView = findViewById(R.id.bottomNavigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);
-        onStatusUpdated();
 
-        Fragment defaultFragment = new ExploreFragment();
-        loadFragment(defaultFragment);
+        mUserStatus = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_STATUS_PREFERENCE, false);
+        onStatusUpdated();
     }
 
     // updates user status and triggers bottom nav inflation if necessary
     private void updateUserStatus(boolean userStatus) {
         if(mUserStatus != userStatus) {
             mUserStatus = userStatus;
+
+            PreferenceManager.getDefaultSharedPreferences(this)
+                    .edit()
+                    .putBoolean(KEY_STATUS_PREFERENCE, mUserStatus)
+                    .commit();
+
             onStatusUpdated();
         }
     }
@@ -101,11 +110,6 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
-    private void updateMenu() {
-        Menu menu = mBottomNavigationView.getMenu();
-        menu.findItem(R.id.bottom_nav_create).setVisible(mUserStatus);
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -115,11 +119,14 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             if(mUserStatus)
                 fragment = PageFragment.newInstance(mUserPageId);
             else
-                onStatusUpdated();                                        // ToDo Check that this is useful and not causing any harm
+                onStatusUpdated();
         }
 
         else if(item.getItemId() == R.id.bottom_nav_explore)
             fragment = new ExploreFragment();
+
+        else if(item.getItemId() == R.id.bottom_nav_follow)
+            fragment = new FollowFragment();
 
         else if(item.getItemId() == R.id.bottom_nav_settings) {
             if(mUserStatus)

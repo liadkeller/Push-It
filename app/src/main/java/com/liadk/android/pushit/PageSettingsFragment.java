@@ -99,7 +99,6 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
         }
 
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);  // Set up a listener whenever a key changes
-
     }
 
     private void updatePreferences() {

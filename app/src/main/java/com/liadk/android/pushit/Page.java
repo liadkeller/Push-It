@@ -16,6 +16,7 @@ public class Page {
     String mDescription = "";
     Uri mLogoImageUri;
     ArrayList<UUID> mItemsIdentifiers;
+    ArrayList<String> mFollowersIdentifiers; // users IDs
 
     PageSettings settings;
 
@@ -53,10 +54,10 @@ public class Page {
     }
 
 
-
     public Page() {
         mId = UUID.randomUUID();
         mItemsIdentifiers = new ArrayList<>();
+        mFollowersIdentifiers = new ArrayList<>();
         settings = new PageSettings();
     }
 
@@ -92,18 +93,9 @@ public class Page {
             UUID itemId = UUID.fromString(dataSnapshot.getKey());
             page.mItemsIdentifiers.add(itemId);
         }
+        if((ArrayList<String>) ds.child("followers").getValue() != null)
+            page.mFollowersIdentifiers = (ArrayList<String>) ds.child("followers").getValue();
         page.settings.design = Design.getDesign((String) ds.child("settings").child("design").getValue());
-
-        // TODO sort mItemsIdentifiers according to time
-        /*Collections.sort(page.mItemsIdentifiers, new Comparator<Item>() {
-            @Override
-            public int compare(Item i1, Item i2) {
-                if(i1 == null && i2 == null) return 0;
-                else if (i1 != null) return 1;
-                else if (i2 != null) return -1;
-                return (int) (i1.getTimeLong() - i2.getTimeLong());
-            }
-        }); */
 
         return page;
     }
@@ -124,9 +116,17 @@ public class Page {
         this.mItemsIdentifiers = itemsIdentifiers;
     }
 
+    public void setFollowersIdentifiers(ArrayList<String> followersIdentifiers) {
+        this.mFollowersIdentifiers = followersIdentifiers;
+    }
+
     public void addItem(UUID id) {
         mItemsIdentifiers.add(id);
     }
+
+    public void addFollower(String uid) { mFollowersIdentifiers.add(uid); }
+
+    public void removeFollower(String uid) { mFollowersIdentifiers.remove(uid); }
 
 
     public UUID getId() {
@@ -148,7 +148,8 @@ public class Page {
     public ArrayList<UUID> getItemsIdentifiers() {
         return mItemsIdentifiers;
     }
-    
-    
-    //public void pushToDB(DatabaseReference db) { }
+
+    public ArrayList<String> getFollowersIdentifiers() {
+        return mFollowersIdentifiers;
+    }
 }
