@@ -10,8 +10,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/pageImageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_margin="6dp"
         android:scaleType="centerCrop" />
 
@@ -34,9 +34,8 @@
             android:id="@+id/pageDescTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp" />
+            android:textSize="13sp" />
     </LinearLayout>
-
 
 </LinearLayout>
 

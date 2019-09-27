@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -57,7 +56,7 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
             ((ViewHolder) holder).mDescTextView.setText(page.getDescription());
         }
 
-        ((ViewHolder) holder).mLinearLayout.setOnClickListener(new View.OnClickListener() {
+        ((ViewHolder) holder).mLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, PageActivity.class);
@@ -71,19 +70,18 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        if (mPages == null) return 0;
-        return mPages.size();
+        return (mPages == null) ? 0 : mPages.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout mLinearLayout;
+        ViewGroup mLayout;
         ImageView mImageView;
         TextView mNameTextView;
         TextView mDescTextView;
 
         ViewHolder(View v) {
             super(v);
-            mLinearLayout = v.findViewById(R.id.pageListItemLayout);
+            mLayout = v.findViewById(R.id.pageListItemLayout);
             mImageView = v.findViewById(R.id.pageImageView);
             mNameTextView = v.findViewById(R.id.pageNameTextView);
             mDescTextView = v.findViewById(R.id.pageDescTextView);

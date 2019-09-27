@@ -24,6 +24,8 @@
             android:name=".PageSettingsActivity"
             android:parentActivityName=".PageActivity"
             android:theme="@style/AppTheme.SettingsTheme"></activity>
+        <activity android:name=".PageFollowersActivity"
+            android:parentActivityName=".PageSettingsActivity"/>
         <activity
             android:name=".PageLogoActivity"
             android:parentActivityName=".PageSettingsActivity" />

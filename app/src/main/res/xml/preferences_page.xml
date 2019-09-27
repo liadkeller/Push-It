@@ -12,7 +12,13 @@
             android:key="pageDesc"
             android:title="@string/page_description"
             android:inputType="text"/>
+
+        <Preference
+            android:key="pageFollowers"
+            android:title="Page Followers"/>
     </PreferenceCategory>
+
+
 
     <PreferenceCategory android:title="@string/page_design">
         <Preference

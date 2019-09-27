@@ -28,6 +28,7 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
     private static final String PAGE_NAME = "pageName";
     private static final String PAGE_DESC = "pageDesc";
     private static final String PAGE_LAYOUT = "pageLayout";
+    private static final String PAGE_FOLLOWERS = "pageFollowers";
     private static final String PAGE_LOGO = "pageLogo";
 
     private Page mPage;
@@ -36,6 +37,7 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
     private ListPreference mLayoutPreference;
     private EditTextPreference mNamePreference;
     private EditTextPreference mDescPreference;
+    private Preference mFollowersPreference;
     private Preference mLogoPreference;
 
     @Override
@@ -69,10 +71,22 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
         mDescPreference = (EditTextPreference) getPreferenceScreen().findPreference(PAGE_DESC);
         mLayoutPreference = (ListPreference) getPreferenceScreen().findPreference(PAGE_LAYOUT);
         mLogoPreference = (Preference) getPreferenceScreen().findPreference(PAGE_LOGO);
+        mFollowersPreference = (Preference) getPreferenceScreen().findPreference(PAGE_FOLLOWERS);
+
         mLogoPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent i = new Intent(getActivity(), PageLogoActivity.class);
+                i.putExtra(PageFragment.EXTRA_ID, mPage.getId());
+                startActivity(i);
+                return true;
+            }
+        });
+
+        mFollowersPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent i = new Intent(getActivity(), PageFollowersActivity.class);
                 i.putExtra(PageFragment.EXTRA_ID, mPage.getId());
                 startActivity(i);
                 return true;

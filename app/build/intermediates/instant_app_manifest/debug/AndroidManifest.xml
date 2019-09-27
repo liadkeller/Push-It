@@ -48,6 +48,9 @@
             android:parentActivityName="com.liadk.android.pushit.PageActivity"
             android:theme="@style/AppTheme.SettingsTheme" />
         <activity
+            android:name="com.liadk.android.pushit.PageFollowersActivity"
+            android:parentActivityName="com.liadk.android.pushit.PageSettingsActivity" />
+        <activity
             android:name="com.liadk.android.pushit.PageLogoActivity"
             android:parentActivityName="com.liadk.android.pushit.PageSettingsActivity" />
         <activity

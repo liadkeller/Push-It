@@ -11,12 +11,12 @@ import java.util.UUID;
  * Created by user on 10/08/2019.
  */
 public class Page {
-    UUID mId;
-    String mName = "";
-    String mDescription = "";
-    Uri mLogoImageUri;
-    ArrayList<UUID> mItemsIdentifiers;
-    ArrayList<String> mFollowersIdentifiers; // users IDs
+    private UUID mId;
+    private String mName = "";
+    private String mDescription = "";
+    private Uri mLogoImageUri;
+    private ArrayList<UUID> mItemsIdentifiers;
+    private ArrayList<String> mFollowersIdentifiers; // users IDs
 
     PageSettings settings;
 
@@ -80,6 +80,16 @@ public class Page {
     public static Page getPageSettingsFromDB(DataSnapshot ds) {
         Page page = getPageDetailsFromDB(ds);
         page.settings.design = Design.getDesign((String) ds.child("settings").child("design").getValue());
+
+        return page;
+    }
+
+    public static Page getPageFollowersFromDB(DataSnapshot ds) {
+        Page page = new Page();
+        page.mId = UUID.fromString(ds.getKey());
+
+        if((ArrayList<String>) ds.child("followers").getValue() != null)
+            page.mFollowersIdentifiers = (ArrayList<String>) ds.child("followers").getValue();
 
         return page;
     }

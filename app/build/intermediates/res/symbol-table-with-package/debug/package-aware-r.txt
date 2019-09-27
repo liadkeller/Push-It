@@ -1234,6 +1234,8 @@ id FUNCTION
 id META
 id SHIFT
 id SYM
+id accountEmail
+id accountStatus
 id accountStatusSwitch
 id action0
 id action_bar
@@ -1336,6 +1338,7 @@ id fill_vertical
 id filled
 id first_layer
 id fixed
+id followersListItem
 id forever
 id fragmentContainer
 id gallery
@@ -1638,6 +1641,7 @@ layout fragment_follow
 layout fragment_item
 layout fragment_login
 layout fragment_page
+layout fragment_page_followers
 layout fragment_page_logo
 layout fragment_page_settings
 layout fragment_recycler_view
@@ -1646,6 +1650,7 @@ layout layout_item_card_header
 layout layout_item_card_no_image
 layout layout_item_explore_page_list
 layout layout_item_follow_page_list
+layout layout_item_followers_list
 layout mtrl_layout_snackbar
 layout mtrl_layout_snackbar_include
 layout notification_action
@@ -1847,6 +1852,7 @@ string login_to_follow
 string mtrl_chip_close_icon_content_description
 string no
 string no_articles
+string no_followers
 string no_logo
 string no_notification_title_toast
 string no_page_name_toast
@@ -1859,6 +1865,7 @@ string page_description
 string page_design
 string page_details_dialog_1
 string page_details_dialog_2
+string page_followers
 string page_layout
 string page_logo
 string page_name

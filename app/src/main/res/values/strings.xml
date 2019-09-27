@@ -170,5 +170,7 @@
     <string name="follow">Follow</string>
     <string name="login_to_follow">Login to Follow Pages</string>
     <string name="no_pages">No Pages Are Followed</string>
+    <string name="no_followers">No Followers</string>
+    <string name="page_followers">Page Followers</string>
 
 </resources>
