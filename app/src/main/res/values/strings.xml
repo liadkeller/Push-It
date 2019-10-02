@@ -172,5 +172,18 @@
     <string name="no_pages">No Pages Are Followed</string>
     <string name="no_followers">No Followers</string>
     <string name="page_followers">Page Followers</string>
+    <string name="page_privacy">Private Mode</string>
+    <string name="public_page">Your page is public and can be seen by every one.</string>
+    <string name="private_page">Your page is private and can be seen by approved users only.</string>
+    <string name="following_requests">Following Requests</string>
+    <string name="following_users">Following Users</string>
+    <string name="accept_request">Accept</string>
+    <string name="reject_request">Reject</string>
+    <string name="page_not_exist">This page does not exist</string>
+    <string name="remove_follower">Remove Follower</string>
+    <string name="private_page_click">This page is private.\nPress long click to follow</string>
+    <string name="follow_request_sent">Your follow request has been sent and will be reviewed shortly.</string>
+    <string name="follow_request_failed">Could not send your follow request as user is not logged in.</string>
+    >
 
 </resources>

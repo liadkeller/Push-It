@@ -16,9 +16,12 @@
         <Preference
             android:key="pageFollowers"
             android:title="Page Followers"/>
+
+        <SwitchPreference
+            android:key="pagePrivacy"
+            android:defaultValue="false"
+            android:title="@string/page_privacy"/>
     </PreferenceCategory>
-
-
 
     <PreferenceCategory android:title="@string/page_design">
         <Preference

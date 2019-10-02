@@ -1,10 +1,9 @@
 package com.liadk.android.pushit;
 
-import android.net.Uri;
-
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -14,9 +13,10 @@ public class Page {
     private UUID mId;
     private String mName = "";
     private String mDescription = "";
-    private Uri mLogoImageUri;
     private ArrayList<UUID> mItemsIdentifiers;
-    private ArrayList<String> mFollowersIdentifiers; // users IDs
+
+    private boolean mIsPrivate;
+    private HashMap<String, Boolean> mFollowersIdentifiers; // users IDs - true if follow request accepted
 
     PageSettings settings;
 
@@ -57,7 +57,8 @@ public class Page {
     public Page() {
         mId = UUID.randomUUID();
         mItemsIdentifiers = new ArrayList<>();
-        mFollowersIdentifiers = new ArrayList<>();
+        mIsPrivate = false;
+        mFollowersIdentifiers = new HashMap<>();
         settings = new PageSettings();
     }
 
@@ -73,6 +74,9 @@ public class Page {
         page.mId = UUID.fromString(ds.getKey());
         page.mName = (String) ds.child("name").getValue();
         page.mDescription = (String) ds.child("description").getValue();
+
+        if(ds.child("private").getValue() != null)
+            page.mIsPrivate = (boolean) ds.child("private").getValue();
         return page;
     }
 
@@ -88,8 +92,11 @@ public class Page {
         Page page = new Page();
         page.mId = UUID.fromString(ds.getKey());
 
-        if((ArrayList<String>) ds.child("followers").getValue() != null)
-            page.mFollowersIdentifiers = (ArrayList<String>) ds.child("followers").getValue();
+        if(ds.child("private").getValue() != null)
+            page.mIsPrivate = (boolean) ds.child("private").getValue();
+
+        if((HashMap<String, Boolean>) ds.child("followers").getValue() != null)
+            page.mFollowersIdentifiers = (HashMap<String, Boolean>) ds.child("followers").getValue();
 
         return page;
     }
@@ -103,8 +110,10 @@ public class Page {
             UUID itemId = UUID.fromString(dataSnapshot.getKey());
             page.mItemsIdentifiers.add(itemId);
         }
-        if((ArrayList<String>) ds.child("followers").getValue() != null)
-            page.mFollowersIdentifiers = (ArrayList<String>) ds.child("followers").getValue();
+        if(ds.child("private").getValue() != null)
+            page.mIsPrivate = (boolean) ds.child("private").getValue();
+        if((HashMap<String, Boolean>) ds.child("followers").getValue() != null)
+            page.mFollowersIdentifiers = (HashMap<String, Boolean>) ds.child("followers").getValue();
         page.settings.design = Design.getDesign((String) ds.child("settings").child("design").getValue());
 
         return page;
@@ -118,25 +127,41 @@ public class Page {
         this.mDescription = description;
     }
 
-    public void setLogoImageUrl(Uri logoImageUrl) {
-        this.mLogoImageUri = logoImageUrl;
-    }
-
     public void setItemsIdentifiers(ArrayList<UUID> itemsIdentifiers) {
         this.mItemsIdentifiers = itemsIdentifiers;
-    }
-
-    public void setFollowersIdentifiers(ArrayList<String> followersIdentifiers) {
-        this.mFollowersIdentifiers = followersIdentifiers;
     }
 
     public void addItem(UUID id) {
         mItemsIdentifiers.add(id);
     }
 
-    public void addFollower(String uid) { mFollowersIdentifiers.add(uid); }
+    // if page public, adds follower. else adds to following requests list
+    public void addNewFollower(PushItUser user, String userId) {
+        mFollowersIdentifiers.put(userId, this.isPublic());
 
-    public void removeFollower(String uid) { mFollowersIdentifiers.remove(uid); }
+        if(mFollowersIdentifiers.get(userId))
+            user.followPage(this);
+    }
+
+    // approves follower
+    public void approveFollower(PushItUser user, String userId) {
+        mFollowersIdentifiers.put(userId, true);
+        user.followPage(this);
+    }
+
+    public void removeFollower(PushItUser user, String userId) {
+        user.unfollowPage(this);
+        mFollowersIdentifiers.remove(userId);
+    }
+
+    // returns true if the user has requested to follow this page
+    public boolean hasFollowedBy(String userId) {
+        return mFollowersIdentifiers.containsKey(userId);
+    }
+
+    public void setPrivate(boolean isPrivate) {
+        mIsPrivate = isPrivate;
+    }
 
 
     public UUID getId() {
@@ -151,15 +176,19 @@ public class Page {
         return mDescription;
     }
 
-    public Uri getLogoImageUrl() {
-        return mLogoImageUri;
-    }
-
     public ArrayList<UUID> getItemsIdentifiers() {
         return mItemsIdentifiers;
     }
 
-    public ArrayList<String> getFollowersIdentifiers() {
+    public boolean isPrivate() {
+        return mIsPrivate;
+    }
+
+    public boolean isPublic() {
+        return !mIsPrivate;
+    }
+
+    public HashMap<String, Boolean> getFollowersIdentifiers() {
         return mFollowersIdentifiers;
     }
 }

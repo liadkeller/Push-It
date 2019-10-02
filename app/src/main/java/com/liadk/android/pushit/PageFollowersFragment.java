@@ -11,12 +11,14 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +30,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -35,13 +39,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class PageFollowersFragment extends Fragment {
 
     private Page mPage;
-    private ArrayList<PushItUser> mUsers;
+    private LinkedHashMap<String, PushItUser> mRequests;
+    private LinkedHashMap<String, PushItUser> mUsers;
 
     private DatabaseManager mDatabaseManager;
-    private ValueEventListener mDatabaseListener;
 
+    private RecyclerView mRequestsRecyclerView;
     private RecyclerView mRecyclerView;
     private TextView mEmptyTextView;
+    private TextView mRequestsTextView;
+    private TextView mUsersTextView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,7 +61,7 @@ public class PageFollowersFragment extends Fragment {
 
         final UUID id = (UUID) getArguments().getSerializable(PageFragment.EXTRA_ID);
 
-        mDatabaseListener = mDatabaseManager.addPagesListener(new ValueEventListener() {
+        mDatabaseManager.addPagesListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) return;
@@ -64,13 +71,14 @@ public class PageFollowersFragment extends Fragment {
                 mDatabaseManager.addUsersSingleEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        mUsers = new ArrayList<>();
+                        mUsers = new LinkedHashMap<String, PushItUser>();
+                        mRequests = new LinkedHashMap<String, PushItUser>();
 
-                        for(String uid : mPage.getFollowersIdentifiers()) {
-                            final PushItUser user = dataSnapshot.child(uid).getValue(PushItUser.class);
+                        for(String userId : mPage.getFollowersIdentifiers().keySet()) {
+                            final PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
 
                             if(user != null)
-                                mUsers.add(user);
+                                (mPage.getFollowersIdentifiers().get(userId) ? mUsers : mRequests).put(userId, user);
                         }
 
                         if(getView() != null)
@@ -94,10 +102,17 @@ public class PageFollowersFragment extends Fragment {
 
         mRecyclerView = v.findViewById(R.id.recyclerView);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        mRecyclerView.setAdapter(new FollowersListRecycleViewAdapter(getActivity()));
+        mRecyclerView.setAdapter(new FollowersListRecycleViewAdapter(getActivity(), false));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        mRequestsRecyclerView = v.findViewById(R.id.requestsRecyclerView);
+        mRequestsRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        mRequestsRecyclerView.setAdapter(new FollowersListRecycleViewAdapter(getActivity(), true));
+        mRequestsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         mEmptyTextView = v.findViewById(R.id.emptyTextView);
+        mUsersTextView = v.findViewById(R.id.usersTextViewLabel);
+        mRequestsTextView = v.findViewById(R.id.requestsTextViewLabel);
 
         if(mUsers != null) {
             configureAdapter();
@@ -134,11 +149,15 @@ public class PageFollowersFragment extends Fragment {
 
     private void configureAdapter() {
         final FollowersListRecycleViewAdapter adapter = (FollowersListRecycleViewAdapter) mRecyclerView.getAdapter();
+        final FollowersListRecycleViewAdapter requestsAdapter = (FollowersListRecycleViewAdapter) mRequestsRecyclerView.getAdapter();
 
         adapter.setUsers(mUsers);
-        adapter.notifyDataSetChanged();
+        requestsAdapter.setUsers(mRequests);
 
-        mEmptyTextView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        adapter.notifyDataSetChanged();
+        requestsAdapter.notifyDataSetChanged();
+
+        mEmptyTextView.setVisibility(adapter.getItemCount() + requestsAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -160,7 +179,38 @@ public class PageFollowersFragment extends Fragment {
             }
 
             void checkEmpty() {
-                mEmptyTextView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+                mEmptyTextView.setVisibility(adapter.getItemCount() + requestsAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+            }
+        });
+
+
+        mRequestsRecyclerView.setVisibility(requestsAdapter.getItemCount() != 0 ? View.VISIBLE : View.GONE);
+        mRequestsTextView.setVisibility(requestsAdapter.getItemCount() != 0 ? View.VISIBLE : View.GONE);
+        mUsersTextView.setVisibility(requestsAdapter.getItemCount() != 0 && adapter.getItemCount() != 0 ? View.VISIBLE : View.GONE);
+
+        requestsAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                checkEmpty();
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                checkEmpty();
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                checkEmpty();
+            }
+
+            void checkEmpty() {
+                mRequestsRecyclerView.setVisibility(requestsAdapter.getItemCount() != 0 ? View.VISIBLE : View.GONE);
+                mRequestsTextView.setVisibility(requestsAdapter.getItemCount() != 0 ? View.VISIBLE : View.GONE);
+                mUsersTextView.setVisibility(requestsAdapter.getItemCount() != 0 ? View.VISIBLE : View.GONE);
             }
         });
     }
@@ -169,30 +219,41 @@ public class PageFollowersFragment extends Fragment {
     private class FollowersListRecycleViewAdapter extends RecyclerView.Adapter {
 
         private Context mContext;
-        private ArrayList<PushItUser> mUsers;
+        private LinkedHashMap<String, PushItUser> mUsers;
+        private boolean mRequests; // true if requests recyclerView, false if users recyclerView
 
-        FollowersListRecycleViewAdapter(Context context) {
+        FollowersListRecycleViewAdapter(Context context, boolean requests) {
             mContext = context;
+            mRequests = requests;
         }
 
-        public void setUsers(ArrayList<PushItUser> users) {
+        public void setUsers(LinkedHashMap<String, PushItUser> users) {
             mUsers = users;
         }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if(mRequests) {
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_following_requests_list, parent, false);
+                return new RequestViewHolder(v);
+            }
+
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_followers_list, parent, false);
             return new ViewHolder(v);
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            final PushItUser user = mUsers.get(position);
+
+            Map.Entry<String, PushItUser> userEntry = new ArrayList<Map.Entry<String, PushItUser>>(mUsers.entrySet()).get(position);
+
+            final String userId = userEntry.getKey();
+            final PushItUser user = userEntry.getValue();
 
             ((ViewHolder) holder).mEmailTextView.setText(user.getEmail());
             ((ViewHolder) holder).mStatusTextView.setText((user.getStatus()) ? R.string.status_creator : R.string.status_follower);
 
-            ((ViewHolder) holder).mLayout.setOnClickListener(new View.OnClickListener() {
+            ((ViewHolder) holder).mLinearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(user.getStatus()) {
@@ -207,6 +268,24 @@ public class PageFollowersFragment extends Fragment {
 
             if(user.getStatus())
                 loadLogoImage(user.getPageId(), ((ViewHolder) holder).mImageView);
+
+            if(mRequests) {
+                ((RequestViewHolder) holder).mAcceptButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mPage.approveFollower(user, userId);
+                        mDatabaseManager.followPage(user, userId, mPage);
+                    }
+                });
+
+                ((RequestViewHolder) holder).mRejectButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mPage.getFollowersIdentifiers().remove(userId);
+                        mDatabaseManager.updatePageFollowers(mPage);
+                    }
+                });
+            }
         }
 
         @Override
@@ -214,18 +293,46 @@ public class PageFollowersFragment extends Fragment {
             return (mUsers == null) ? 0 : mUsers.size();
         }
 
+        // Returns the user whose menu item was selected
+        private Map.Entry<String, PushItUser> getUser(MenuItem menuItem) {
+            if(mUsers == null) return null;
+
+            int position = menuItem.getOrder(); // we put the adapter position instead of the order
+            return new ArrayList<>(mUsers.entrySet()).get(position);
+        }
+
         public class ViewHolder extends RecyclerView.ViewHolder {
-            RelativeLayout mLayout;
+            LinearLayout mLinearLayout;
             TextView mEmailTextView;
             TextView mStatusTextView;
             CircleImageView mImageView;
 
             ViewHolder(View v) {
                 super(v);
-                mLayout = v.findViewById(R.id.followersListItem);
+                mLinearLayout = v.findViewById(R.id.followersListItem);
                 mEmailTextView = v.findViewById(R.id.accountEmail);
                 mStatusTextView = v.findViewById(R.id.accountStatus);
                 mImageView = v.findViewById(R.id.pageImageView);
+
+                if(!mRequests && mPage.isPrivate()) {
+                    v.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                        @Override
+                        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+                            contextMenu.add(0, R.id.context_menu_remove_follower, getAdapterPosition(), R.string.remove_follower);
+                        }
+                    });
+                }
+            }
+        }
+
+        public class RequestViewHolder extends ViewHolder {
+            Button mAcceptButton;
+            Button mRejectButton;
+
+            RequestViewHolder(View v) {
+                super(v);
+                mAcceptButton = v.findViewById(R.id.acceptButon);
+                mRejectButton = v.findViewById(R.id.rejectButton);
             }
         }
 
@@ -242,5 +349,18 @@ public class PageFollowersFragment extends Fragment {
                 }
             });
         }
+    }
+
+    // called when context menu item is selected
+    @Override
+    public boolean onContextItemSelected(MenuItem menuItem) {
+        if(menuItem.getItemId() == R.id.context_menu_remove_follower) {
+            Map.Entry<String, PushItUser> userEntry = ((FollowersListRecycleViewAdapter) mRecyclerView.getAdapter()).getUser(menuItem);
+            mPage.removeFollower(userEntry.getValue(), userEntry.getKey());
+            mDatabaseManager.followPage(userEntry.getValue(), userEntry.getKey(), mPage);
+            return true;
+        }
+
+        return super.onContextItemSelected(menuItem);
     }
 }

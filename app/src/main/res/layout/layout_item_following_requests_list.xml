@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/pageListItemLayout"
+    android:id="@+id/followersListItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -10,32 +10,55 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/pageImageView"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_margin="6dp"
         android:scaleType="centerCrop" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
         <TextView
-            android:id="@+id/pageNameTextView"
+            android:id="@+id/accountEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="lidi@gmail.com"
             android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/pageDescTextView"
+            android:id="@+id/accountStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Content Creator"
             android:textSize="13sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/acceptButon"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:padding="0dp"
+            android:text="@string/accept_request" />
+
+        <Button
+            android:id="@+id/rejectButton"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:padding="0dp"
+            android:text="@string/reject_request" />
     </LinearLayout>
 
 </LinearLayout>
-

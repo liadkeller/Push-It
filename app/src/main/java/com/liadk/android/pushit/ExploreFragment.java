@@ -8,9 +8,12 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 
 public class ExploreFragment extends Fragment {
 
+    private FirebaseAuth mAuth;
     private DatabaseManager mDatabaseManager;
     private ValueEventListener mDatabaseListener;
 
@@ -30,6 +34,7 @@ public class ExploreFragment extends Fragment {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.explore);
 
+        mAuth = FirebaseAuth.getInstance();
         mDatabaseManager = DatabaseManager.get(getActivity());
         mDatabaseListener = mDatabaseManager.addPagesListener(new ValueEventListener() {
             @Override
@@ -50,6 +55,21 @@ public class ExploreFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+
+        mDatabaseManager.addUsersSingleEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String userId = (mAuth.getCurrentUser() != null) ? mAuth.getCurrentUser().getUid() : null;
+                PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
+
+                ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setUser(user);
+                ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setUserId(userId);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
     }
 
     @Nullable
@@ -81,5 +101,31 @@ public class ExploreFragment extends Fragment {
         super.onDestroyView();
         if(mDatabaseListener != null)
             mDatabaseManager.removePagesListener(mDatabaseListener);
+    }
+
+    // called when context menu item is selected
+    @Override
+    public boolean onContextItemSelected(MenuItem menuItem) {
+        if(menuItem.getItemId() == R.id.context_menu_follow_page) {
+            Page page = ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).getPage(menuItem);
+
+            PushItUser user = ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).getUser();
+            String userId = ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).getUserId();
+
+            if(mDatabaseManager.followPage(user, userId, page)) {
+                page.addNewFollower(user, userId);
+                mDatabaseManager.followPage(user, userId, page);
+
+                Toast.makeText(getActivity(), R.string.follow_request_sent, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            else {
+                Toast.makeText(getActivity(), R.string.follow_request_failed, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        return super.onContextItemSelected(menuItem);
     }
 }

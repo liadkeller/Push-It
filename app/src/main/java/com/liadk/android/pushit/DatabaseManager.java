@@ -91,6 +91,7 @@ public class DatabaseManager {
         mPagesDatabase.child(page.getId().toString()).child("description").setValue(page.getDescription());
         for(UUID itemId : page.getItemsIdentifiers())
             mPagesDatabase.child(page.getId().toString()).child("items").child(itemId.toString()).setValue(true);
+        mPagesDatabase.child(page.getId().toString()).child("private").setValue(page.isPrivate());
         mPagesDatabase.child(page.getId().toString()).child("followers").setValue(page.getFollowersIdentifiers());
         mPagesDatabase.child(page.getId().toString()).child("settings").child("design").setValue(page.settings.design.toString());
     }
@@ -108,9 +109,17 @@ public class DatabaseManager {
         mUsersDatabase.child(userId).setValue(user).addOnCompleteListener(listener);
     }
 
-    public void followPage(PushItUser user, String userId, Page page) {
-        mPagesDatabase.child(page.getId().toString()).child("followers").setValue(page.getFollowersIdentifiers());
+    // updates page followers list and user followed list in DB
+    public boolean followPage(PushItUser user, String userId, Page page) {
+        if(user == null || userId == null) return false;
+
+        updatePageFollowers(page);
         mUsersDatabase.child(userId).child("followedPages").setValue(user.getFollowedPages());
+        return true;
+    }
+
+    public void updatePageFollowers(Page page) {
+        mPagesDatabase.child(page.getId().toString()).child("followers").setValue(page.getFollowersIdentifiers());
     }
 
     public void refreshItemImage(Item item) {
@@ -169,6 +178,10 @@ public class DatabaseManager {
 
     public void setPageDescription(Page page) {
         mPagesDatabase.child(page.getId().toString()).child("description").setValue(page.getDescription());
+    }
+
+    public void setPagePrivacy(Page page) {
+        mPagesDatabase.child(page.getId().toString()).child("private").setValue(page.isPrivate());
     }
 
     public void setPageDesign(Page page) {

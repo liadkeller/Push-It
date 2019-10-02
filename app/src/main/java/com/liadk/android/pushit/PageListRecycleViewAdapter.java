@@ -5,11 +5,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,15 +29,37 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
     private ArrayList<Page> mPages;
+
+    private PushItUser mUser;
+    private String mUserId;
+
+    private final int mScreen;
     private int mLayoutResource;
 
-    PageListRecycleViewAdapter(Context context, int layout) {
+    PageListRecycleViewAdapter(Context context, int screen) {
         mContext = context;
-        mLayoutResource = (layout == PAGES_FOLLOW) ? R.layout.layout_item_follow_page_list : R.layout.layout_item_explore_page_list;
+        mScreen = screen;
+        mLayoutResource = (screen == PAGES_FOLLOW) ? R.layout.layout_item_follow_page_list : R.layout.layout_item_explore_page_list;
     }
 
     public void setPages(ArrayList<Page> pages) {
         mPages = pages;
+    }
+
+    public void setUser(PushItUser mUser) {
+        this.mUser = mUser;
+    }
+
+    public void setUserId(String mUserId) {
+        this.mUserId = mUserId;
+    }
+
+    public PushItUser getUser() {
+        return mUser;
+    }
+
+    public String getUserId() {
+        return mUserId;
     }
 
     @Override
@@ -48,7 +74,7 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
 
         ((ViewHolder) holder).mNameTextView.setText(page.getName());
 
-        if (page.getDescription().isEmpty())
+        if (page.getDescription() == null || page.getDescription().isEmpty())
             ((ViewHolder) holder).mDescTextView.setVisibility(View.GONE);
 
         else {
@@ -56,16 +82,25 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
             ((ViewHolder) holder).mDescTextView.setText(page.getDescription());
         }
 
-        ((ViewHolder) holder).mLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, PageActivity.class);
-                intent.putExtra(PageFragment.EXTRA_ID, page.getId());
-                mContext.startActivity(intent);
-            }
+        ((ViewHolder) holder).mLinearLayout.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               if (hasAccess(page)) { // if Explore has access or if Follow
+                   Intent intent = new Intent(mContext, PageActivity.class);
+                   intent.putExtra(PageFragment.EXTRA_ID, page.getId());
+                   mContext.startActivity(intent);
+               }
+
+               else
+                   Toast.makeText(mContext, R.string.private_page_click, Toast.LENGTH_LONG).show();
+           }
         });
 
         loadLogoImage(page, ((ViewHolder) holder).mImageView);
+    }
+
+    private boolean hasAccess(Page page) {
+        return page.isPublic() || (mUser != null && mUser.isFollowing(page)) || mScreen == PAGES_FOLLOW;
     }
 
     @Override
@@ -73,18 +108,35 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
         return (mPages == null) ? 0 : mPages.size();
     }
 
+    public Page getPage(MenuItem menuItem) {
+        if(mPages == null) return null;
+
+        int position = menuItem.getOrder(); // we put the adapter position instead of the order
+        return mPages.get(position);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ViewGroup mLayout;
+        LinearLayout mLinearLayout;
         ImageView mImageView;
         TextView mNameTextView;
         TextView mDescTextView;
 
         ViewHolder(View v) {
             super(v);
-            mLayout = v.findViewById(R.id.pageListItemLayout);
+            mLinearLayout = v.findViewById(R.id.pageListItemLayout);
             mImageView = v.findViewById(R.id.pageImageView);
             mNameTextView = v.findViewById(R.id.pageNameTextView);
             mDescTextView = v.findViewById(R.id.pageDescTextView);
+
+            v.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                @Override
+                public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+                    final Page page = mPages.get(getAdapterPosition());
+
+                    if(!hasAccess(page))
+                        contextMenu.add(0, R.id.context_menu_follow_page, getAdapterPosition(), R.string.follow_page);
+                }
+            });
         }
     }
 

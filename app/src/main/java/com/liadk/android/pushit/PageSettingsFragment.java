@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.preference.EditTextPreference;
@@ -27,9 +28,10 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
 
     private static final String PAGE_NAME = "pageName";
     private static final String PAGE_DESC = "pageDesc";
-    private static final String PAGE_LAYOUT = "pageLayout";
     private static final String PAGE_FOLLOWERS = "pageFollowers";
+    private static final String PAGE_PRIVACY = "pagePrivacy";
     private static final String PAGE_LOGO = "pageLogo";
+    private static final String PAGE_LAYOUT = "pageLayout";
 
     private Page mPage;
     private DatabaseManager mDatabaseManager;
@@ -38,6 +40,7 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
     private EditTextPreference mNamePreference;
     private EditTextPreference mDescPreference;
     private Preference mFollowersPreference;
+    private SwitchPreference mPrivayPreference;
     private Preference mLogoPreference;
 
     @Override
@@ -69,9 +72,10 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
         addPreferencesFromResource(R.xml.preferences_page);
         mNamePreference = (EditTextPreference) getPreferenceScreen().findPreference(PAGE_NAME);
         mDescPreference = (EditTextPreference) getPreferenceScreen().findPreference(PAGE_DESC);
+        mPrivayPreference = (SwitchPreference) getPreferenceScreen().findPreference(PAGE_PRIVACY);
+        mFollowersPreference = getPreferenceScreen().findPreference(PAGE_FOLLOWERS);
         mLayoutPreference = (ListPreference) getPreferenceScreen().findPreference(PAGE_LAYOUT);
         mLogoPreference = (Preference) getPreferenceScreen().findPreference(PAGE_LOGO);
-        mFollowersPreference = (Preference) getPreferenceScreen().findPreference(PAGE_FOLLOWERS);
 
         mLogoPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -126,6 +130,7 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
         if(mPage.getDescription() == null || mPage.getDescription().equals(""))
             mDescPreference.setSummary(R.string.choose_description_summary);
 
+        mPrivayPreference.setSummary(mPrivayPreference.isChecked() ? R.string.private_page : R.string.public_page);
 
         int index = mLayoutPreference.findIndexOfValue(mPage.settings.design.toString());
         mLayoutPreference.setValueIndex(index);
@@ -169,6 +174,12 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
             mDescPreference.setSummary(mDescPreference.getText());
             if(mPage.getDescription().equals(""))
                 mDescPreference.setSummary(R.string.choose_description_summary);
+        }
+
+        else if(key.equals(PAGE_PRIVACY)) {
+            mPage.setPrivate(mPrivayPreference.isChecked());
+            mDatabaseManager.setPagePrivacy(mPage);
+            mPrivayPreference.setSummary(mPrivayPreference.isChecked() ? R.string.private_page : R.string.public_page);
         }
     }
 

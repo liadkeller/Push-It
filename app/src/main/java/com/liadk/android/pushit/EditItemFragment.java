@@ -493,7 +493,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         });
     }
 
-    // deletes this item from ItemCollection and from it's owner
     private void delete() {
         mDatabaseManager.deleteItem(mItem);
         mStorageManager.deleteItem(mItem);

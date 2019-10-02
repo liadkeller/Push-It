@@ -78,6 +78,13 @@ public class PageFragment extends Fragment {
                 if(dataSnapshot.getValue() == null) return;
 
                 mPage = Page.fromDB(dataSnapshot.child("pages").child(id.toString()));
+
+                if(dataSnapshot.child("pages").child(id.toString()).getValue() == null) {
+                    Toast.makeText(getActivity(), R.string.page_not_exist, Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                    return;
+                }
+
                 mItems = getItems(mPage.getItemsIdentifiers(), dataSnapshot);
 
                 if(mAuth.getCurrentUser() != null) {
@@ -453,7 +460,7 @@ public class PageFragment extends Fragment {
         if(mUser != null) {
             MenuItem followMenuItem = menu.findItem(R.id.menu_item_follow_page);
             if (followMenuItem != null)
-                followMenuItem.setTitle(mUser.isFollowing(mPage) ? R.string.unfollow_page : R.string.follow_page);
+                followMenuItem.setTitle(mPage.hasFollowedBy(mUserId) ? R.string.unfollow_page : R.string.follow_page);
         }
     }
 
@@ -477,15 +484,11 @@ public class PageFragment extends Fragment {
         else if(item.getItemId() == R.id.menu_item_follow_page) {
             if(mAuth.getCurrentUser() == null || mUser == null || mUserId == null || !mAuth.getCurrentUser().getUid().equals(mUserId)) return false;
 
-            if(item.getTitle().toString().equals(getString(R.string.follow_page))) {
-                mUser.followPage(mPage);
-                mPage.addFollower(mUserId);
-            }
+            if(item.getTitle().toString().equals(getString(R.string.follow_page)))
+                mPage.addNewFollower(mUser, mUserId);
 
-            else if (item.getTitle().toString().equals(getString(R.string.unfollow_page))) {
-                mUser.unfollowPage(mPage);
-                mPage.removeFollower(mUserId);
-            }
+            else if (item.getTitle().toString().equals(getString(R.string.unfollow_page)))
+                mPage.removeFollower(mUser, mUserId);
 
             else
                 return false;
