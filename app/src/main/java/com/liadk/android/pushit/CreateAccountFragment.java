@@ -12,6 +12,7 @@ import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -231,5 +232,16 @@ public class CreateAccountFragment extends Fragment {
     private void onSignUpFailed(String errorMsg) {
         Log.d(TAG, "signUpWithEmail:failure; " + errorMsg);
         Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -8,17 +8,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pushit_logo"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="18dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:adjustViewBounds="true"
+            android:cropToPadding="false"/>
 
         <EditText
             android:id="@+id/emailEditText"
             android:hint="@string/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginRight="24dp"
             android:ems="10"
             android:inputType="textEmailAddress" />
 
@@ -28,9 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="24dp"
+            android:layout_marginTop="4dp"
             android:inputType="textPassword"
             android:imeOptions="actionDone"/>
 

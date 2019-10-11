@@ -24,7 +24,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/mainImageView"
             android:scaleType="fitStart"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            android:src="@drawable/item_image_placeholder"/>
 
         <TextView
             android:id="@+id/titleTextView"

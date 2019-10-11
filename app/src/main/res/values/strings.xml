@@ -181,9 +181,9 @@
     <string name="reject_request">Reject</string>
     <string name="page_not_exist">This page does not exist</string>
     <string name="remove_follower">Remove Follower</string>
-    <string name="private_page_click">This page is private.\nPress long click to follow</string>
+    <string name="private_page_click">This page is private.\nPress long click to send follow request</string>
+    <string name="private_page_click_no_user">This page is private.\nLogin to follow.</string>
     <string name="follow_request_sent">Your follow request has been sent and will be reviewed shortly.</string>
-    <string name="follow_request_failed">Could not send your follow request as user is not logged in.</string>
-    >
+    <string name="follow_request_failed">Could not send follow request as user is not logged in.</string>
 
 </resources>

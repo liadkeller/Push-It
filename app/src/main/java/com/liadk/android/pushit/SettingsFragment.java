@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v14.preference.SwitchPreference;
@@ -32,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.UUID;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
+    private static final String KEY_EMAIL_PREFERENCE = "emailPreference";
 
     protected static final String MY_ACCOUNT = "myAccount";
     protected static final String ACCOUNT_EMAIL = "accountEmail";
@@ -72,6 +74,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         mStatusPreference = (SwitchPreference) findPreference(ACCOUNT_STATUS);
         mSignOutPreference = findPreference(ACCOUNT_SIGN_OUT);
         mDeleteAccountPreference = findPreference(ACCOUNT_DELETE);
+
+        String email = (getActivity() != null) ? PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(KEY_EMAIL_PREFERENCE, "") : null;
+        mEmailPreference.setTitle(email);
 
 
         FirebaseUser user = mAuth.getCurrentUser();
@@ -126,6 +131,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     protected void configureAccountPreferences(final PushItUser user, final String userId) {
         mEmailPreference.setTitle(user.getEmail());
+        if(getActivity() != null)
+            PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .edit()
+                .putString(KEY_EMAIL_PREFERENCE, user.getEmail())
+                .commit();
 
         int statusSummary = (user.getStatus()) ? R.string.status_creator : R.string.status_follower;
         mStatusPreference.setChecked(user.getStatus());
@@ -174,6 +184,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     public void onClick(DialogInterface dialog, int which) {
                         ProgressDialog progressDialog = showProgressDialog(getString(R.string.delete_account_progress_dialog));
                         mDatabaseManager.deleteUser(user, userId); // delete user data from db
+                        deleteEmailData();
 
                         // delete user from authentication data source
                         if(mAuth.getCurrentUser() != null && mAuth.getCurrentUser().getUid().equals(userId))
@@ -186,6 +197,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
         });
+    }
+
+    protected void deleteEmailData() {
+        PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .edit()
+                .putString(KEY_EMAIL_PREFERENCE,"")
+                .commit();
     }
 
     protected void showOnClickDialog(int title, int positiveButtonString, int msg, DialogInterface.OnClickListener onClickListener) {

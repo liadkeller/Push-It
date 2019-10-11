@@ -62,7 +62,8 @@ public class PushItUser {
     }
 
     public boolean isFollowing(Page page) {
-        return this.followedPages.contains(page.getId().toString());
+        return this.followedPages.contains(page.getId().toString())
+                || page.getId().toString().equals(this.pageId);
     }
 
     public void setContentCreator() {

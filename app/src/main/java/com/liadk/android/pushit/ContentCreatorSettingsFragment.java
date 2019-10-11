@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.Fragment;
@@ -22,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.UUID;
 
 public class ContentCreatorSettingsFragment extends SettingsFragment {
+    private static final String KEY_EMAIL_PREFERENCE = "emailPreference";
 
     protected static final String PAGE_SETTINGS = "pageSettings";
     protected static final String PAGE_DELETE = "pageDelete";
@@ -52,6 +54,9 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
         mDeletePagePreference = findPreference(PAGE_DELETE);
         mSignOutPreference = findPreference(ACCOUNT_SIGN_OUT);
         mDeleteAccountPreference = findPreference(ACCOUNT_DELETE);
+
+        String email = (getActivity() != null) ? PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(KEY_EMAIL_PREFERENCE, "") : null;
+        mEmailPreference.setTitle(email);
 
 
         FirebaseUser user = mAuth.getCurrentUser();
@@ -150,6 +155,11 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
 
     protected void configureAccountPreferences(final PushItUser user, final String userId) {
         mEmailPreference.setTitle(user.getEmail());
+        if(getActivity() != null)
+            PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .edit()
+                    .putString(KEY_EMAIL_PREFERENCE, user.getEmail())
+                    .commit();
 
         mStatusPreference.setChecked(true);
         mStatusPreference.setSummary(R.string.status_creator);
@@ -168,6 +178,7 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ProgressDialog progressDialog = showProgressDialog(getString(R.string.sign_out_progress_dialog));
+                        deleteEmailData();
                         mAuth.signOut();
                         dismissProgressDialog(progressDialog, null, DELAY);
                     }
@@ -187,6 +198,7 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         ProgressDialog progressDialog = showProgressDialog(getString(R.string.delete_account_progress_dialog));
                         mDatabaseManager.deleteUser(user, userId); // delete user data from db
+                        deleteEmailData();
 
                         // delete user from authentication data source
                         if(mAuth.getCurrentUser() != null && mAuth.getCurrentUser().getUid() == userId)

@@ -91,6 +91,9 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
                    mContext.startActivity(intent);
                }
 
+               else if(mUser == null)
+                   Toast.makeText(mContext, R.string.private_page_click_no_user, Toast.LENGTH_LONG).show();
+
                else
                    Toast.makeText(mContext, R.string.private_page_click, Toast.LENGTH_LONG).show();
            }
@@ -133,7 +136,7 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
                 public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
                     final Page page = mPages.get(getAdapterPosition());
 
-                    if(!hasAccess(page))
+                    if(!hasAccess(page) && mUser != null)
                         contextMenu.add(0, R.id.context_menu_follow_page, getAdapterPosition(), R.string.follow_page);
                 }
             });

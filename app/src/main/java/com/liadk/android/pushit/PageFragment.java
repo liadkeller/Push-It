@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +60,7 @@ public class PageFragment extends Fragment {
     private ValueEventListener mDatabaseListener;
 
     private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
     private LinearLayout mEmptyView;
     private SwipeRefreshLayout mSwipeRefresh;
     private Button mAddArticleButton;
@@ -81,7 +84,8 @@ public class PageFragment extends Fragment {
 
                 if(dataSnapshot.child("pages").child(id.toString()).getValue() == null) {
                     Toast.makeText(getActivity(), R.string.page_not_exist, Toast.LENGTH_SHORT).show();
-                    getActivity().finish();
+                    if(NavUtils.getParentActivityName(getActivity()) != null)
+                        getActivity().finish();
                     return;
                 }
 
@@ -138,6 +142,8 @@ public class PageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_page, container, false);
 
+        mProgressBar = v.findViewById(R.id.progressBar);
+
         mRecyclerView = v.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -177,6 +183,8 @@ public class PageFragment extends Fragment {
         final PageRecycleViewAdapter adapter = (PageRecycleViewAdapter) mRecyclerView.getAdapter();
 
         adapter.setItems(items);
+        mProgressBar.setVisibility(View.GONE);
+
         mEmptyView.setVisibility(items.size() == 0 ? View.VISIBLE : View.GONE);
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() { // checks if recycler view empty

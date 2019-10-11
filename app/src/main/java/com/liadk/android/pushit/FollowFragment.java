@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +31,7 @@ public class FollowFragment extends Fragment {
 
     private ArrayList<Page> mPages;
     private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
     private LinearLayout mNoUserView;
     private TextView mEmptyTextView;
     private Button mLoginButton;
@@ -83,6 +85,8 @@ public class FollowFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_follow, container, false);
 
+        mProgressBar = v.findViewById(R.id.progressBar);
+
         mRecyclerView = v.findViewById(R.id.recyclerView);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         mRecyclerView.setAdapter(new PageListRecycleViewAdapter(getActivity(), PageListRecycleViewAdapter.PAGES_FOLLOW));
@@ -92,8 +96,10 @@ public class FollowFragment extends Fragment {
         mNoUserView = v.findViewById(R.id.noUserView);
         mLoginButton = v.findViewById(R.id.loginButton);
 
-        if(mAuth.getCurrentUser() == null)
+        if(mAuth.getCurrentUser() == null) {
             mNoUserView.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+        }
 
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +121,7 @@ public class FollowFragment extends Fragment {
 
         mNoUserView.setVisibility(View.GONE);
         adapter.setPages(mPages);
+        mProgressBar.setVisibility(View.GONE);
         adapter.notifyDataSetChanged();
 
         mEmptyTextView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);

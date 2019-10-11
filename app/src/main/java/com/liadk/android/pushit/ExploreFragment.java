@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +29,7 @@ public class ExploreFragment extends Fragment {
 
     private ArrayList<Page> mPages;
     private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,8 +49,7 @@ public class ExploreFragment extends Fragment {
                 }
 
                 if(mRecyclerView != null) {
-                    ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setPages(mPages);
-                    mRecyclerView.getAdapter().notifyDataSetChanged();
+                    configureAdapter();
                 }
             }
 
@@ -59,7 +60,9 @@ public class ExploreFragment extends Fragment {
         mDatabaseManager.addUsersSingleEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String userId = (mAuth.getCurrentUser() != null) ? mAuth.getCurrentUser().getUid() : null;
+                if(mAuth.getCurrentUser() == null) return;
+
+                String userId = mAuth.getCurrentUser().getUid();
                 PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
 
                 ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setUser(user);
@@ -77,17 +80,24 @@ public class ExploreFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_recycler_view, container, false);
 
+        mProgressBar = v.findViewById(R.id.progressBar);
+
         mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         mRecyclerView.setAdapter(new PageListRecycleViewAdapter(getActivity(), PageListRecycleViewAdapter.PAGES_EXPLORE));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         if(mPages != null) {
-            ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setPages(mPages);
-            mRecyclerView.getAdapter().notifyDataSetChanged();
+            configureAdapter();
         }
         
         return v;
+    }
+
+    private void configureAdapter() {
+        ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setPages(mPages);
+        mProgressBar.setVisibility(View.GONE);
+        mRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
