@@ -45,7 +45,9 @@ public class ExploreFragment extends Fragment {
 
                 mPages = new ArrayList<>();
                 for(DataSnapshot ds: dataSnapshot.getChildren()) {
-                    mPages.add(Page.getPageDetailsFromDB(ds));
+                    Page page = Page.getPageDetailsFromDB(ds);
+                    if(page != null)
+                        mPages.add(page);
                 }
 
                 if(mRecyclerView != null) {

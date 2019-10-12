@@ -106,7 +106,7 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
 
     protected void refreshUserStatus(PushItUser user) {
         replaceFragment(user);
-        ((HomeActivity) getActivity()).getUserStatus();
+        ((HomeActivity) getActivity()).updateUserStatus();
     }
 
     // configure both account preferences as well as page preferences
@@ -133,10 +133,10 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 final ProgressDialog progressDialog = showProgressDialog(getString(R.string.delete_page_progress_dialog));
-                                // mDatabaseManager.deletePage(user.getPageId()); // TODO delete user data from db
+                                mDatabaseManager.deletePage(user.getPageId());
                                 user.setContentFollower();
 
-                                mDatabaseManager.pushUserToDB(user, userId, new OnCompleteListener() {
+                                mDatabaseManager.setUserStatus(user, userId, new OnCompleteListener() {
                                     @Override
                                     public void onComplete(@NonNull Task task) {
                                         dismissProgressDialog(progressDialog, user, DELAY);

@@ -68,6 +68,9 @@ public class PageFollowersFragment extends Fragment {
 
                 mPage = Page.getPageFollowersFromDB(dataSnapshot.child(id.toString()));
 
+                if(mPage == null)
+                    return;
+
                 mDatabaseManager.addUsersSingleEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -220,11 +223,11 @@ public class PageFollowersFragment extends Fragment {
 
         private Context mContext;
         private LinkedHashMap<String, PushItUser> mUsers;
-        private boolean mRequests; // true if requests recyclerView, false if users recyclerView
+        private boolean mIsRequests; // true if requests recyclerView, false if users recyclerView
 
         FollowersListRecycleViewAdapter(Context context, boolean requests) {
             mContext = context;
-            mRequests = requests;
+            mIsRequests = requests;
         }
 
         public void setUsers(LinkedHashMap<String, PushItUser> users) {
@@ -233,7 +236,7 @@ public class PageFollowersFragment extends Fragment {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            if(mRequests) {
+            if(mIsRequests) {
                 View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_following_requests_list, parent, false);
                 return new RequestViewHolder(v);
             }
@@ -269,7 +272,7 @@ public class PageFollowersFragment extends Fragment {
             if(user.getStatus())
                 loadLogoImage(user.getPageId(), ((ViewHolder) holder).mImageView);
 
-            if(mRequests) {
+            if(mIsRequests) {
                 ((RequestViewHolder) holder).mAcceptButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -314,7 +317,7 @@ public class PageFollowersFragment extends Fragment {
                 mStatusTextView = v.findViewById(R.id.accountStatus);
                 mImageView = v.findViewById(R.id.pageImageView);
 
-                if(!mRequests && mPage.isPrivate()) {
+                if(!mIsRequests && mPage.isPrivate()) {
                     v.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
                         @Override
                         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {

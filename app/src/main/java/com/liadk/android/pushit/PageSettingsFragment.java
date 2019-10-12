@@ -1,5 +1,6 @@
 package com.liadk.android.pushit;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,10 +9,12 @@ import android.support.annotation.Nullable;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -55,6 +58,15 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
                 if(dataSnapshot.getValue() == null) return;
 
                 mPage = Page.getPageSettingsFromDB(dataSnapshot.child(id.toString()));
+
+                if(mPage == null) {
+                    if(getActivity() != null) {
+                        Toast.makeText(getActivity(), R.string.page_not_exist, Toast.LENGTH_SHORT).show();
+                        getActivity().finish();
+                    }
+                    return;
+                }
+
                 if(mNamePreference != null && mDescPreference != null && mLayoutPreference != null)
                     updatePreferences();
             }
@@ -93,6 +105,37 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
                 return true;
             }
         });
+
+
+        mPrivayPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object isChecked) {
+                if((boolean) isChecked) return true;
+
+                // Turning public triggers dialog to confirm
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.public_page)
+                        .setMessage(R.string.public_page_dialog)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mPrivayPreference.setChecked(false);
+
+                                PreferenceManager.getDefaultSharedPreferences(getActivity())
+                                        .edit()
+                                        .putBoolean(PAGE_PRIVACY, false)
+                                        .commit();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .create();
+
+                alertDialog.show();
+                return false;
+            }
+        });
+
+
     }
 
     @Override
@@ -121,7 +164,7 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
         if(mPage.getDescription() == null || mPage.getDescription().equals(""))
             mDescPreference.setSummary(R.string.choose_description_summary);
 
-        mPrivayPreference.setSummary(mPrivayPreference.isChecked() ? R.string.private_page : R.string.public_page);
+        mPrivayPreference.setSummary(mPrivayPreference.isChecked() ? R.string.private_page_summary : R.string.public_page_summary);
 
         int index = mLayoutPreference.findIndexOfValue(mPage.settings.design.toString());
         mLayoutPreference.setValueIndex(index);
@@ -170,7 +213,7 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
         else if(key.equals(PAGE_PRIVACY)) {
             mPage.setPrivate(mPrivayPreference.isChecked());
             mDatabaseManager.setPagePrivacy(mPage);
-            mPrivayPreference.setSummary(mPrivayPreference.isChecked() ? R.string.private_page : R.string.public_page);
+            mPrivayPreference.setSummary(mPrivayPreference.isChecked() ? R.string.private_page_summary : R.string.public_page_summary);
         }
     }
 

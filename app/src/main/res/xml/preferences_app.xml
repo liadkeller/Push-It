@@ -8,7 +8,7 @@
 
         <SwitchPreference
             android:key="accountStatus"
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:title="@string/account_status"
             android:icon="@drawable/status_gray"
             android:summary="@string/status_follower"/>

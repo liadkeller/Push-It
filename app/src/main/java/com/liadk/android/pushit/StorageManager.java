@@ -60,10 +60,6 @@ public class StorageManager {
             String imageName = "image" + i + ".png";
             storageRef.child(imageName).delete();
         }
-
-        //storageRef.child("image.png").putBytes(getBytesFromUri(item.getImageUri())).addOnCompleteListener(onCompleteListener); // TODO Tremendously Pricey
-        //storageRef.child("image1.png").putBytes(getBytesFromUri(item.getMediaSegments().get(0))).addOnCompleteListener(onCompleteListener);
-        //storageRef.child("image2.png").putBytes(getBytesFromUri(item.getMediaSegments().get(1))).addOnCompleteListener(onCompleteListener);
     }
 
 
@@ -97,13 +93,13 @@ public class StorageManager {
 
     public void uploadImage(byte[] imageBytes, StorageReference storageRef) {
         if(imageBytes != null) {
-            UploadTask uploadTask = storageRef.putBytes(imageBytes); // TODO Tremendously Pricey
+            UploadTask uploadTask = storageRef.putBytes(imageBytes);
         }
     }
 
     public void uploadImage(byte[] imageBytes, StorageReference storageRef, OnCompleteListener<UploadTask.TaskSnapshot> onCompleteListener) {
         if(imageBytes != null) {
-            UploadTask uploadTask = (UploadTask) storageRef.putBytes(imageBytes).addOnCompleteListener(onCompleteListener); // TODO Tremendously Pricey
+            UploadTask uploadTask = (UploadTask) storageRef.putBytes(imageBytes).addOnCompleteListener(onCompleteListener);
         }
     }
 

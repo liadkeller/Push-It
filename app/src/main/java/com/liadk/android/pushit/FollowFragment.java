@@ -61,8 +61,11 @@ public class FollowFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         mPages = new ArrayList<>();
-                        for(String pageId : user.getFollowedPages())
-                            mPages.add(Page.getPageDetailsFromDB(dataSnapshot.child(pageId)));
+                        for(String pageId : user.getFollowedPages()) {
+                            Page page = Page.getPageDetailsFromDB(dataSnapshot.child(pageId));
+                            if(page != null)
+                                mPages.add(page);
+                        }
 
                         if(mRecyclerView != null) {
                             configureAdapter();

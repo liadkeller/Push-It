@@ -126,7 +126,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     protected void refreshUserStatus(PushItUser user) {
         replaceFragment(user);
-        ((HomeActivity) getActivity()).getUserStatus();
+        ((HomeActivity) getActivity()).updateUserStatus();
     }
 
     protected void configureAccountPreferences(final PushItUser user, final String userId) {
@@ -148,7 +148,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 if(status) {
                     if(user.getPageId() != null)
-                        showRestorePageDialog(user, userId);   // TODO Decide if restoration can be done that easily, might be if page entries aren't deleted from db but only status is set to false. If ARE deleted, restoring the page entry might not be THAT hard
+                        showRestorePageDialog(user, userId);
 
                     else
                         showCreatePageDialog();
@@ -165,6 +165,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ProgressDialog progressDialog = showProgressDialog(getString(R.string.sign_out_progress_dialog));
+                        deleteEmailData();
                         mAuth.signOut();
                         dismissProgressDialog(progressDialog, null, DELAY);
                     }
@@ -242,14 +243,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 .setPositiveButton(R.string.restore, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        user.setContentCreator();
+                        if(user.getPageId() != null) {
+                            mDatabaseManager.recoverPage(user.getPageId());
 
-                        mDatabaseManager.pushUserToDB(user, userId, new OnCompleteListener() {
-                            @Override
-                            public void onComplete(@NonNull Task task) {
-                                refreshUserStatus(user);
-                            }
-                        });
+                            user.setContentCreator();
+                            mDatabaseManager.setUserStatus(user, userId, new OnCompleteListener() {
+                                @Override
+                                public void onComplete(@NonNull Task task) {
+                                    refreshUserStatus(user);
+                                }
+                            });
+                        }
                     }
                 })
                 .setNeutralButton(android.R.string.cancel, null)
@@ -316,7 +320,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         mDatabaseManager.pushUserToDB(user, userId, new OnCompleteListener() {
                             @Override
                             public void onComplete(@NonNull Task task) {
-                                ((HomeActivity) getActivity()).getUserStatus();
+                                ((HomeActivity) getActivity()).updateUserStatus();
 
                                 AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                                         .setTitle(R.string.page_created)

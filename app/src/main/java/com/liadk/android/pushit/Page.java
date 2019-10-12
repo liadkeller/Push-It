@@ -70,6 +70,8 @@ public class Page {
 
     // only details needed for explore/follow tabs
     public static Page getPageDetailsFromDB(DataSnapshot ds) {
+        if(ds.child("deleted").getValue() != null && (boolean) ds.child("deleted").getValue()) return null;
+
         Page page = new Page();
         page.mId = UUID.fromString(ds.getKey());
         page.mName = (String) ds.child("name").getValue();
@@ -82,6 +84,8 @@ public class Page {
 
     // details needed for page setting screen
     public static Page getPageSettingsFromDB(DataSnapshot ds) {
+        if(ds.child("deleted").getValue() != null && (boolean) ds.child("deleted").getValue()) return null;
+
         Page page = getPageDetailsFromDB(ds);
         page.settings.design = Design.getDesign((String) ds.child("settings").child("design").getValue());
 
@@ -89,6 +93,8 @@ public class Page {
     }
 
     public static Page getPageFollowersFromDB(DataSnapshot ds) {
+        if(ds.child("deleted").getValue() != null && (boolean) ds.child("deleted").getValue()) return null;
+
         Page page = new Page();
         page.mId = UUID.fromString(ds.getKey());
 
@@ -102,6 +108,8 @@ public class Page {
     }
 
     public static Page fromDB(DataSnapshot ds) {
+        if(ds.child("deleted").getValue() != null && (boolean) ds.child("deleted").getValue()) return null;
+
         Page page = new Page();
         page.mId = UUID.fromString(ds.getKey());
         page.mName = (String) ds.child("name").getValue();

@@ -46,22 +46,22 @@ public class Item {
         }
     }
 
-    UUID mId;
+    private UUID mId;
 
-    String mTitle = "";
-    String mAuthor = "";
-    Uri mImageUri;
-    int mOrder;
-    Date mOriginalTime; // original creation time
-    Date mTime;                  // creation time
-    UUID mOwnerId;
+    private String mTitle = "";
+    private String mAuthor = "";
+    private Uri mImageUri;
+    private int mOrder;
+    private Date mOriginalTime; // original creation time
+    private Date mTime;                  // creation time
+    private UUID mOwnerId;
 
-    ArrayList<String> mTextSegments;
-    ArrayList<Uri> mMediaSegments;
+    private ArrayList<String> mTextSegments;
+    private ArrayList<Uri> mMediaSegments;
 
-    int mCounter;
+    private int mCounter;
 
-    State mState;
+    private State mState;
 
 
     public Item(UUID ownerId) {

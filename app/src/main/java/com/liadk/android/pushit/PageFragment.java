@@ -82,7 +82,7 @@ public class PageFragment extends Fragment {
 
                 mPage = Page.fromDB(dataSnapshot.child("pages").child(id.toString()));
 
-                if(dataSnapshot.child("pages").child(id.toString()).getValue() == null) {
+                if((dataSnapshot.child("pages").child(id.toString()).getValue() == null || mPage == null) && getActivity() != null) {
                     Toast.makeText(getActivity(), R.string.page_not_exist, Toast.LENGTH_SHORT).show();
                     if(NavUtils.getParentActivityName(getActivity()) != null)
                         getActivity().finish();

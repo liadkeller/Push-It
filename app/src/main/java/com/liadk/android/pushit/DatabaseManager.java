@@ -94,6 +94,7 @@ public class DatabaseManager {
         mPagesDatabase.child(page.getId().toString()).child("private").setValue(page.isPrivate());
         mPagesDatabase.child(page.getId().toString()).child("followers").setValue(page.getFollowersIdentifiers());
         mPagesDatabase.child(page.getId().toString()).child("settings").child("design").setValue(page.settings.design.toString());
+        mPagesDatabase.child(page.getId().toString()).child("deleted").setValue(false);
     }
 
     public void addItemToPage(Item item) { // doesn't push item to db, but adds item to the page's items list
@@ -138,32 +139,37 @@ public class DatabaseManager {
         pageItemsDatabase.child(item.getId().toString()).removeValue();
     }
 
+    // Deletes the user from db and soft-deletes the user page (if exists)
     public void deleteUser(PushItUser user, String userId) {
-        // Currently Deletes the user from the db
-        // Does not delete any page linked to it
-        // If page deletion is enabled, the page entry will be deleted but the items entries will be marked as deleted and will be kept
-
         mUsersDatabase.child(userId).removeValue();
-        // if(user.getStatus()) deletePage(user.getPageId());                      TODO Tremendously DANGEROUS!
+
+        if(user.getStatus())
+            deletePage(user.getPageId());
     }
 
-    public void deletePage(final String pageId) {
-        // Currently deletes the page entry but doesn't delete the items data (title, article text, images)
-        // This means the page can be easily recovered, but that the data keeps using the cloud space (might wanna delete the items data 30 days after user deletion)
-        // If a decision to commit hard delete of the items data is made, including all text and media files, you should consider very cautiously whether to call this function (i. e. in deleteUser())
-        // You should also consider whether the items media should be deleted from the storage
+    public void deletePage(String pageId) {
+        deletePage(pageId, true);
+    }
 
+    public void recoverPage(String pageId) {
+        deletePage(pageId, false);
+    }
+
+    // true for deleting, false for recovering
+    // Currently marks the page as deleted but does not delete the page entry nor the items'.
+    // If you want to hard delete the page and the items entries, you may wanna consider delete them from the storage as well
+    private void deletePage(final String pageId, final boolean delete) {
         if(pageId == null) return;
+
+        mPagesDatabase.child(pageId).child("deleted").setValue(delete);                       // mark the page as deleted
 
         mPagesDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Page page = Page.fromDB(dataSnapshot.child("pages").child(pageId));
-
-                mPagesDatabase.child(pageId).removeValue();                                         // delete page
-
-                for(UUID itemId : page.getItemsIdentifiers())                                       // delete page items
-                    mItemsDatabase.child(itemId.toString()).child("owner-deleted").setValue(true);  // instead of deleting the items for good, keep them for temp period
+            public void onDataChange(@NonNull DataSnapshot ds) {
+                for(DataSnapshot itemDataSnapshot : ds.child(pageId).child("items").getChildren()) {
+                    String itemId = itemDataSnapshot.getKey();
+                    mItemsDatabase.child(itemId).child("owner-deleted").setValue(delete);  // mark the page items as deleted
+                }
             }
 
             @Override
@@ -186,5 +192,10 @@ public class DatabaseManager {
 
     public void setPageDesign(Page page) {
         mPagesDatabase.child(page.getId().toString()).child("settings").child("design").setValue(page.settings.design.toString());
+    }
+
+
+    public void setUserStatus(PushItUser user, String userId, OnCompleteListener listener) {
+        mUsersDatabase.child(userId).child("status").setValue(user.getStatus()).addOnCompleteListener(listener);
     }
 }

@@ -44,7 +44,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     protected void onStart() {
         super.onStart();
-        getUserStatus();
+        updateUserStatus();
 
         mBottomNavigationView = findViewById(R.id.bottomNavigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);
@@ -54,7 +54,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     // updates user status and triggers bottom nav inflation if necessary
-    private void updateUserStatus(boolean userStatus) {
+    private void setUserStatus(boolean userStatus) {
         if(mUserStatus != userStatus) {
             mUserStatus = userStatus;
 
@@ -79,11 +79,11 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     // check the current user status and update if necessary
-    public void getUserStatus() {
+    public void updateUserStatus() {
         FirebaseUser user = mAuth.getCurrentUser();
 
         if(user == null)
-            updateUserStatus(false);
+            setUserStatus(false);
 
         else {
             final String userId = user.getUid();
@@ -94,13 +94,13 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                     PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
 
                     boolean userStatus = (user != null) ? user.getStatus() : false;
-                    updateUserStatus(userStatus);
+                    setUserStatus(userStatus);
 
                     if(mUserStatus) {
                         if(user.getPageId() != null)
                             mUserPageId = UUID.fromString(user.getPageId());
                         else
-                            updateUserStatus(false);  // if page id is unavailable - updates to content-follower user (no page user)
+                            setUserStatus(false);  // if page id is unavailable - updates to content-follower user (no page user)
                     }
                 }
 

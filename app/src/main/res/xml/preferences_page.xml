@@ -21,7 +21,8 @@
             android:key="pagePrivacy"
             android:defaultValue="false"
             android:title="@string/page_privacy"
-            android:summary="@string/public_page"/>
+            android:summaryOff="@string/public_page_summary"
+            android:summaryOn="@string/private_page_summary"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/page_design">

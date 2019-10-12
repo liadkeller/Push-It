@@ -173,8 +173,12 @@
     <string name="no_followers">No Followers</string>
     <string name="page_followers">Page Followers</string>
     <string name="page_privacy">Private Mode</string>
-    <string name="public_page">Your page is public and can be seen by every one.</string>
-    <string name="private_page">Your page is private and can be seen by approved users only.</string>
+    <string name="public_page_summary">Your page is public and can be seen by every one.</string>
+    <string name="private_page_summary">Your page is private and can be seen by approved users only.</string>
+    <string name="public_page">Public Page</string>
+    <string name="private_page">Private Page</string>
+    <string name="public_page_dialog">Are you sure you want to make your page public?\n\nEveryone will be able to see it.</string>
+
     <string name="following_requests">Following Requests</string>
     <string name="following_users">Following Users</string>
     <string name="accept_request">Accept</string>
