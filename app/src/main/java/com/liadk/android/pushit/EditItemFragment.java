@@ -263,6 +263,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                         mStorageManager.deleteItemIImage(mItem, new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
+                                // mRecentlySaved should not be modified as this button causes this change immediately and not after saving
                                 boolean recentlySaved = mRecentlySaved;
                                 onImageUpdated();
                                 mRecentlySaved = recentlySaved;
@@ -342,7 +343,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                     public void onClick(DialogInterface dialog, int which) {
                         saveChanges();
                         Toast.makeText(getActivity(), R.string.save_changes_toast, Toast.LENGTH_SHORT).show();
-                        exit();
                     }
                 });
             }
@@ -742,8 +742,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         MenuItem draftItem = menu.getItem(1);
         MenuItem createItem = menu.getItem(2);
         MenuItem publishItem = menu.getItem(3);
-
-        saveItem.setVisible(false);
 
         draftItem.setVisible(false);
         createItem.setVisible(false);

@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -38,17 +39,19 @@ public class ItemFragment extends Fragment {
     private static final int REQUEST_EDIT = 0;
 
     private Item mItem;
+    private boolean mIsOwner;
 
+    private FirebaseAuth mAuth;
     private DatabaseManager mDatabaseManager;
     private ValueEventListener mDatabaseListener;
 
-    ImageView mImageView;
-    TextView mTitleTextView;
-    TextView mDetailsTextView;
-    TextView mTextView;
-    TextView[] mSegmentTextViews;
-    ImageView[] mImageViews;
-    //SurfaceView[] mSurfaceViews;
+    private ImageView mImageView;
+    private TextView mTitleTextView;
+    private TextView mDetailsTextView;
+    private TextView mTextView;
+    private TextView[] mSegmentTextViews;
+    private ImageView[] mImageViews;
+    //private SurfaceView[] mSurfaceViews;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,7 @@ public class ItemFragment extends Fragment {
 
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
+        mAuth = FirebaseAuth.getInstance();
         mDatabaseManager = DatabaseManager.get(getActivity());
         mDatabaseListener = mDatabaseManager.addItemsListener(new ValueEventListener() {
             @Override
@@ -72,6 +76,21 @@ public class ItemFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
+        mDatabaseManager.addUsersSingleEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(mAuth.getCurrentUser() == null) return;
+
+                String userId = mAuth.getCurrentUser().getUid();
+                PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
+
+                mIsOwner = (user != null && user.getStatus()) ? mItem.getOwnerId().toString().equals(user.getPageId()) : false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
 
@@ -119,6 +138,12 @@ public class ItemFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_item, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        for(int i = 0; i < menu.size(); i++)
+            menu.getItem(i).setVisible(mIsOwner);
     }
 
     @Override

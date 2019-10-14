@@ -63,19 +63,23 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         String className = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer).getClass().getSimpleName();
 
         switch(className) {
-            case "PageFragment": actionId = R.id.bottom_nav_create;
-                                    break;
+            case "PageFragment":
+                actionId = R.id.bottom_nav_create;
+                break;
 
-            case "ExploreFragment": actionId = R.id.bottom_nav_explore;
-                                    break;
+            case "ExploreFragment":
+                actionId = R.id.bottom_nav_explore;
+                break;
 
-            case "FollowFragment": actionId = R.id.bottom_nav_follow;
-                                    break;
+            case "FollowFragment":
+                actionId = R.id.bottom_nav_follow;
+                break;
 
             case "ContentCreatorSettingsFragment":
             case "LoginSettingsFragment":
-            case "SettingsFragment": actionId = R.id.bottom_nav_settings;
-                                    break;
+            case "SettingsFragment":
+                actionId = R.id.bottom_nav_settings;
+                break;
         }
 
         if(actionId != 0)

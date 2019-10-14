@@ -74,7 +74,6 @@ public class ExploreFragment extends PageListFragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-
     }
 
     @Nullable

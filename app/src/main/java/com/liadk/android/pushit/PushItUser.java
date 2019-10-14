@@ -61,6 +61,7 @@ public class PushItUser {
         this.followedPages.remove(page.getId().toString());
     }
 
+    // whether user follows page, in terms of access to page in case it's private
     public boolean isFollowing(Page page) {
         return this.followedPages.contains(page.getId().toString())
                 || page.getId().toString().equals(this.pageId);

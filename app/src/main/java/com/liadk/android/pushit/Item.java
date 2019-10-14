@@ -44,6 +44,10 @@ public class Item {
                     return "New";
             }
         }
+
+        public boolean inPage() {
+            return this == PUBLISHED || this == CREATED;
+        }
     }
 
     private UUID mId;

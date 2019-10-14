@@ -325,7 +325,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
     }
 
     private void saveChanges() {
-        mDatabaseManager.updateItemState(mItem);
+        mDatabaseManager.updateItemPublished(mItem);
         mStorageManager.uploadNotificationImage(mItem); // Saves Notification Image
 
         // TODO save Notification on DB

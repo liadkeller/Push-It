@@ -13,7 +13,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,6 +53,7 @@ public class PageFragment extends Fragment {
     private ArrayList<Item> mItems;
     private PushItUser mUser;
     private String mUserId;
+    private boolean mIsOwner;
 
     private FirebaseAuth mAuth;
     private DatabaseManager mDatabaseManager;
@@ -89,12 +89,15 @@ public class PageFragment extends Fragment {
                     return;
                 }
 
-                mItems = getItems(mPage.getItemsIdentifiers(), dataSnapshot);
-
                 if(mAuth.getCurrentUser() != null) {
                     mUserId = mAuth.getCurrentUser().getUid();
                     mUser = dataSnapshot.child("users").child(mUserId).getValue(PushItUser.class);
                 }
+
+                mIsOwner = (mAuth.getCurrentUser() != null && mUser != null && mUser.getStatus()) ? mPage.getId().toString().equals(mUser.getPageId()) : false;
+
+
+                mItems = getItems(mPage.getItemsIdentifiers(), dataSnapshot);
 
                 if(mRecyclerView != null)
                     configureAdapter(mItems);
@@ -107,7 +110,8 @@ public class PageFragment extends Fragment {
                 ArrayList<Item> items = new ArrayList<>();
                 for (UUID id : itemsIdentifiers) {
                     Item item = Item.fromDB(dataSnapshot.child("items").child(id.toString()));
-                    items.add(item);
+                    if(mIsOwner || item.getState().inPage())
+                        items.add(item);
                 }
 
                 Collections.sort(items, new Comparator<Item>() {
@@ -312,13 +316,15 @@ public class PageFragment extends Fragment {
                 });
 
                 // Item Status Toast - Should be limited to page owner only
-                viewHolder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        Toast.makeText(mContext, "Article Status: " + item.getState().toString(), Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
+                if(mIsOwner) {
+                    viewHolder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+                            Toast.makeText(mContext, "Article Status: " + item.getState().toString(), Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                    });
+                }
             }
 
             else if(getItemViewType(position) == NO_HEADER_TYPE) {
@@ -337,17 +343,18 @@ public class PageFragment extends Fragment {
                 });
 
                 // Item Status Toast - Should be limited to page owner only
-                viewHolder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        Toast.makeText(mContext, "Article Status: " + item.getState().toString(), Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
+                if(mIsOwner) {
+                    viewHolder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+                            Toast.makeText(mContext, "Article Status: " + item.getState().toString(), Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                    });
+                }
             }
 
             if(getItemViewType(position) == NO_IMAGE_TYPE){
-
                 NoImageViewHolder viewHolder = (NoImageViewHolder) holder;
                 viewHolder.mTextView.setText(item.getTitle());
                 viewHolder.mTimeTextView.setText(item.getShortTime());
@@ -361,13 +368,15 @@ public class PageFragment extends Fragment {
                 });
 
                 // Item Status Toast - Should be limited to page owner only
-                viewHolder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        Toast.makeText(mContext, "Article Status: " + item.getState().toString(), Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
+                if(mIsOwner) {
+                    viewHolder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+                            Toast.makeText(mContext, "Article Status: " + item.getState().toString(), Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                    });
+                }
             }
         }
 
@@ -388,13 +397,6 @@ public class PageFragment extends Fragment {
                 mCardView = (CardView) itemView.findViewById(R.id.card);
                 mImageView = (ImageView) itemView.findViewById(R.id.cardImageView);
                 mTextView = (TextView) itemView.findViewById(R.id.cardText);
-
-                mCardView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-                    @Override
-                    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-                        contextMenu.add(0, R.id.context_menu_edit_item, getAdapterPosition(), R.string.edit_item); // we put adapter position instead of 'item order'
-                    }
-                });
             }
         }
 
@@ -411,13 +413,6 @@ public class PageFragment extends Fragment {
                 mImageView = (ImageView) itemView.findViewById(R.id.cardImageView);
                 mTextView = (TextView) itemView.findViewById(R.id.cardText);
                 mTimeTextView = (TextView) itemView.findViewById(R.id.cardTime);
-
-                mCardView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-                    @Override
-                    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-                        contextMenu.add(0, R.id.context_menu_edit_item, getAdapterPosition(), R.string.edit_item); // we put adapter position instead of 'item order'
-                    }
-                });
             }
         }
 
@@ -433,13 +428,6 @@ public class PageFragment extends Fragment {
                 mCardView = (CardView) v.findViewById(R.id.card);
                 mTextView = (TextView) v.findViewById(R.id.cardText);
                 mTimeTextView = (TextView) v.findViewById(R.id.cardTime);
-
-                mCardView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-                    @Override
-                    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-                        contextMenu.add(0, R.id.context_menu_edit_item, getAdapterPosition(), R.string.edit_item); // we put adapter position instead of 'item order'
-                    }
-                });
             }
         }
     }
@@ -470,10 +458,15 @@ public class PageFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        if(mUser != null) {
-            MenuItem followMenuItem = menu.findItem(R.id.menu_item_follow_page);
-            if (followMenuItem != null)
-                followMenuItem.setTitle(mPage.hasFollowedBy(mUserId) ? R.string.unfollow_page : R.string.follow_page);
+        MenuItem newArticleMenuItem = menu.findItem(R.id.menu_item_create_article);
+        MenuItem pageSettingsMenuItem = menu.findItem(R.id.menu_item_page_settings);
+        MenuItem followMenuItem = menu.findItem(R.id.menu_item_follow_page);
+
+        newArticleMenuItem.setVisible(mIsOwner);
+        pageSettingsMenuItem.setVisible(mIsOwner);
+
+        if(mUserId != null) {
+            followMenuItem.setTitle(mPage.hasFollowedBy(mUserId) ? R.string.unfollow_page : R.string.follow_page);
         }
     }
 
@@ -522,24 +515,6 @@ public class PageFragment extends Fragment {
         startActivity(intent);
         return true;
     }
-
-
-    // takes care of context menu for editing items
-    @Override
-    public boolean onContextItemSelected(MenuItem menuItem) {
-        if(menuItem.getItemId() == R.id.context_menu_edit_item) {
-            Item item = ((PageRecycleViewAdapter) mRecyclerView.getAdapter()).getItem(menuItem);
-
-            Intent intent = new Intent(getActivity(), EditItemActivity.class);
-            intent.putExtra(ItemFragment.EXTRA_ID, item.getId());
-            startActivity(intent);
-
-            return true;
-        }
-
-        return super.onContextItemSelected(menuItem);
-    }
-
 
     public static Fragment newInstance(UUID id) {
         Bundle args = new Bundle();

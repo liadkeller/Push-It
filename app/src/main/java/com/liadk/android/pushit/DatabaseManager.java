@@ -127,8 +127,9 @@ public class DatabaseManager {
         mItemsDatabase.child(item.getId().toString()).child("has-image").setValue(true);  // triggers refreshing image
     }
 
-    public void updateItemState(Item item) {
+    public void updateItemPublished(Item item) {
         mItemsDatabase.child(item.getId().toString()).child("state").setValue(item.getState().toString());
+        mItemsDatabase.child(item.getId().toString()).child("time").setValue(item.getTimeLong());
     }
 
 

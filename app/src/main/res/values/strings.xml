@@ -16,7 +16,7 @@
 
     <string name="set_image">Set Article Image</string>
     <string name="remove_image">Remove Image</string>
-    <string name="remove_image_dialog">Are you sure you want to delete this image? It can not be recovered.</string>
+    <string name="remove_image_dialog">Are you sure you want to delete this image?\n\nIt can not be restored.</string>
 
     <string name="set_time">Set Publication Time</string>
     <string name="set_current_time">Set Current Time</string>
