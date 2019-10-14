@@ -114,9 +114,14 @@ public class PageFragment extends Fragment {
                     @Override
                     public int compare(Item i1, Item i2) {
                         if (i1 == null && i2 == null) return 0;
-                        else if (i1 == null) return 1;
-                        else if (i2 == null) return -1;
-                        return (int) (i1.getTimeLong() - i2.getTimeLong());
+                        else if (i1 == null) return -1;
+                        else if (i2 == null) return 1;
+
+                        long dif = i1.getTimeLong() - i2.getTimeLong();
+
+                        if(dif > 0) return 1;
+                        if(dif < 0) return -1;
+                        return 0;
                     }
                 });
 

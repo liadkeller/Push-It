@@ -190,4 +190,9 @@
     <string name="follow_request_sent">Your follow request has been sent and will be reviewed shortly.</string>
     <string name="follow_request_failed">Could not send follow request as user is not logged in.</string>
 
+    <string name="search_hint">Search Pages</string>
+    <string name="clear_search">Clear Search</string>
+    <string name="search">Search</string>
+    <string name="no_pages_found">No pages found.</string>
+
 </resources>

@@ -3,7 +3,6 @@ package com.liadk.android.pushit;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class ExploreFragment extends Fragment {
+public class ExploreFragment extends PageListFragment {
 
     private FirebaseAuth mAuth;
     private DatabaseManager mDatabaseManager;
@@ -34,6 +33,7 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         getActivity().setTitle(R.string.explore);
 
         mAuth = FirebaseAuth.getInstance();
@@ -51,7 +51,7 @@ public class ExploreFragment extends Fragment {
                 }
 
                 if(mRecyclerView != null) {
-                    configureAdapter();
+                    configureAdapter(mPages);
                 }
             }
 
@@ -90,14 +90,14 @@ public class ExploreFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         if(mPages != null) {
-            configureAdapter();
+            configureAdapter(mPages);
         }
         
         return v;
     }
 
-    private void configureAdapter() {
-        ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setPages(mPages);
+    private void configureAdapter(ArrayList<Page> pages) {
+        ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setPages(pages);
         mProgressBar.setVisibility(View.GONE);
         mRecyclerView.getAdapter().notifyDataSetChanged();
     }
@@ -139,5 +139,39 @@ public class ExploreFragment extends Fragment {
         }
 
         return super.onContextItemSelected(menuItem);
+    }
+
+    public void loadQuery(final String query) {
+        mDatabaseManager.addPagesListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() == null) return;
+
+                if(query == null) {
+                    configureAdapter(mPages);
+                    return;
+                }
+
+                ArrayList<Page> searchedPages = new ArrayList<>();
+                for(DataSnapshot ds: dataSnapshot.getChildren()) {
+                    Page page = Page.getPageDetailsFromDB(ds);
+                    if(page != null && page.getName() != null && page.getName().toLowerCase().contains(query.toLowerCase()))
+                        searchedPages.add(page);
+                }
+
+                if(mRecyclerView != null) {
+                    if(searchedPages.isEmpty()) {
+                        Toast.makeText(getActivity(), R.string.no_pages_found, Toast.LENGTH_SHORT).show();
+                        configureAdapter(mPages);
+                    }
+
+                    else
+                        configureAdapter(searchedPages);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 }

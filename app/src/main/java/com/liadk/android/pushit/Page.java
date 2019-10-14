@@ -67,10 +67,13 @@ public class Page {
         mName = name;
     }
 
+    private static boolean isNull(DataSnapshot ds) {
+        return ds.getValue() == null || (ds.child("deleted").getValue() != null && (boolean) ds.child("deleted").getValue());
+    }
 
     // only details needed for explore/follow tabs
     public static Page getPageDetailsFromDB(DataSnapshot ds) {
-        if(ds.child("deleted").getValue() != null && (boolean) ds.child("deleted").getValue()) return null;
+        if(isNull(ds)) return null;
 
         Page page = new Page();
         page.mId = UUID.fromString(ds.getKey());
@@ -84,7 +87,7 @@ public class Page {
 
     // details needed for page setting screen
     public static Page getPageSettingsFromDB(DataSnapshot ds) {
-        if(ds.child("deleted").getValue() != null && (boolean) ds.child("deleted").getValue()) return null;
+        if(isNull(ds)) return null;
 
         Page page = getPageDetailsFromDB(ds);
         page.settings.design = Design.getDesign((String) ds.child("settings").child("design").getValue());
@@ -93,7 +96,7 @@ public class Page {
     }
 
     public static Page getPageFollowersFromDB(DataSnapshot ds) {
-        if(ds.child("deleted").getValue() != null && (boolean) ds.child("deleted").getValue()) return null;
+        if(isNull(ds)) return null;
 
         Page page = new Page();
         page.mId = UUID.fromString(ds.getKey());
@@ -108,7 +111,7 @@ public class Page {
     }
 
     public static Page fromDB(DataSnapshot ds) {
-        if(ds.child("deleted").getValue() != null && (boolean) ds.child("deleted").getValue()) return null;
+        if(isNull(ds)) return null;
 
         Page page = new Page();
         page.mId = UUID.fromString(ds.getKey());

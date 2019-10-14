@@ -6,6 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+import android.app.SearchManager;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.UUID;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = "HomeActivity";
 
     private static final String KEY_STATUS_PREFERENCE = "statusPreference";
     private static final String KEY_SELECTED_ITEM = "selectedItem";
@@ -53,6 +57,31 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         onStatusUpdated();
     }
 
+    private void updateNavState() {
+        int actionId = 0;
+
+        String className = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer).getClass().getSimpleName();
+
+        switch(className) {
+            case "PageFragment": actionId = R.id.bottom_nav_create;
+                                    break;
+
+            case "ExploreFragment": actionId = R.id.bottom_nav_explore;
+                                    break;
+
+            case "FollowFragment": actionId = R.id.bottom_nav_follow;
+                                    break;
+
+            case "ContentCreatorSettingsFragment":
+            case "LoginSettingsFragment":
+            case "SettingsFragment": actionId = R.id.bottom_nav_settings;
+                                    break;
+        }
+
+        if(actionId != 0)
+            mBottomNavigationView.setSelectedItemId(actionId);
+    }
+
     // updates user status and triggers bottom nav inflation if necessary
     private void setUserStatus(boolean userStatus) {
         if(mUserStatus != userStatus) {
@@ -76,6 +105,8 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
 
         else
             mBottomNavigationView.inflateMenu(R.menu.bottom_nav_menu);
+
+        updateNavState();
     }
 
     // check the current user status and update if necessary
@@ -101,6 +132,13 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                             mUserPageId = UUID.fromString(user.getPageId());
                         else
                             setUserStatus(false);  // if page id is unavailable - updates to content-follower user (no page user)
+                    }
+
+                    if(user != null) {
+                        PreferenceManager.getDefaultSharedPreferences(HomeActivity.this)
+                                .edit()
+                                .putString(SettingsFragment.KEY_EMAIL_PREFERENCE, user.getEmail())
+                                .commit();
                     }
                 }
 
@@ -148,5 +186,19 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
                 .commit();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Log.i(TAG, "Received a new search query: " + query);
+
+            ((PageListFragment) fragment).loadQuery(query);
+        }
     }
 }

@@ -33,7 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.UUID;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
-    private static final String KEY_EMAIL_PREFERENCE = "emailPreference";
+    static final String KEY_EMAIL_PREFERENCE = "emailPreference";
 
     protected static final String MY_ACCOUNT = "myAccount";
     protected static final String ACCOUNT_EMAIL = "accountEmail";

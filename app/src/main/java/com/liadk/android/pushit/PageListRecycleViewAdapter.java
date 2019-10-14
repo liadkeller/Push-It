@@ -153,6 +153,10 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
                     Uri logoUri = task.getResult();
                     Glide.with(mContext).load(logoUri).into(imageView);
                 }
+
+                else {
+                    imageView.setImageResource(R.drawable.page_logo_placeholder);
+                }
             }
         });
     }
