@@ -334,9 +334,14 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                     Toast.makeText(getActivity(), R.string.no_title_toast, Toast.LENGTH_SHORT).show();
 
                 else {
-                    if(mItem.getState() == NEW) {
-                        mDatabaseManager.pushItemToDB(mItem); // saves changes in the db without adding to page
-                    }
+                    // saves changes in the db without adding to page
+                    mDatabaseManager.pushItemToDB(mItem);
+                    mStorageManager.uploadItemImages(mItem, new OnCompleteListener<UploadTask.TaskSnapshot>() {  // upload image to storage
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            mDatabaseManager.refreshItemImage(mItem); // triggers refreshing image
+                        }
+                    });
 
                     showOnClickDialog(R.string.publish_article, R.string.publish, R.string.publish_article_dialog, new DialogInterface.OnClickListener() {
                         @Override
@@ -586,7 +591,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
     private void onMediaSegmentsUpdated() {
         for(int i = 0; i < MAX_MEDIA; i++) {
-
             editTexts[i].setVisibility(View.GONE);
             imageLinearLayouts[i].setVisibility(View.GONE);
             addPhotoButton.setVisibility(View.GONE);
@@ -596,22 +600,28 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                 editTexts[i].setVisibility(View.VISIBLE);
 
                 final int index = i;
-                Uri mediaUri = mItem.getMediaSegments().get(i);
-                final String filename = "image" + i + ".png";
+                Uri localMediaUri = mItem.getMediaSegments().get(i);
 
-                FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child(filename).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if(getActivity() == null) return;
+                if(localMediaUri != null) {
+                    imageImageViews[index].setImageURI(localMediaUri);
+                }
 
-                        if (task.getException() == null && index < mItem.getSegmentsCounter()) {
-                            mItem.getMediaSegments().set(index, task.getResult());
-                            Glide.with(getActivity()).load(mItem.getMediaSegments().get(index)).into(imageImageViews[index]);
-                        } else { // No Image
-                            imageImageViews[index].setImageResource(R.drawable.image_template);
+                else {
+                    final String filename = "image" + i + ".png";
+
+                    FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child(filename).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (getActivity() == null) return;
+
+                            if (task.getException() == null && index < mItem.getSegmentsCounter()) {
+                                Glide.with(getActivity()).load(task.getResult()).into(imageImageViews[index]);
+                            } else { // No Image
+                                imageImageViews[index].setImageResource(R.drawable.image_template);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
 
             if(mItem.getSegmentsCounter() < MAX_MEDIA) {
@@ -642,9 +652,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                 if(getActivity() == null) return;
 
                 if (task.getException() == null) {
-                    mItem.setImageUri(task.getResult());
-                    Glide.with(getActivity()).load(mItem.getImageUri()).into(imageView);
-
+                    Glide.with(getActivity()).load(task.getResult()).into(imageView);
                     removeImageButton.setVisibility(View.VISIBLE);
                 } else { // No Image
                     imageView.setImageResource(R.drawable.image_template);

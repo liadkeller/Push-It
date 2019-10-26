@@ -44,15 +44,17 @@ public class StorageManager {
 
 
     public void uploadItemImages(Item item, OnCompleteListener<UploadTask.TaskSnapshot> onCompleteListener) {
-        if(item.getImageUri() == null) return;
         StorageReference storageRef = mItemsStorage.child(item.getId().toString());
 
-        uploadImage(getBytesFromUri(item.getImageUri()), storageRef.child("image.png"), onCompleteListener);
+        if(item.getImageUri() != null)
+            uploadImage(getBytesFromUri(item.getImageUri()), storageRef.child("image.png"), onCompleteListener);
 
         // upload all media segments
         for(int i = 0; i < item.getSegmentsCounter(); i++) {
-            String imageName = "image" + i + ".png";
-            uploadImage(getBytesFromUri(item.getMediaSegments().get(i)), storageRef.child(imageName), onCompleteListener);
+            if (item.getMediaSegments().get(i) != null){
+                String imageName = "image" + i + ".png";
+                uploadImage(getBytesFromUri(item.getMediaSegments().get(i)), storageRef.child(imageName), onCompleteListener);
+            }
         }
 
         // remove all media segments which aren't currently registered (usually because deleted)

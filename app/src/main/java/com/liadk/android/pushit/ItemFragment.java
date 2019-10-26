@@ -219,7 +219,6 @@ public class ItemFragment extends Fragment {
                 mImageViews[i].setVisibility(View.VISIBLE);
 
                 final int index = i;
-                Uri mediaUri = mItem.getMediaSegments().get(i);
                 final String filename = "image" + i + ".png";
 
                 FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child(filename).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -228,8 +227,7 @@ public class ItemFragment extends Fragment {
                         if(getActivity() == null) return;
 
                         if (task.getException() == null && index < mItem.getSegmentsCounter()) {
-                            mItem.getMediaSegments().set(index, task.getResult());
-                            Glide.with(getActivity()).load(mItem.getMediaSegments().get(index)).into(mImageViews[index]);
+                            Glide.with(getActivity()).load(task.getResult()).into(mImageViews[index]);
                         }
                     }
                 });
@@ -244,8 +242,7 @@ public class ItemFragment extends Fragment {
                 if(getActivity() == null) return;
 
                 if(task.getException() == null) {
-                    mItem.setImageUri(task.getResult());
-                    Glide.with(getActivity()).load(mItem.getImageUri()).into(imageView);
+                    Glide.with(getActivity()).load(task.getResult()).into(imageView);
                 }
             }
         });

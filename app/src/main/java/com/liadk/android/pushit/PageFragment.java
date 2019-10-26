@@ -439,9 +439,7 @@ public class PageFragment extends Fragment {
                 if(getActivity() == null) return;
 
                 if(task.getException() == null) {
-                    item.setImageUri(task.getResult());
-                    Glide.with(getActivity()).load(item.getImageUri()).into(imageView);
-
+                    Glide.with(getActivity()).load(task.getResult()).into(imageView);
                     imageView.setVisibility(View.VISIBLE);
                 }
 

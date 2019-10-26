@@ -197,7 +197,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             final Uri resultUri = UCrop.getOutput(data);
             mItem.setImageUri(resultUri);
-            onImageUpdated(resultUri);
+            onImageUpdated();
         }
 
         else if (resultCode == UCrop.RESULT_ERROR) {
@@ -205,30 +205,24 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         }
     }
 
-    private void onImageUpdated(Uri localImageUri) {
-        if(localImageUri != null)
-            mImageView.setImageURI(localImageUri);
-
-        else
-            onImageUpdated();
-    }
-
     private void onImageUpdated() {
-        FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child("notification-image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if(getActivity() == null) return;
+        if(mItem.getImageUri() != null)
+            mImageView.setImageURI(mItem.getImageUri());
 
-                if(task.getException() == null) {
-                    mItem.setImageUri(task.getResult());
-                    Glide.with(getActivity()).load(mItem.getImageUri()).into(mImageView);
-                }
+        else {
+            FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child("notification-image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (getActivity() == null) return;
 
-                else {
-                    FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(this);
+                    if (task.getException() == null) {
+                        Glide.with(getActivity()).load(task.getResult()).into(mImageView);
+                    } else {
+                        FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(this);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void showTimeDialog() {
