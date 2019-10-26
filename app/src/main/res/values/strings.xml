@@ -67,7 +67,7 @@
     <string name="post_article_toast">Article Posted</string>
     <string name="save_draft_toast">Article Saved as draft</string>
     <string name="save_changes_toast">All Changes Saved</string>
-    <string name="changes_saved_toast">Changes Were Already Saved</string>
+    <string name="changes_already_saved_toast">Changes Are Already Saved</string>
 
     <string name="published_article_text_view">The Article Was Published</string>
 

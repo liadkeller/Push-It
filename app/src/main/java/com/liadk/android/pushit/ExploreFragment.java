@@ -26,6 +26,9 @@ public class ExploreFragment extends PageListFragment {
     private DatabaseManager mDatabaseManager;
     private ValueEventListener mDatabaseListener;
 
+    private String mUserId;
+    private PushItUser mUser;
+
     private ArrayList<Page> mPages;
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
@@ -51,7 +54,7 @@ public class ExploreFragment extends PageListFragment {
                 }
 
                 if(mRecyclerView != null) {
-                    configureAdapter(mPages);
+                    configureAdapterPages(mPages);
                 }
             }
 
@@ -64,11 +67,11 @@ public class ExploreFragment extends PageListFragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(mAuth.getCurrentUser() == null) return;
 
-                String userId = mAuth.getCurrentUser().getUid();
-                PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
+                mUserId = mAuth.getCurrentUser().getUid();
+                mUser = dataSnapshot.child(mUserId).getValue(PushItUser.class);
 
-                ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setUser(user);
-                ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setUserId(userId);
+                if(mRecyclerView != null)
+                    configureAdapterUser(mUser, mUserId);
             }
 
             @Override
@@ -88,17 +91,24 @@ public class ExploreFragment extends PageListFragment {
         mRecyclerView.setAdapter(new PageListRecycleViewAdapter(getActivity(), PageListRecycleViewAdapter.PAGES_EXPLORE));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        if(mPages != null) {
-            configureAdapter(mPages);
-        }
+        if(mPages != null)
+            configureAdapterPages(mPages);
+
+        if(mUser != null)
+            configureAdapterUser(mUser, mUserId);
         
         return v;
     }
 
-    private void configureAdapter(ArrayList<Page> pages) {
+    private void configureAdapterPages(ArrayList<Page> pages) {
         ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setPages(pages);
         mProgressBar.setVisibility(View.GONE);
         mRecyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    private void configureAdapterUser(PushItUser user, String userId) {
+        ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setUser(user);
+        ((PageListRecycleViewAdapter) mRecyclerView.getAdapter()).setUserId(userId);
     }
 
     @Override
@@ -147,7 +157,7 @@ public class ExploreFragment extends PageListFragment {
                 if(dataSnapshot.getValue() == null) return;
 
                 if(query == null) {
-                    configureAdapter(mPages);
+                    configureAdapterPages(mPages);
                     return;
                 }
 
@@ -161,11 +171,11 @@ public class ExploreFragment extends PageListFragment {
                 if(mRecyclerView != null) {
                     if(searchedPages.isEmpty()) {
                         Toast.makeText(getActivity(), R.string.no_pages_found, Toast.LENGTH_SHORT).show();
-                        configureAdapter(mPages);
+                        configureAdapterPages(mPages);
                     }
 
                     else
-                        configureAdapter(searchedPages);
+                        configureAdapterPages(searchedPages);
                 }
             }
 

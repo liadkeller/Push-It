@@ -45,8 +45,9 @@ import static android.app.Activity.RESULT_OK;
 public class CreateNotificationFragment extends Fragment implements EditItemActivity.OnBackPressedListener {
 
     private Item mItem;
-    private PushNotification mNotification;
-    private Uri mLocalImageUri;
+    private Page mOwner;
+    private String mEditTextTitle;
+    private boolean mSame = false;
 
     private DatabaseManager mDatabaseManager;
     private ValueEventListener mDatabaseListener;
@@ -58,58 +59,6 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
 
     private Button mImageButton;
     private Button mPublishButton;
-
-
-    private class PushNotification {
-        private UUID mId;
-        private String mEditTextTitle = new String();
-        private String mItemTitle;
-        private boolean mSame = false;
-        private Uri mImageUrl;
-
-        public PushNotification(Item item) {
-            mId = item.getId();
-            mItemTitle = item.getTitle();
-            mImageUrl = item.getImageUri();
-        }
-
-        public void setEditTextTitle(String mTitle) {
-            this.mEditTextTitle = mTitle;
-        }
-
-        public void setSame(boolean mSame) {
-            this.mSame = mSame;
-        }
-
-        public void setImageUrl(Uri imageUrl) {
-            this.mImageUrl = imageUrl;
-        }
-
-        public UUID getId() {
-            return mId;
-        }
-
-        public String getEditTextTitle() {
-            return mEditTextTitle;
-        }
-
-        public String getItemTitle() {
-            return mItemTitle;
-        }
-
-        public boolean isSame() {
-            return mSame;
-        }
-
-        public Uri getImageUrl() {
-            return mImageUrl;
-        }
-
-        public String getNotificationTitle() {
-            return (mSame) ? mItemTitle : mEditTextTitle;
-        }
-    }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -123,13 +72,13 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
 
         final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
 
-        mDatabaseListener = mDatabaseManager.addItemsListener(new ValueEventListener() {
+        mDatabaseListener = mDatabaseManager.addDatabaseListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) return;
 
-                mItem = Item.fromDB(dataSnapshot.child(id.toString()));
-                mNotification = new PushNotification(mItem);
+                mItem = Item.fromDB(dataSnapshot.child("items").child(id.toString()));
+                mOwner = Page.fromDB(dataSnapshot.child("pages").child(mItem.getOwnerId().toString()));
 
                 if(getView() != null)
                     configureView(getView());
@@ -154,7 +103,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         mPublishButton = (Button) v.findViewById(R.id.publishButton);
 
         // Configuring
-        if(mNotification != null)
+        if(mItem != null)
             configureView(v);
 
         return v;
@@ -168,7 +117,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(mTitleEditText.isEnabled())
-                    mNotification.setEditTextTitle(s.toString());
+                    mEditTextTitle = s.toString();
             }
 
             @Override
@@ -178,24 +127,16 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         mTitleCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    mTitleEditText.setEnabled(false);
-                    mTitleEditText.setText(mNotification.getItemTitle());
-                    mNotification.setSame(true);
-                }
-
-                else {
-                    mTitleEditText.setEnabled(true);
-                    mTitleEditText.setText(mNotification.getEditTextTitle());
-                    mNotification.setSame(false);
-                }
+                mSame = isChecked;
+                mTitleEditText.setEnabled(!isChecked); // if same - edit text should be disabled
+                mTitleEditText.setText(isChecked ? mItem.getTitle() : mEditTextTitle);
             }
         });
 
         mPublishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mNotification.getNotificationTitle().equals("")) {
+                if(((mSame) ? mItem.getTitle() : mEditTextTitle).equals("")) {
                     Toast.makeText(getActivity(), R.string.no_notification_title_toast, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -206,11 +147,11 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
                         .setPositiveButton(R.string.publish, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //
-                                // TODO Perform and Launch Push Notification !!!
+                                if(mItem.getState() == Item.State.NEW)
+                                    updateState();
 
-
-                                showTimeDialog(); // The dialog will lead to setting the state as PUBLISHED
+                                else
+                                    showTimeDialog(); // The dialog will lead to setting the state as PUBLISHED
                             }
                         })
                         .setNegativeButton(android.R.string.cancel, null)
@@ -273,18 +214,18 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
     }
 
     private void onImageUpdated() {
-        FirebaseStorage.getInstance().getReference("items").child(mNotification.getId().toString()).child("notification-image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+        FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child("notification-image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if(getActivity() == null) return;
 
                 if(task.getException() == null) {
-                    mNotification.setImageUrl(task.getResult());
-                    Glide.with(getActivity()).load(mNotification.getImageUrl()).into(mImageView);
+                    mItem.setImageUri(task.getResult());
+                    Glide.with(getActivity()).load(mItem.getImageUri()).into(mImageView);
                 }
 
                 else {
-                    FirebaseStorage.getInstance().getReference("items").child(mNotification.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(this);
+                    FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(this);
                 }
             }
         });
@@ -312,23 +253,33 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         alertDialog.show();
     }
 
+    // updates item state to PUBLISHED
     private void updateState() {
         // updateState(PUBLISHED) is here
+        Item.State oldState = mItem.getState();
         mItem.setState(Item.State.PUBLISHED);
-        saveChanges();
-        Toast.makeText(getActivity(), R.string.publish_article_toast, Toast.LENGTH_SHORT).show();
+        mItem.setPublishTime();
+        saveChanges(oldState);
+        Toast.makeText(getActivity(), R.string.publish_article_toast, Toast.LENGTH_LONG).show();
 
         // exits two layers
         Intent intent = new Intent(getActivity(), ItemActivity.class);
         intent.putExtra(ItemFragment.EXTRA_ID, mItem.getId());
-        NavUtils.navigateUpTo(getActivity(), intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        getActivity().finish();
+        startActivity(intent);
     }
 
-    private void saveChanges() {
+    private void saveChanges(Item.State oldState) {
+        if(oldState == Item.State.NEW)              // never saved before
+            mDatabaseManager.addItemToPage(mItem);
+
         mDatabaseManager.updateItemPublished(mItem);
         mStorageManager.uploadNotificationImage(mItem); // Saves Notification Image
 
-        // TODO save Notification on DB
+        PushNotification notification = new PushNotification(mItem, mOwner, mEditTextTitle, mSame);
+        mDatabaseManager.pushNotificationToDB(notification);
     }
 
     @Override

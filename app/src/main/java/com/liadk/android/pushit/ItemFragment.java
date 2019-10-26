@@ -39,6 +39,7 @@ public class ItemFragment extends Fragment {
     private static final int REQUEST_EDIT = 0;
 
     private Item mItem;
+    private PushItUser mUser;
     private boolean mIsOwner;
 
     private FirebaseAuth mAuth;
@@ -72,6 +73,8 @@ public class ItemFragment extends Fragment {
 
                 if(mItem != null)
                     updateUI();
+
+                mIsOwner = mItem != null && mUser != null && mUser.getStatus() && mItem.getOwnerId().toString().equals(mUser.getPageId());
             }
 
             @Override
@@ -84,9 +87,9 @@ public class ItemFragment extends Fragment {
                 if(mAuth.getCurrentUser() == null) return;
 
                 String userId = mAuth.getCurrentUser().getUid();
-                PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
+                mUser = dataSnapshot.child(userId).getValue(PushItUser.class);
 
-                mIsOwner = (user != null && user.getStatus()) ? mItem.getOwnerId().toString().equals(user.getPageId()) : false;
+                mIsOwner = mItem != null && mUser != null && mUser.getStatus() && mItem.getOwnerId().toString().equals(mUser.getPageId());
             }
 
             @Override

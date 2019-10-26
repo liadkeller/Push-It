@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,6 +24,8 @@ public class DatabaseManager {
     private DatabaseReference mItemsDatabase;
     private DatabaseReference mPagesDatabase;
     private DatabaseReference mUsersDatabase;
+    private DatabaseReference mNotificationsDatabase;
+
 
 
     public DatabaseManager(Context appContext) {
@@ -32,6 +35,7 @@ public class DatabaseManager {
         mItemsDatabase = mDatabase.getReference("items");
         mPagesDatabase = mDatabase.getReference("pages");
         mUsersDatabase = mDatabase.getReference("users");
+        mNotificationsDatabase = mDatabase.getReference("notifications");
     }
 
     public static DatabaseManager get(Context c) {
@@ -55,8 +59,16 @@ public class DatabaseManager {
         mUsersDatabase.addListenerForSingleValueEvent(listener);
     }
 
+    public void addNotificationsChildListener(ChildEventListener listener) {
+        mNotificationsDatabase.addChildEventListener(listener);
+    }
+
     public ValueEventListener addDatabaseListener(ValueEventListener listener) {
         return mDatabase.getReference().addValueEventListener(listener);
+    }
+
+    public void addDatabaseSingleEventListener(ValueEventListener listener) {
+        mDatabase.getReference().addListenerForSingleValueEvent(listener);
     }
 
     public void removePagesListener(ValueEventListener listener) {
@@ -78,12 +90,18 @@ public class DatabaseManager {
         mItemsDatabase.child(item.getId().toString()).child("has-image").setValue(false); // triggers refreshing images after upload to storage
         mItemsDatabase.child(item.getId().toString()).child("time").setValue(item.getTimeLong());
         mItemsDatabase.child(item.getId().toString()).child("original-time").setValue(item.getOriginalTimeLong());
+        mItemsDatabase.child(item.getId().toString()).child("publish-time").setValue(item.getPublishTimeLong());
         mItemsDatabase.child(item.getId().toString()).child("owner").setValue(item.getOwnerId().toString());
         mItemsDatabase.child(item.getId().toString()).child("state").setValue(item.getState().toString());
 
         mItemsDatabase.child(item.getId().toString()).child("counter").setValue(item.getSegmentsCounter());
         for(int i = 0; i <= item.getSegmentsCounter(); i++)
             mItemsDatabase.child(item.getId().toString()).child("text").child(i+"").setValue(item.getTextSegments().get(i));
+    }
+
+    public void addItemToPage(Item item) { // doesn't push item to db, but adds item to the page's items list
+        DatabaseReference pageItemsDatabase = mPagesDatabase.child(item.getOwnerId().toString()).child("items");
+        pageItemsDatabase.child(item.getId().toString()).setValue(true);
     }
 
     public void pushPageToDB(Page page) {
@@ -97,17 +115,16 @@ public class DatabaseManager {
         mPagesDatabase.child(page.getId().toString()).child("deleted").setValue(false);
     }
 
-    public void addItemToPage(Item item) { // doesn't push item to db, but adds item to the page's items list
-        DatabaseReference pageItemsDatabase = mPagesDatabase.child(item.getOwnerId().toString()).child("items");
-        pageItemsDatabase.child(item.getId().toString()).setValue(true);
-    }
-
     public void pushUserToDB(PushItUser user, String userId) {
         pushUserToDB(user, userId, null);
     }
 
     public void pushUserToDB(PushItUser user, String userId, OnCompleteListener listener) {
         mUsersDatabase.child(userId).setValue(user).addOnCompleteListener(listener);
+    }
+
+    public void pushNotificationToDB(PushNotification notification) {
+        mNotificationsDatabase.child(notification.getId() + "").setValue(notification);
     }
 
     // updates page followers list and user followed list in DB
@@ -130,6 +147,7 @@ public class DatabaseManager {
     public void updateItemPublished(Item item) {
         mItemsDatabase.child(item.getId().toString()).child("state").setValue(item.getState().toString());
         mItemsDatabase.child(item.getId().toString()).child("time").setValue(item.getTimeLong());
+        mItemsDatabase.child(item.getId().toString()).child("publish-time").setValue(item.getPublishTimeLong());
     }
 
 

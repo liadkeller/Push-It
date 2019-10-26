@@ -351,7 +351,7 @@ public class PageFollowersFragment extends Fragment {
                     }
 
                     else {
-                        imageView.setImageResource(R.drawable.page_logo_placeholder);
+                        imageView.setImageResource(R.drawable.page_placeholder);
                     }
                 }
             });

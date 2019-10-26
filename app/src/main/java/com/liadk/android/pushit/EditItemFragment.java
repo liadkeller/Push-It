@@ -92,14 +92,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
     private LinearLayout[] imageLinearLayouts;
     private Button addPhotoButton;
 
-    /* Videos are currently unsupported
-    private Button[] setVideoButtons;
-    private Button[] removeVideoButtons;
-    private SurfaceView[] videoSurfaceViews;
-    private LinearLayout[] videoLinearLayouts;
-    private Button addVideoButton;
-    */
-
     private LinearLayout saveChangesLayout;
     private Button confirmChangesButton;
 
@@ -134,8 +126,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
 
@@ -167,14 +158,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         imageImageViews = new ImageView[] { (ImageView) v.findViewById(R.id.image1ImageView), (ImageView) v.findViewById(R.id.image2ImageView)};
         imageLinearLayouts = new LinearLayout[] { (LinearLayout) v.findViewById(R.id.image1LinearLayout), (LinearLayout) v.findViewById(R.id.image2LinearLayout)};
         addPhotoButton = (Button) v.findViewById(R.id.addPhotoButton);
-
-        /* Videos are currently unsupported
-            setVideoButtons = new Button[] { (Button) v.findViewById(R.id.setVideo1Button), (Button) v.findViewById(R.id.setVideo2Button) };
-            removeVideoButtons = new Button[] { (Button) v.findViewById(R.id.removeVideo1Button), (Button) v.findViewById(R.id.removeVideo2Button) };
-            videoSurfaceViews = new SurfaceView[] { (SurfaceView) v.findViewById(R.id.video1SurfaceView), (SurfaceView) v.findViewById(R.id.video2SurfaceView)};
-            videoLinearLayouts = new LinearLayout[] { (LinearLayout) v.findViewById(R.id.video1LinearLayout), (LinearLayout) v.findViewById(R.id.video2LinearLayout)};
-            addVideoButton = (Button) v.findViewById(R.id.addVideoButton);
-        */
 
         saveChangesLayout = (LinearLayout) v.findViewById(R.id.saveChangesLayout);
         confirmChangesButton = (Button) v.findViewById(R.id.confirmChangesButton);
@@ -321,18 +304,14 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
             setImageButtons[i].setOnClickListener(new SetMediaListener(i));
             removeImageButtons[i].setOnClickListener(new RemoveMediaListener(i));
-
-            // setVideoButtons[i].setOnClickListener(new SetMediaListener(i));
-            // removeVideoButtons[i].setOnClickListener(new RemoveMediaListener(i));
         }
 
         confirmChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if(mRecentlySaved) {
                     saveChanges();
-                    Toast.makeText(getActivity(), R.string.changes_saved_toast, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.changes_already_saved_toast, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -455,7 +434,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                 mRecentlySaved = false;
                 onMediaSegmentsUpdated();
             }
-
         }
     }
 
@@ -612,8 +590,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             editTexts[i].setVisibility(View.GONE);
             imageLinearLayouts[i].setVisibility(View.GONE);
             addPhotoButton.setVisibility(View.GONE);
-            //videoLinearLayouts[i].setVisibility(View.GONE);
-            //addVideoButton.setVisibility(View.GONE);
 
             if(i < mItem.getSegmentsCounter()) {
                 imageLinearLayouts[i].setVisibility(View.VISIBLE);
@@ -622,13 +598,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                 final int index = i;
                 Uri mediaUri = mItem.getMediaSegments().get(i);
                 final String filename = "image" + i + ".png";
-
-                /*
-                if(mediaUri != null) {
-                    //imageImageViews[i].setImageURI(mediaUri);
-                    Glide.with(getActivity()).load(mediaUri).into(imageImageViews[i]);
-
-                }*/
 
                 FirebaseStorage.getInstance().getReference("items").child(mItem.getId().toString()).child(filename).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
@@ -647,7 +616,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
             if(mItem.getSegmentsCounter() < MAX_MEDIA) {
                 addPhotoButton.setVisibility(View.VISIBLE);
-                //addVideoButton.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -771,9 +739,6 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             return true;
         }
 
-        else if(item.getItemId() == R.id.menu_item_save_changes)
-            confirmChangesButton.performClick();
-
         else if(item.getItemId() == R.id.menu_item_save_draft)
             draftButton.performClick();
 
@@ -782,6 +747,25 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
         else if(item.getItemId() == R.id.menu_item_publish_article)
             publishButton.performClick();
+
+        else if(item.getItemId() == R.id.menu_item_save_changes) {
+            if(mRecentlySaved) {
+                saveChanges();
+                Toast.makeText(getActivity(), R.string.changes_already_saved_toast, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            int msg = (mItem.getState() == PUBLISHED) ? (R.string.save_changes_dialog_published) : (R.string.save_changes_dialog);
+
+            showOnClickDialog(R.string.save_changes, R.string.save, msg, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    saveChanges();
+                    Toast.makeText(getActivity(), R.string.save_changes_toast, Toast.LENGTH_SHORT).show();
+                    exit();
+                }
+            });
+        }
 
         return super.onOptionsItemSelected(item);
     }

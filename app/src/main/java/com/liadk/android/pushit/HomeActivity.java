@@ -38,6 +38,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        Intent serviceIntent = new Intent(this, NotificationService.class);
+        this.startService(serviceIntent);
+
         mAuth = FirebaseAuth.getInstance();
         mDatabaseManager = DatabaseManager.get(this);
 

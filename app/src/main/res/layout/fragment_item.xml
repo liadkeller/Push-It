@@ -25,7 +25,7 @@
             android:id="@+id/mainImageView"
             android:scaleType="fitStart"
             android:adjustViewBounds="true"
-            android:src="@drawable/item_image_placeholder"/>
+            android:src="@drawable/item_header_placeholder"/>
 
         <TextView
             android:id="@+id/titleTextView"

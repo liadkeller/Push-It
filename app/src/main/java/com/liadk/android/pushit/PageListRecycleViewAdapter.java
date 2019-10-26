@@ -155,7 +155,7 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
                 }
 
                 else {
-                    imageView.setImageResource(R.drawable.page_logo_placeholder);
+                    imageView.setImageResource(R.drawable.page_placeholder);
                 }
             }
         });

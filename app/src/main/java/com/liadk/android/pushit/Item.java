@@ -58,6 +58,7 @@ public class Item {
     private int mOrder;
     private Date mOriginalTime; // original creation time
     private Date mTime;                  // creation time
+    private long mPublishTime;  // push notification time - implemented as long so when item not published: 0
     private UUID mOwnerId;
 
     private ArrayList<String> mTextSegments;
@@ -74,6 +75,7 @@ public class Item {
 
         mOriginalTime = new Date();
         mTime = mOriginalTime;
+        mPublishTime = 0;
 
         mState = State.NEW;
 
@@ -111,6 +113,10 @@ public class Item {
     public void setCurrentTime() {
         mTime = new Date();
     }
+
+    public void setPublishTime() { setPublishTime(new Date()); }
+
+    public void setPublishTime(Date time) { mPublishTime = time.getTime(); }
 
     public void setText(String text) {
         mTextSegments.set(0, text);
@@ -237,6 +243,10 @@ public class Item {
         return mTime.getTime();
     }
 
+    public long getPublishTimeLong() {
+        return mPublishTime;
+    }
+
 
     public static Item fromDB(DataSnapshot ds) {
         if (ds.getValue() == null) return null;
@@ -256,6 +266,7 @@ public class Item {
         item.mMediaSegments = new ArrayList<>();
         item.mTime = null;
         item.mOriginalTime = null;
+        item.mPublishTime = 0;
 
         if(ds.child("counter").getValue() != null)
             item.mCounter = (int) ds.child("counter").getValue(Integer.class);
@@ -268,6 +279,8 @@ public class Item {
             item.mTime = new Date( (long) ds.child("time").getValue());
         if(ds.child("original-time").getValue() != null)
             item.mOriginalTime = new Date((long) ds.child("original-time").getValue());
+        if(ds.child("publish-time").getValue() != null)
+            item.mPublishTime = (long) ds.child("publish-time").getValue();
 
         return item;
     }

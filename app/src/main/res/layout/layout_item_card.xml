@@ -47,7 +47,7 @@
             android:adjustViewBounds="true"
             android:cropToPadding="false"
             android:scaleType="centerCrop"
-            android:src="@drawable/item_square_image_placeholder" />
+            android:src="@drawable/item_placeholder" />
 
         <FrameLayout
             android:id="@+id/placeHolder"

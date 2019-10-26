@@ -21,7 +21,7 @@
             android:adjustViewBounds="true"
             android:cropToPadding="false"
             android:scaleType="fitStart"
-            android:src="@drawable/item_image_placeholder" />
+            android:src="@drawable/item_header_placeholder" />
 
         <TextView
             android:id="@+id/cardText"

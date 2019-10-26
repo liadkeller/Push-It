@@ -71,7 +71,7 @@ public class PageFragment extends Fragment {
         setHasOptionsMenu(true);
         getActivity().setTitle("");
 
-        final UUID id = (UUID) getArguments().getSerializable(ItemFragment.EXTRA_ID);
+        final UUID id = (UUID) getArguments().getSerializable(PageFragment.EXTRA_ID);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseManager = DatabaseManager.get(getActivity());
@@ -110,7 +110,7 @@ public class PageFragment extends Fragment {
                 ArrayList<Item> items = new ArrayList<>();
                 for (UUID id : itemsIdentifiers) {
                     Item item = Item.fromDB(dataSnapshot.child("items").child(id.toString()));
-                    if(mIsOwner || item.getState().inPage())
+                    if(item != null && (mIsOwner || item.getState().inPage()))
                         items.add(item);
                 }
 
@@ -518,11 +518,17 @@ public class PageFragment extends Fragment {
 
     public static Fragment newInstance(UUID id) {
         Bundle args = new Bundle();
-        args.putSerializable(ItemFragment.EXTRA_ID, id);
+        args.putSerializable(PageFragment.EXTRA_ID, id);
 
         PageFragment fragment = new PageFragment();
         fragment.setArguments(args);
 
         return (Fragment) fragment;
+    }
+
+    public static Intent createIntent(Context context, UUID id) {
+        Intent intent = new Intent(context, PageActivity.class);
+        intent.putExtra(PageFragment.EXTRA_ID, id);
+        return intent;
     }
 }
