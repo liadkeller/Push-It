@@ -419,7 +419,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
         UCrop.of(uri, destUri)
                 .withAspectRatio(8, 5)
-                .withMaxResultSize(400, 250)
+                .withMaxResultSize(600, 375)
                 .start(getActivity(), this, requestCode);
     }
 

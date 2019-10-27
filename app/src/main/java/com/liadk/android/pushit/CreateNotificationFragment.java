@@ -188,7 +188,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
 
         UCrop.of(uri, destUri)
                 .withAspectRatio(8, 5)
-                .withMaxResultSize(400, 250)
+                .withMaxResultSize(600, 375)
                 .start(getActivity(), this);
     }
 
