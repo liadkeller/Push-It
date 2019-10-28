@@ -172,6 +172,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
                         .setOnPickResult(new IPickResult() {
                             @Override
                             public void onPickResult(PickResult r) {
+                                new EventsLogger(getActivity()).log("notification_image_taken", "error", r.getError() != null ? r.getError().toString() : "No Error");
                                 if(r.getError() == null)
                                     launchCrop(r.getUri());
                             }

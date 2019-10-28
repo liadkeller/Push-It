@@ -184,6 +184,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mItem.setTitle(s.toString());
                 mRecentlySaved = false;
+                new EventsLogger(getActivity()).log("edit_item_title_changed", "new_title", s.toString(), "item_title", mItem.getTitle());
             }
 
             @Override
@@ -198,6 +199,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mItem.setAuthor(s.toString());
                 mRecentlySaved = false;
+                new EventsLogger(getActivity()).log("edit_item_author_changed", "new_author", s.toString(), "item_author", mItem.getAuthor());
             }
 
             @Override
@@ -212,6 +214,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mItem.setText(s.toString());
                 mRecentlySaved = false;
+                new EventsLogger(getActivity()).log("edit_item_text_changed", "new_text", s.toString(), "item_text", mItem.getText());
             }
 
             @Override
@@ -229,6 +232,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                         .setOnPickResult(new IPickResult() {
                             @Override
                             public void onPickResult(PickResult r) {
+                                new EventsLogger(getActivity()).log("main_item_image_taken", "error", r.getError() != null ? r.getError().toString() : "No Error");
                                 if(r.getError() == null)
                                     launchCrop(r.getUri(), MAIN_IMAGE_REQUEST);
                             }
@@ -501,6 +505,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                     .setOnPickResult(new IPickResult() {
                         @Override
                         public void onPickResult(PickResult r) {
+                            new EventsLogger(getActivity()).log("item_image" + i + "_taken", "error", r.getError() != null ? r.getError().toString() : "No Error");
                             if (r.getError() == null)
                                 launchCrop(r.getUri(), i);
                         }
@@ -540,6 +545,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             if(i < mItem.getSegmentsCounter()) {
                 mItem.getTextSegments().set(i+1, s.toString());
                 mRecentlySaved = false;
+                new EventsLogger(getActivity()).log("edit_item_text" + i + "_changed", "new_text", s.toString(), "item_text", mItem.getTextSegments().get(i+1));
             }
         }
 
@@ -583,8 +589,10 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
     }
 
     private void onEditTextsUpdated() {
+        new EventsLogger(getActivity()).log("on_edit_texts_updated", "item_text", mItem.getText());
         mainEditText.setText(mItem.getText());
         for(int i = 0; i < mItem.getSegmentsCounter(); i++) {
+            new EventsLogger(getActivity()).log("on_edit_texts" + i +"_updated", "item_text" + i, mItem.getTextSegments().get(i+1));
             editTexts[i].setText(mItem.getTextSegments().get(i+1));
         }
     }
@@ -631,6 +639,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
     }
 
     private void onTitleUpdated() {
+        new EventsLogger(getActivity()).log("on_title_updated", "item_title", mItem.getTitle(), "item_author", mItem.getAuthor());
         titleEditText.setText(mItem.getTitle());
         authorEditText.setText(mItem.getAuthor());
     }

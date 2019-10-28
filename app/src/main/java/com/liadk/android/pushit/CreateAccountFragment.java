@@ -117,6 +117,7 @@ public class CreateAccountFragment extends Fragment {
                         progressDialog.dismiss();
 
                         if (task.isSuccessful()) {
+                            new EventsLogger(getActivity()).log("sign_up_success", "email", email, "status", status+"", "page_name", pageName != null ? pageName : "null");
                             Log.d(TAG, "signUpWithEmail:success");
 
                             String userId = mAuth.getCurrentUser().getUid();
@@ -163,6 +164,7 @@ public class CreateAccountFragment extends Fragment {
 
                         else if(task.getException() != null) {
                             String errorMsg = task.getException().getMessage();
+                            new EventsLogger(getActivity()).log("sign_up_failed", "email", email, "error", errorMsg);
                             onSignUpFailed(errorMsg);
                         }
                     }

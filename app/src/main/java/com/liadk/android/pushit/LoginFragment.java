@@ -64,7 +64,7 @@ public class LoginFragment extends Fragment {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = mEmailEditText.getText().toString();
+                final String email = mEmailEditText.getText().toString();
                 String password = mPasswordEditText.getText().toString();
 
                 if(!validate(email, password)) return;
@@ -76,8 +76,13 @@ public class LoginFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
 
-                        if (task.isSuccessful()) onLoginSuccess();
-                        else onLoginFailed();
+                        if (task.isSuccessful())
+                            onLoginSuccess();
+
+                        else {
+                            onLoginFailed();
+                            new EventsLogger(getActivity()).log("login_failed", "email", email, "error", task.getException().getMessage());
+                        }
                     }
                 });
             }

@@ -40,6 +40,9 @@ public class NotificationService extends Service {
                 Log.d(TAG, "latest update time: " + latestUpdateTime);
                 Log.d(TAG, "diff: " + (notification.getPublishTime() - latestUpdateTime));
 
+                new EventsLogger(NotificationService.this).log("create_notification", "page_name", notification.getPageName(), "title", notification.getTitle(), "publish_time", notification.getPublishTime()+"", "notification_id", notification.getId()+"", "latest_update_time", latestUpdateTime+"", "diff", (notification.getPublishTime() - latestUpdateTime)+"");
+
+
                 if(notification.getPublishTime() <= latestUpdateTime) return;
 
                 mDatabaseManager.addDatabaseSingleEventListener(new ValueEventListener() {
@@ -62,6 +65,7 @@ public class NotificationService extends Service {
 
                             notificationManager.notify(notification.getId(), notification.getNotification(NotificationService.this));
                             Log.d(TAG, "NOTIFYING [" + notification.getPageName() + "] <" + notification.getTitle() + "> diff: " + (notification.getPublishTime() - latestUpdateTime));
+                            new EventsLogger(NotificationService.this).log("notify_notification", "page_name", notification.getPageName(), "title", notification.getTitle(), "diff", (notification.getPublishTime() - latestUpdateTime)+"");
 
                             PreferenceManager.getDefaultSharedPreferences(NotificationService.this)
                                     .edit()
@@ -85,6 +89,7 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand: Received start id " + startId + ": " + intent);
+        new EventsLogger(this).log("service_onStartCommand", "start_id", startId+"", "intent_action", intent != null ? intent.getAction() : "null");
         return START_STICKY;
     }
 

@@ -75,6 +75,7 @@ public class ItemFragment extends Fragment {
                     updateUI();
 
                 mIsOwner = mItem != null && mUser != null && mUser.getStatus() && mItem.getOwnerId().toString().equals(mUser.getPageId());
+                new EventsLogger(getActivity()).log("item_is_owner1", "is_auth_null", mAuth.getCurrentUser() != null, "is_user_null", mUser != null, "user_status", (mUser != null) ? mUser.getStatus(): false, "is_id_equal", (mUser != null && mUser.getStatus()) ? mItem.getOwnerId().toString().equals(mUser.getPageId()) : false, "is_owner", mIsOwner);
             }
 
             @Override
@@ -90,6 +91,7 @@ public class ItemFragment extends Fragment {
                 mUser = dataSnapshot.child(userId).getValue(PushItUser.class);
 
                 mIsOwner = mItem != null && mUser != null && mUser.getStatus() && mItem.getOwnerId().toString().equals(mUser.getPageId());
+                new EventsLogger(getActivity()).log("item_is_owner2", "is_auth_null", mAuth.getCurrentUser() != null, "is_user_null", mUser != null, "user_status", (mUser != null) ? mUser.getStatus(): false, "is_id_equal", (mUser != null && mUser.getStatus()) ? mItem.getOwnerId().toString().equals(mUser.getPageId()) : false, "is_owner", mIsOwner);
             }
 
             @Override
@@ -145,6 +147,7 @@ public class ItemFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        new EventsLogger(getActivity()).log("item_options_menu", "is_owner", mIsOwner);
         for(int i = 0; i < menu.size(); i++)
             menu.getItem(i).setVisible(mIsOwner);
     }
@@ -182,7 +185,7 @@ public class ItemFragment extends Fragment {
 
         else if(item.getItemId() == android.R.id.home) {
 
-            if (NavUtils.getParentActivityName(getActivity()) != null) {
+            if (NavUtils.getParentActivityName(getActivity()) != null && mItem != null) {
                 Intent intent = NavUtils.getParentActivityIntent(getActivity());
                 intent.putExtra(PageFragment.EXTRA_ID, mItem.getOwnerId());
 

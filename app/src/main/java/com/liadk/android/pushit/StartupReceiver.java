@@ -11,6 +11,7 @@ public class StartupReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "Received broadcast intent: " + intent.getAction());
+        new EventsLogger(context).log("received_broadcast_intent", "intent_action", intent != null ? intent.getAction() : "null");
 
         Intent serviceIntent = new Intent(context, NotificationService.class);
         context.startService(serviceIntent);

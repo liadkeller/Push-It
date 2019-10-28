@@ -85,6 +85,8 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
         ((ViewHolder) holder).mLinearLayout.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
+               new EventsLogger(mContext).log("has_access", "is_page_public", page.isPublic(), "user_not_null", mUser != null, "is_user_following", (mUser != null) ? mUser.isFollowing(page) : false, "follow_screen", mScreen == PAGES_FOLLOW);
+
                if (hasAccess(page)) { // if Explore has access or if Follow
                    Intent intent = new Intent(mContext, PageActivity.class);
                    intent.putExtra(PageFragment.EXTRA_ID, page.getId());

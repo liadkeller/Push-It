@@ -94,8 +94,8 @@ public class PageFragment extends Fragment {
                     mUser = dataSnapshot.child("users").child(mUserId).getValue(PushItUser.class);
                 }
 
-                mIsOwner = (mAuth.getCurrentUser() != null && mUser != null && mUser.getStatus()) ? mPage.getId().toString().equals(mUser.getPageId()) : false;
-
+                mIsOwner = mAuth.getCurrentUser() != null && mUser != null && mUser.getStatus() && mPage.getId().toString().equals(mUser.getPageId());
+                new EventsLogger(getActivity()).log("page_is_owner", "is_auth_null", mAuth.getCurrentUser() != null, "is_user_null", mUser != null, "user_status", (mUser != null) ? mUser.getStatus(): false, "is_id_equal", (mUser != null && mUser.getStatus()) ? mPage.getId().toString().equals(mUser.getPageId()) : false, "is_owner", mIsOwner);
 
                 mItems = getItems(mPage.getItemsIdentifiers(), dataSnapshot);
 
@@ -462,6 +462,7 @@ public class PageFragment extends Fragment {
 
         newArticleMenuItem.setVisible(mIsOwner);
         pageSettingsMenuItem.setVisible(mIsOwner);
+        new EventsLogger(getActivity()).log("page_options_menu", "is_owner", mIsOwner);
 
         if(mUserId != null) {
             followMenuItem.setTitle(mPage.hasFollowedBy(mUserId) ? R.string.unfollow_page : R.string.follow_page);

@@ -80,6 +80,7 @@ public class PageLogoFragment extends Fragment {
                         .setOnPickResult(new IPickResult() {
                             @Override
                             public void onPickResult(PickResult r) {
+                                new EventsLogger(getActivity()).log("page_logo_image_taken", "error", r.getError() != null ? r.getError().toString() : "No Error");
                                 if(r.getError() == null)
                                     launchCrop(r.getUri());
                             }
