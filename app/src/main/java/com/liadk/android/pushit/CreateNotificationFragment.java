@@ -46,7 +46,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
 
     private Item mItem;
     private Page mOwner;
-    private String mEditTextTitle;
+    private String mEditTextTitle = "";
     private boolean mSame = false;
 
     private DatabaseManager mDatabaseManager;
