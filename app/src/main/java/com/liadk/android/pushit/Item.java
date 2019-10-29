@@ -55,7 +55,6 @@ public class Item {
     private String mTitle = "";
     private String mAuthor = "";
     private Uri mImageUri;
-    private int mOrder;
     private Date mOriginalTime; // original creation time
     private Date mTime;                  // creation time
     private long mPublishTime;  // push notification time - implemented as long so when item not published: 0
@@ -87,7 +86,7 @@ public class Item {
     }
 
     private Item() {
-        this((UUID) null);
+        this(null);
     }
 
     public void setTitle(String title) {
@@ -100,10 +99,6 @@ public class Item {
 
     public void setAuthor(String author) {
         mAuthor = author;
-    }
-
-    public void setOrder(int order) {
-        this.mOrder = order;
     }
 
     public void setTime(Date time) {
@@ -126,31 +121,11 @@ public class Item {
         mState = state;
     }
 
-    public void addText(String text) {
-        mTextSegments.add(text);
-    }
-
     // promotes mCounter and adds a text segment
     public void addImage() {
         mMediaSegments.add(null);
         mTextSegments.add("");
         mCounter++;
-    }
-
-    public void setCounter(int counter) {
-        mCounter = counter;
-    }
-
-    public void addToCounter() {
-        mCounter++;
-    }
-
-    public void resetSegments() {
-        if (mTextSegments.size() > 1) {
-            mTextSegments.removeAll(mTextSegments.subList(1, mTextSegments.size()));
-        }
-        mMediaSegments = new ArrayList<>();
-        mCounter = 0;
     }
 
     public void removeTextSegment(int index) {
@@ -180,30 +155,23 @@ public class Item {
         return mTextSegments.get(0);
     }
 
-    public int getOrder() {
-        return mOrder;
-    }
-
     protected Date getOriginalTime() {
         return mOriginalTime;
     }
 
     public String getFormattedOriginalTime() {
         if(mOriginalTime == null) return null;
-        DateFormat df = new DateFormat();
-        return df.format("MMM d, hh:mm", mOriginalTime).toString();
+        return DateFormat.format("MMM d, hh:mm", mOriginalTime).toString();
     }
 
     public String getTime() {
         if(mTime == null) return null;
-        DateFormat df = new DateFormat();
-        return df.format("MMM d, hh:mm", mTime).toString();
+        return DateFormat.format("MMM d, hh:mm", mTime).toString();
     }
 
     public String getShortTime() {
         if(mTime == null) return null;
-        DateFormat df = new DateFormat();
-        return df.format("hh:mm", mTime).toString();
+        return DateFormat.format("hh:mm", mTime).toString();
     }
 
     public String getAuthor() {
@@ -236,10 +204,12 @@ public class Item {
     }
 
     public long getOriginalTimeLong() {
+        if(mOriginalTime == null) return 0;
         return mOriginalTime.getTime();
     }
 
     public long getTimeLong() {
+        if(mTime == null) return 0;
         return mTime.getTime();
     }
 
