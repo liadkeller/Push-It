@@ -15,7 +15,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceCategory;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,10 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.UUID;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
-    static final String KEY_EMAIL_PREFERENCE = "emailPreference";
-
-    protected static final String MY_ACCOUNT = "myAccount";
-    protected static final String ACCOUNT_EMAIL = "accountEmail";
+    protected static final String ACCOUNT_SETTINGS = "accountSettings";
     protected static final String ACCOUNT_STATUS = "accountStatus";
     protected static final String ACCOUNT_SIGN_OUT = "signOut";
     protected static final String ACCOUNT_DELETE = "accountDelete";
@@ -49,8 +45,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     protected FirebaseAuth mAuth;
     protected DatabaseManager mDatabaseManager;
 
-    protected PreferenceCategory mMyAccountCategory;
-    protected Preference mEmailPreference;
+    protected Preference mAccountSettingsPreference;
     protected SwitchPreference mStatusPreference;
     protected Preference mSignOutPreference;
     protected Preference mDeleteAccountPreference;
@@ -69,14 +64,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         addPreferencesFromResource(R.xml.preferences_app);
 
-        mMyAccountCategory = (PreferenceCategory) findPreference(MY_ACCOUNT);
-        mEmailPreference = findPreference(ACCOUNT_EMAIL);
+        mAccountSettingsPreference = findPreference(ACCOUNT_SETTINGS);
         mStatusPreference = (SwitchPreference) findPreference(ACCOUNT_STATUS);
         mSignOutPreference = findPreference(ACCOUNT_SIGN_OUT);
         mDeleteAccountPreference = findPreference(ACCOUNT_DELETE);
-
-        String email = (getActivity() != null) ? PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(KEY_EMAIL_PREFERENCE, "") : null;
-        mEmailPreference.setTitle(email);
 
 
         FirebaseUser user = mAuth.getCurrentUser();
@@ -130,12 +121,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     protected void configureAccountPreferences(final PushItUser user, final String userId) {
-        mEmailPreference.setTitle(user.getEmail());
-        if(getActivity() != null)
-            PreferenceManager.getDefaultSharedPreferences(getActivity())
-                .edit()
-                .putString(KEY_EMAIL_PREFERENCE, user.getEmail())
-                .commit();
+        mAccountSettingsPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(getActivity(), AccountSettingsActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
 
         int statusSummary = (user.getStatus()) ? R.string.status_creator : R.string.status_follower;
         mStatusPreference.setChecked(user.getStatus());
@@ -203,7 +196,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     protected void deleteEmailData() {
         PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .edit()
-                .putString(KEY_EMAIL_PREFERENCE,"")
+                .putString(AccountSettingsFragment.KEY_EMAIL_PREFERENCE,"")
                 .commit();
     }
 

@@ -116,6 +116,9 @@
     <string name="account_login">Account Login</string>
     <string name="account_title">My Account</string>
     <string name="account_status">Account Status</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="update_email">Update Email Address</string>
+    <string name="update_password">Update Password</string>
     <string name="status_creator">Content Creator</string>
     <string name="status_follower">Content Follower</string>
     <string name="account_page">My Page Settings</string>
@@ -129,6 +132,7 @@
     <string name="password">Password</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Create New Account</string>
+    <string name="forgot_password">Forgot Password?</string>
     <string name="wrong_credentials">Wrong email or password.</string>
     <string name="login_progress_dialog">Logging In...</string>
     <string name="login_account">Login to Existing Account</string>

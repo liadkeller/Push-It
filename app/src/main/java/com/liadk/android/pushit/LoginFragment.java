@@ -32,6 +32,7 @@ public class LoginFragment extends Fragment {
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private Button mSignInButton;
+    private TextView mForgotPasswordTextView;
     private TextView mSignUpTextView;
 
 
@@ -53,6 +54,7 @@ public class LoginFragment extends Fragment {
         mEmailEditText = (EditText) v.findViewById(R.id.emailEditText);
         mPasswordEditText = (EditText) v.findViewById(R.id.passwordEditText);
         mSignInButton = (Button) v.findViewById(R.id.signUpButton);
+        mForgotPasswordTextView = (TextView) v.findViewById(R.id.forgotPasswordTextView);
         mSignUpTextView = (TextView) v.findViewById(R.id.loginTextView);
 
         configureView(v);
@@ -93,6 +95,14 @@ public class LoginFragment extends Fragment {
                 progressDialog.setMessage(string);
                 progressDialog.show();
                 return progressDialog;
+            }
+        });
+
+        mForgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ResetPasswordActivity.class);
+                startActivity(intent);
             }
         });
 
