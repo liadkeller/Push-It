@@ -103,6 +103,9 @@ public class UpdateEmailFragment extends Fragment {
                                         public void onComplete(@NonNull Task task) {
                                             progressDialog.dismiss();
 
+                                            if(getActivity() != null)
+                                                Toast.makeText(getActivity(), getString(R.string.email_changed, newEmail), Toast.LENGTH_LONG).show();
+
                                             new EventsLogger(getActivity()).log("update_email_success", "new_email", newEmail, "prev_email", prevEmail);
                                             onUpdateSuccess();
                                         }
@@ -121,7 +124,7 @@ public class UpdateEmailFragment extends Fragment {
                             if(task.getException() instanceof FirebaseAuthRecentLoginRequiredException) {
                                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                                 startActivityForResult(intent, REQUEST_LOGIN);
-                                Toast.makeText(getActivity(), R.string.login_to_continue, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), R.string.login_to_continue, Toast.LENGTH_LONG).show();
                             }
 
                             else {
@@ -149,7 +152,7 @@ public class UpdateEmailFragment extends Fragment {
 
                     if(getActivity() != null) {
                         String email = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(AccountSettingsFragment.KEY_EMAIL_PREFERENCE, "");
-                        Toast.makeText(getActivity(), getResources().getString(R.string.email_not_changed, email), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.email_not_changed, email), Toast.LENGTH_LONG).show();
                     }
                     NavUtils.navigateUpFromSameTask(getActivity());
                 }
@@ -164,7 +167,7 @@ public class UpdateEmailFragment extends Fragment {
 
     private void onUpdateFailed(String errorMsg) {
         Log.d(TAG, "updateEmail:failure; " + errorMsg);
-        Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
     }
 
     private ProgressDialog showProgressDialog(String string) {
@@ -181,7 +184,6 @@ public class UpdateEmailFragment extends Fragment {
         if (!valid) {
             mNewEmailEditText.setError(getString(R.string.enter_valid_email));
             mNewEmailEditText.requestFocus();
-            valid = false;
         }
 
         else {

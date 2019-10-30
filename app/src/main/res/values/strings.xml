@@ -204,6 +204,13 @@
     <string name="update">Update</string>
     <string name="update_email_progress_dialog">Updating Email Address...</string>
     <string name="login_to_continue">Login to continue</string>
+    <string name="email_changed">"Email address changed to %1$s</string>
     <string name="email_not_changed">"Email address was not changed, logged in to %1$s</string>
+    <string name="new_password">New Password</string>
+    <string name="current_password">Current Password</string>
+    <string name="password_changed">Your password has been successfuly updated</string>
+    <string name="update_password_progress_dialog">Updating Password...</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="try_login">Could not update password. Try to login again to your account</string>
 
 </resources>

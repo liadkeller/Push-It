@@ -17,6 +17,14 @@ public class EventsLogger {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
+    public void log(String event) {
+        Bundle params = new Bundle();
+
+        params.putString("device", Build.DEVICE);
+        params.putString("date", getDate());
+        mFirebaseAnalytics.logEvent(event, params);
+    }
+
     public void log(String event, String attr, String val) {
         Bundle params = new Bundle();
 
