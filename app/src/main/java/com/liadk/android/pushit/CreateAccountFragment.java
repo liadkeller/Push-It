@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -133,6 +134,10 @@ public class CreateAccountFragment extends Fragment {
                             PushItUser user = new PushItUser(email, status, pageId);
                             mDatabaseManager.pushUserToDB(user, userId);
 
+                            PreferenceManager.getDefaultSharedPreferences(getActivity())
+                                    .edit()
+                                    .putString(AccountSettingsFragment.KEY_EMAIL_PREFERENCE, email)
+                                    .commit();
 
                             if(status) {
                                 final UUID finalPageId = UUID.fromString(pageId);

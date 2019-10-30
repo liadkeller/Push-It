@@ -199,4 +199,11 @@
     <string name="search">Search</string>
     <string name="no_pages_found">No pages found.</string>
 
+    <string name="current_email">Current Email Address:</string>
+    <string name="new_email">New Email Address:</string>
+    <string name="update">Update</string>
+    <string name="update_email_progress_dialog">Updating Email Address...</string>
+    <string name="login_to_continue">Login to continue</string>
+    <string name="email_not_changed">"Email address was not changed, logged in to %1$s</string>
+
 </resources>

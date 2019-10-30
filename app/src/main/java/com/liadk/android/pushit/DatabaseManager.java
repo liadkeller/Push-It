@@ -217,4 +217,8 @@ public class DatabaseManager {
     public void setUserStatus(PushItUser user, String userId, OnCompleteListener listener) {
         mUsersDatabase.child(userId).child("status").setValue(user.getStatus()).addOnCompleteListener(listener);
     }
+
+    public void setUserEmail(PushItUser user, String userId, OnCompleteListener listener) {
+        mUsersDatabase.child(userId).child("email").setValue(user.getEmail()).addOnCompleteListener(listener);
+    }
 }
