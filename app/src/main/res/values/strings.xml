@@ -1,5 +1,4 @@
-<resources>
-    <!--<string name="app_name"><html><font color="#ffcc00" size="22"><b>P</b>ush It</font></html></string>-->
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Push It</string>
     <string name="edit_item">Edit Article</string>
 
@@ -201,16 +200,22 @@
 
     <string name="current_email">Current Email Address:</string>
     <string name="new_email">New Email Address:</string>
+    <string name="email_address">Email Address</string>
+    <string name="reset_password">Reset Password</string>
     <string name="update">Update</string>
     <string name="update_email_progress_dialog">Updating Email Address...</string>
+    <string name="update_password_progress_dialog">Updating Password...</string>
+    <string name="reset_password_progress_dialog">Resetting Password...</string>
+
     <string name="login_to_continue">Login to continue</string>
     <string name="email_changed">"Email address changed to %1$s</string>
     <string name="email_not_changed">"Email address was not changed, logged in to %1$s</string>
     <string name="new_password">New Password</string>
     <string name="current_password">Current Password</string>
-    <string name="password_changed">Your password has been successfuly updated</string>
-    <string name="update_password_progress_dialog">Updating Password...</string>
+    <string name="password_changed">Your password has been updated</string>
     <string name="invalid_password">Invalid password</string>
     <string name="try_login">Could not update password. Try to login again to your account</string>
+    <string name="password_reset">An email with a reset link was sent to the email address you provided.</string>
+    <string name="no_email_address">There is no user with this email address.</string>
 
 </resources>
