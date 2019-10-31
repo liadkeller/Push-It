@@ -3,6 +3,10 @@
     <PreferenceCategory android:title="@string/account_title"
         android:key="myAccount">
         <Preference
+            android:key="accountEmail"
+            android:icon="@drawable/mail_gray" />
+
+        <Preference
             android:key="accountSettings"
             android:title="@string/account_settings"
             android:icon="@drawable/mail_gray" />

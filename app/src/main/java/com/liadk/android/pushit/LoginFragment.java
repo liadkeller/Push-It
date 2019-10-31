@@ -86,7 +86,7 @@ public class LoginFragment extends Fragment {
                         if (task.isSuccessful()) {
                             PreferenceManager.getDefaultSharedPreferences(getActivity())
                                     .edit()
-                                    .putString(AccountSettingsFragment.KEY_EMAIL_PREFERENCE, email)
+                                    .putString(SettingsFragment.KEY_EMAIL_PREFERENCE, email)
                                     .commit();
 
                             onLoginSuccess();

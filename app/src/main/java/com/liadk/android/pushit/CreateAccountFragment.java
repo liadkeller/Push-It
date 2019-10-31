@@ -136,7 +136,7 @@ public class CreateAccountFragment extends Fragment {
 
                             PreferenceManager.getDefaultSharedPreferences(getActivity())
                                     .edit()
-                                    .putString(AccountSettingsFragment.KEY_EMAIL_PREFERENCE, email)
+                                    .putString(SettingsFragment.KEY_EMAIL_PREFERENCE, email)
                                     .commit();
 
                             if(status) {

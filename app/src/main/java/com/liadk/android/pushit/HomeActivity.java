@@ -144,7 +144,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                     if(user != null) {
                         PreferenceManager.getDefaultSharedPreferences(HomeActivity.this)
                                 .edit()
-                                .putString(AccountSettingsFragment.KEY_EMAIL_PREFERENCE, user.getEmail())
+                                .putString(SettingsFragment.KEY_EMAIL_PREFERENCE, user.getEmail())
                                 .commit();
                     }
                 }

@@ -64,7 +64,7 @@ public class UpdateEmailFragment extends Fragment {
     }
 
     private void configureView() {
-        final String currentEmail = (getActivity() != null) ? PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(AccountSettingsFragment.KEY_EMAIL_PREFERENCE, "") : null;
+        final String currentEmail = (getActivity() != null) ? PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(SettingsFragment.KEY_EMAIL_PREFERENCE, "") : null;
         mCurrentEmailEditText.setText(currentEmail);
 
         mUpdateButton.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +95,7 @@ public class UpdateEmailFragment extends Fragment {
 
                                     PreferenceManager.getDefaultSharedPreferences(getActivity())
                                             .edit()
-                                            .putString(AccountSettingsFragment.KEY_EMAIL_PREFERENCE, newEmail)
+                                            .putString(SettingsFragment.KEY_EMAIL_PREFERENCE, newEmail)
                                             .commit();
 
                                     mDatabaseManager.setUserEmail(user, userId, new OnCompleteListener() {
@@ -151,7 +151,7 @@ public class UpdateEmailFragment extends Fragment {
                 if(!previousUserId.equals(currentUserId)) {
 
                     if(getActivity() != null) {
-                        String email = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(AccountSettingsFragment.KEY_EMAIL_PREFERENCE, "");
+                        String email = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(SettingsFragment.KEY_EMAIL_PREFERENCE, "");
                         Toast.makeText(getActivity(), getResources().getString(R.string.email_not_changed, email), Toast.LENGTH_LONG).show();
                     }
                     NavUtils.navigateUpFromSameTask(getActivity());

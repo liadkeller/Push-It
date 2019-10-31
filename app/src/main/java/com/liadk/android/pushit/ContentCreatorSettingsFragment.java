@@ -5,11 +5,11 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceCategory;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,6 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.UUID;
 
 public class ContentCreatorSettingsFragment extends SettingsFragment {
+    private static final String KEY_EMAIL_PREFERENCE = "emailPreference";
+
     protected static final String ACCOUNT_SETTINGS = "accountSettings";
     protected static final String PAGE_SETTINGS = "pageSettings";
     protected static final String PAGE_DELETE = "pageDelete";
@@ -30,7 +32,7 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
     protected FirebaseAuth mAuth;
     protected DatabaseManager mDatabaseManager;
 
-    protected PreferenceCategory mMyAccountCategory;
+    protected Preference mEmailPreference;
     protected Preference mAccountSettingsPreference;
     protected SwitchPreference mStatusPreference;
     protected Preference mPageSettingsPreference;
@@ -45,12 +47,16 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
 
         addPreferencesFromResource(R.xml.preferences_app_content_creator);
 
+        mEmailPreference = findPreference(ACCOUNT_EMAIL);
         mAccountSettingsPreference = findPreference(ACCOUNT_SETTINGS);
         mStatusPreference = (SwitchPreference) findPreference(ACCOUNT_STATUS);
         mPageSettingsPreference = findPreference(PAGE_SETTINGS);
         mDeletePagePreference = findPreference(PAGE_DELETE);
         mSignOutPreference = findPreference(ACCOUNT_SIGN_OUT);
         mDeleteAccountPreference = findPreference(ACCOUNT_DELETE);
+
+        String email = (getActivity() != null) ? PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(KEY_EMAIL_PREFERENCE, "") : null;
+        mEmailPreference.setTitle(email);
 
 
         FirebaseUser user = mAuth.getCurrentUser();
@@ -148,6 +154,13 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
     }
 
     protected void configureAccountPreferences(final PushItUser user, final String userId) {
+        mEmailPreference.setTitle(user.getEmail());
+        if(getActivity() != null)
+            PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .edit()
+                    .putString(KEY_EMAIL_PREFERENCE, user.getEmail())
+                    .commit();
+
         mAccountSettingsPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

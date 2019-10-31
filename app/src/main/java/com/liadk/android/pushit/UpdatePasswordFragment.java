@@ -74,7 +74,7 @@ public class UpdatePasswordFragment extends Fragment {
                 final ProgressDialog progressDialog = showProgressDialog(getString(R.string.update_password_progress_dialog));
 
 
-                String email = (getActivity() != null) ? PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(AccountSettingsFragment.KEY_EMAIL_PREFERENCE, null) : null;
+                String email = (getActivity() != null) ? PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(SettingsFragment.KEY_EMAIL_PREFERENCE, null) : null;
 
                 if(email == null) {
                     Toast.makeText(getActivity(), R.string.try_login, Toast.LENGTH_LONG).show();
