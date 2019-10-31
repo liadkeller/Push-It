@@ -1,5 +1,6 @@
 package com.liadk.android.pushit;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -27,6 +28,8 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
 
     protected static final String PAGE_SETTINGS = "pageSettings";
     protected static final String PAGE_DELETE = "pageDelete";
+
+    protected static final int REQUEST_PAGE_SETTINGS = 1;
 
 
     protected FirebaseAuth mAuth;
@@ -118,7 +121,7 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
             public boolean onPreferenceClick(Preference preference) {
                 Intent i = new Intent(getActivity(), PageSettingsActivity.class);
                 i.putExtra(PageFragment.EXTRA_ID, UUID.fromString(user.getPageId()));
-                startActivity(i);
+                startActivityForResult(i, REQUEST_PAGE_SETTINGS);
                 return true;
             }
         });
@@ -211,5 +214,31 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_PAGE_SETTINGS) {
+            if(resultCode == Activity.RESULT_CANCELED) {
+                // user page does not exist
+                mDatabaseManager.addUsersSingleEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(mAuth.getCurrentUser() == null) return;
+
+                        String userId = mAuth.getCurrentUser().getUid();
+                        PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
+
+                        // turn user to Content Follower
+                        user.setContentFollower();
+                        mDatabaseManager.setUserStatus(user, userId, null);
+                        refreshUserStatus(user);
+                    }
+                    
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
+            }
+        }
     }
 }

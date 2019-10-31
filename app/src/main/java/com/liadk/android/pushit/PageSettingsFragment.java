@@ -1,5 +1,6 @@
 package com.liadk.android.pushit;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -62,6 +63,7 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
                 if(mPage == null) {
                     if(getActivity() != null) {
                         Toast.makeText(getActivity(), R.string.page_not_exist, Toast.LENGTH_SHORT).show();
+                        getActivity().setResult(Activity.RESULT_CANCELED);
                         getActivity().finish();
                     }
                     return;
@@ -106,7 +108,6 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
             }
         });
 
-
         mPrivayPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object isChecked) {
@@ -134,8 +135,6 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
                 return false;
             }
         });
-
-
     }
 
     @Override
