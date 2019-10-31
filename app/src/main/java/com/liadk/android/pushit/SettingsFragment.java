@@ -48,6 +48,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     protected FirebaseAuth mAuth;
     protected DatabaseManager mDatabaseManager;
+    private boolean mPageExists = false;
 
     protected PreferenceCategory mMyAccountCategory;
     protected Preference mEmailPreference;
@@ -91,9 +92,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         mDatabaseManager.addUsersSingleEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
+                final PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
 
                 if(replaceFragment(user)) return;
+
+                mDatabaseManager.addPagesListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mPageExists = user.getPageId() != null && dataSnapshot.child(user.getPageId()).exists();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
 
                 configureAccountPreferences(user, userId);
             }
@@ -147,7 +158,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 boolean status = (boolean) newValue;
 
                 if(status) {
-                    if(user.getPageId() != null)
+                    if(mPageExists)
                         showRestorePageDialog(user, userId);
 
                     else
