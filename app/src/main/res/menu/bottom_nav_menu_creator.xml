@@ -3,21 +3,21 @@
 
     <item android:id="@+id/bottom_nav_create"
         android:title="@string/create"
-        android:icon="@drawable/create_white">
+        android:icon="@drawable/ic_add_box_white">
     </item>
 
     <item android:id="@+id/bottom_nav_explore"
         android:title="@string/explore"
-        android:icon="@drawable/explore_white">
+        android:icon="@drawable/ic_explore_white">
     </item>
 
     <item android:id="@+id/bottom_nav_follow"
         android:title="@string/follow"
-        android:icon="@drawable/follow_white">
+        android:icon="@drawable/ic_follow_white">
     </item>
 
     <item android:id="@+id/bottom_nav_settings"
     android:title="@string/settings"
-        android:icon="@drawable/settings_white">
+        android:icon="@drawable/ic_settings_white">
     </item>
 </menu>
