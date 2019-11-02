@@ -69,6 +69,9 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
                     return;
                 }
 
+                if(getActivity() != null)
+                    getActivity().setResult(Activity.RESULT_OK);
+
                 if(mNamePreference != null && mDescPreference != null && mLayoutPreference != null)
                     updatePreferences();
             }
