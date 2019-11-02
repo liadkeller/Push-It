@@ -146,10 +146,7 @@ public class PageLogoFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             if (NavUtils.getParentActivityName(getActivity()) != null) {
-                Intent intent = NavUtils.getParentActivityIntent(getActivity());
-                intent.putExtra(PageFragment.EXTRA_ID, mPageId);
-
-                NavUtils.navigateUpTo(getActivity(), intent);
+                getActivity().finish();
             }
             return true;
         }
