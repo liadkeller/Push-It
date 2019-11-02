@@ -65,11 +65,24 @@
             android:parentActivityName=".EditItemActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
+            android:name=".CreateAccountActivity"
+            android:parentActivityName=".HomeActivity" />
+        <activity
             android:name=".LoginActivity"
             android:parentActivityName=".HomeActivity" />
         <activity
-            android:name=".CreateAccountActivity"
-            android:parentActivityName=".HomeActivity" />
+            android:name=".ResetPasswordActivity"
+            android:parentActivityName=".LoginActivity" />
+        <activity
+            android:name=".AccountSettingsActivity"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.SettingsTheme" />
+        <activity
+            android:name=".UpdateEmailActivity"
+            android:parentActivityName=".AccountSettingsActivity" />
+        <activity
+            android:name=".UpdatePasswordActivity"
+            android:parentActivityName=".AccountSettingsActivity" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"

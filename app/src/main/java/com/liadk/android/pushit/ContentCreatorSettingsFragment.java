@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceCategory;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,6 +25,7 @@ import java.util.UUID;
 public class ContentCreatorSettingsFragment extends SettingsFragment {
     private static final String KEY_EMAIL_PREFERENCE = "emailPreference";
 
+    protected static final String ACCOUNT_SETTINGS = "accountSettings";
     protected static final String PAGE_SETTINGS = "pageSettings";
     protected static final String PAGE_DELETE = "pageDelete";
 
@@ -35,8 +35,8 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
     protected FirebaseAuth mAuth;
     protected DatabaseManager mDatabaseManager;
 
-    protected PreferenceCategory mMyAccountCategory;
     protected Preference mEmailPreference;
+    protected Preference mAccountSettingsPreference;
     protected SwitchPreference mStatusPreference;
     protected Preference mPageSettingsPreference;
     protected Preference mDeletePagePreference;
@@ -50,8 +50,8 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
 
         addPreferencesFromResource(R.xml.preferences_app_content_creator);
 
-        mMyAccountCategory = (PreferenceCategory) findPreference(MY_ACCOUNT);
         mEmailPreference = findPreference(ACCOUNT_EMAIL);
+        mAccountSettingsPreference = findPreference(ACCOUNT_SETTINGS);
         mStatusPreference = (SwitchPreference) findPreference(ACCOUNT_STATUS);
         mPageSettingsPreference = findPreference(PAGE_SETTINGS);
         mDeletePagePreference = findPreference(PAGE_DELETE);
@@ -163,6 +163,15 @@ public class ContentCreatorSettingsFragment extends SettingsFragment {
                     .edit()
                     .putString(KEY_EMAIL_PREFERENCE, user.getEmail())
                     .commit();
+
+        mAccountSettingsPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(getActivity(), AccountSettingsActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
 
         mStatusPreference.setChecked(true);
         mStatusPreference.setSummary(R.string.status_creator);

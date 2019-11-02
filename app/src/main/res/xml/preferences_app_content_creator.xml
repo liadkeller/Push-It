@@ -4,35 +4,40 @@
         android:key="myAccount">
         <Preference
             android:key="accountEmail"
-            android:icon="@drawable/mail_gray" />
+            android:icon="@drawable/ic_email_grey" />
+
+        <Preference
+            android:key="accountSettings"
+            android:title="@string/account_settings"
+            android:icon="@drawable/ic_account_circle_grey" />
 
         <SwitchPreference
             android:key="accountStatus"
             android:defaultValue="true"
             android:title="@string/account_status"
-            android:icon="@drawable/status_gray"
+            android:icon="@drawable/ic_check_circle_grey"
             android:summary="@string/status_creator"/>
 
         <Preference
             android:key="pageSettings"
-            android:icon="@drawable/page_gray"
+            android:icon="@drawable/ic_page_grey"
             android:title="@string/account_page"/>
 
         <Preference
             android:key="pageDelete"
-            android:icon="@drawable/delete_gray"
+            android:icon="@drawable/ic_delete_grey"
             android:title="@string/delete_page"/>
 
         <Preference
             android:key="signOut"
-            android:icon="@drawable/signout_gray"
+            android:icon="@drawable/ic_arrow_back_grey"
             android:title="@string/sign_out"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/delete_account">
         <Preference
             android:key="accountDelete"
-            android:icon="@drawable/delete_red"
-            android:title="@string/delete_account"/> <!-- android:icon="@drawable/delete_red" -->
+            android:icon="@drawable/ic_delete_red"
+            android:title="@string/delete_account"/>
     </PreferenceCategory>
 </PreferenceScreen>
