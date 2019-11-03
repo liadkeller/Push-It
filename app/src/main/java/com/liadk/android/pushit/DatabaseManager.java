@@ -87,7 +87,7 @@ public class DatabaseManager {
     public void pushItemToDB(Item item) {
         mItemsDatabase.child(item.getId().toString()).child("title").setValue(item.getTitle());
         mItemsDatabase.child(item.getId().toString()).child("author").setValue(item.getAuthor());
-        mItemsDatabase.child(item.getId().toString()).child("has-image").setValue(false); // triggers refreshing images after upload to storage
+        mItemsDatabase.child(item.getId().toString()).child("has-image").setValue(item.hasImage()); // triggers refreshing images after upload to storage
         mItemsDatabase.child(item.getId().toString()).child("time").setValue(item.getTimeLong());
         mItemsDatabase.child(item.getId().toString()).child("original-time").setValue(item.getOriginalTimeLong());
         mItemsDatabase.child(item.getId().toString()).child("publish-time").setValue(item.getPublishTimeLong());
@@ -141,7 +141,7 @@ public class DatabaseManager {
     }
 
     public void refreshItemImage(Item item) {
-        mItemsDatabase.child(item.getId().toString()).child("has-image").setValue(true);  // triggers refreshing image
+        mItemsDatabase.child(item.getId().toString()).child("has-image").setValue(item.hasImage());  // triggers refreshing image
     }
 
     public void updateItemPublished(Item item) {

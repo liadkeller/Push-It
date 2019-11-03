@@ -54,6 +54,7 @@ public class Item {
 
     private String mTitle = "";
     private String mAuthor = "";
+    private boolean mHasImage = false; // has main image
     private Uri mImageUri;
     private Date mOriginalTime; // original creation time
     private Date mTime;                  // creation time
@@ -91,6 +92,10 @@ public class Item {
 
     public void setTitle(String title) {
         mTitle = title;
+    }
+
+    public void setHasImage(boolean hasImage) {
+        this.mHasImage = hasImage;
     }
 
     public void setImageUri(Uri imageUrl) {
@@ -145,6 +150,10 @@ public class Item {
 
     public String getTitle() {
         return mTitle;
+    }
+
+    public boolean hasImage() {
+        return mHasImage;
     }
 
     public Uri getImageUri() {
@@ -226,6 +235,8 @@ public class Item {
         item.mId = UUID.fromString(ds.getKey());
         item.mTitle = (String) ds.child("title").getValue();
         item.mAuthor = (String) ds.child("author").getValue();
+        if(ds.child("has-image").getValue() != null)
+            item.mHasImage = (boolean) ds.child("has-image").getValue();
 
         if(ds.child("owner").getValue() != null)
             item.mOwnerId = UUID.fromString((String) ds.child("owner").getValue());

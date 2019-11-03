@@ -247,9 +247,12 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
                 showOnClickDialog(R.string.remove_image, R.string.delete, R.string.remove_image_dialog, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        mItem.setHasImage(false);
                         mStorageManager.deleteItemIImage(mItem, new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
+                                mDatabaseManager.refreshItemImage(mItem); // updates image status (no image)
+
                                 // mRecentlySaved should not be modified as this button causes this change immediately and not after saving
                                 boolean recentlySaved = mRecentlySaved;
                                 onImageUpdated();
@@ -433,6 +436,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
             if(requestCode == MAIN_IMAGE_REQUEST) {
                 final Uri resultUri = UCrop.getOutput(data);
                 mItem.setImageUri(resultUri);
+                mItem.setHasImage(true);
                 mRecentlySaved = false;
                 onImageUpdated(resultUri);
             }

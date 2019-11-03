@@ -433,6 +433,8 @@ public class PageFragment extends Fragment {
     }
 
     private void loadItemImage(final Item item, final ImageView imageView) {
+        imageView.setVisibility(item.hasImage() ? View.VISIBLE : View.GONE);
+
         Task loadingTask = FirebaseStorage.getInstance().getReference("items").child(item.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
