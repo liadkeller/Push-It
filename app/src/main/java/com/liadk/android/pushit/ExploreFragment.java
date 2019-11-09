@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ExploreFragment extends PageListFragment {
 
@@ -52,6 +54,21 @@ public class ExploreFragment extends PageListFragment {
                     if(page != null)
                         mPages.add(page);
                 }
+
+                Collections.sort(mPages, new Comparator<Page>() {
+                    @Override
+                    public int compare(Page p1, Page p2) {
+                        if (p1 == null && p2 == null) return 0;
+                        else if (p1 == null) return 1;
+                        else if (p2 == null) return -1;
+
+                        // regarding pages, order is flipped
+                        if(p1.isPrivate() && p2.isPublic()) return 1;
+                        if(p1.isPublic() && p2.isPrivate()) return -1;
+
+                        return p1.getName().compareTo(p2.getName());
+                    }
+                });
 
                 if(mRecyclerView != null) {
                     configureAdapterPages(mPages);
