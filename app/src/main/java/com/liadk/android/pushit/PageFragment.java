@@ -248,6 +248,7 @@ public class PageFragment extends Fragment {
 
         public PageRecycleViewAdapter(Context context) {
             mContext = context;
+            setHasStableIds(true);
         }
 
         public void setItems(ArrayList<Item> items) {
@@ -263,6 +264,13 @@ public class PageFragment extends Fragment {
             int reversedIndex = mItems.size() - 1 - position;
 
             return mItems.get(reversedIndex);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            int reversedIndex = mItems.size() - 1 - position;
+            Item item = mItems.get(reversedIndex);
+            return item.getId().hashCode();
         }
 
         @Override
