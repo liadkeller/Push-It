@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pushit_logo"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:adjustViewBounds="true"
+            android:cropToPadding="false"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/what_is_push_it"
+            android:textSize="16sp" />
+    </LinearLayout>
+</ScrollView>

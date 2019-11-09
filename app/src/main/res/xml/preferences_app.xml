@@ -19,6 +19,14 @@
             android:summary="@string/status_follower"/>
 
         <Preference
+            android:title="@string/app_help"
+            android:icon="@drawable/ic_help_grey">
+            <intent
+                android:targetClass="com.liadk.android.pushit.HelpActivity"
+                android:targetPackage="com.liadk.android.pushit"/>
+        </Preference>
+
+        <Preference
             android:key="signOut"
             android:icon="@drawable/ic_arrow_back_grey"
             android:title="@string/sign_out"/>
