@@ -58,7 +58,10 @@ public class PushItUser {
     }
 
     public void followPage(Page page) {
-        this.followedPages.add(page.getId().toString());
+        String pageId = page.getId().toString();
+
+        if(!followedPages.contains(pageId))
+            followedPages.add(pageId);
     }
 
     public void unfollowPage(Page page) {
