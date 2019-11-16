@@ -472,6 +472,8 @@ public class PageFragment extends Fragment {
 
         newArticleMenuItem.setVisible(mIsOwner);
         pageSettingsMenuItem.setVisible(mIsOwner);
+        followMenuItem.setVisible(!mIsOwner);
+
         new EventsLogger(getActivity()).log("page_options_menu", "is_owner", mIsOwner);
 
         if(mUserId != null) {
