@@ -30,13 +30,6 @@
     <string name="set_image_1">Set Image 1</string>
     <string name="set_image_2">Set Image 2</string>
 
-    <string name="add_video">Add Video</string>
-    <string name="remove_video">Remove Video</string>
-    <string name="video_1">Video 1</string>
-    <string name="video_2">Video 2</string>
-    <string name="set_video_1">Set Video 1</string>
-    <string name="set_video_2">Set Video 2</string>
-
 
     <string name="item_save_label">Save Article</string>
     <string name="confirm_changes">Save Changes</string>
