@@ -35,7 +35,7 @@
     <string name="confirm_changes">שמור את השינויים</string>
 
     <string name="item_mode_label">סטטוס הידיעה</string>
-    <string name="publish_article_push">פרסם ידיעה (שלח התרעת פוש)</string>
+    <string name="publish_article_push">פרסם ידיעה (שלח התראת פוש)</string>
     <string name="publish_article">פרסם ידיעה</string>
     <string name="post_article">צור ידיעה</string>
     <string name="save_draft">שמור כטיוטה</string>
@@ -47,7 +47,7 @@
     <string name="save">שמור</string>
     <string name="delete">מחק</string>
 
-    <string name="publish_article_dialog">לפרסם את הידיעה?\n\nכעת עליך ליצור התרעת פוש שתשלח לכל העוקבים שלך.</string>
+    <string name="publish_article_dialog">לפרסם את הידיעה?\n\nכעת עליך ליצור התראת פוש שתישלח לכל העוקבים שלך.</string>
     <string name="post_article_dialog">ליצור את הידיעה?\n\nיש לשים לב כי לאחר שהידיעה תיווצר, היא תופיע בעמוד שלך וכולם יוכלו לראות אותה.</string>
     <string name="save_draft_dialog">לשמור את הידיעה כטיוטה?</string>
     <string name="delete_article_dialog">למחוק את הידיעה? \n\nכל המידע יאבד.</string>
@@ -80,7 +80,7 @@
     <string name="push_check_box_label">זהה לכותרת הידיעה</string>
     <string name="set_push_image">בחר תמונה</string>
     <string name="publish_button">פרסם ידיעה</string>
-    <string name="publish_notification_dialog">לפרסם את הידיעה? \n\nבעקבות פרסום הידיעה תשלח התראת פוש לכל העוקבים. \n\nלא ניתן למחוק התראה זו.</string>
+    <string name="publish_notification_dialog">לפרסם את הידיעה? \n\nבעקבות פרסום הידיעה תישלח התראת פוש לכל העוקבים. \n\nלא ניתן למחוק התראה זו.</string>
     <string name="exit_notification_dialog">לבטל את פרסום הידיעה?</string>
 
     <string name="no_title_toast">עליך לתת כותרת לידיעה!</string>
