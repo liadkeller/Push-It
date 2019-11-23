@@ -75,7 +75,7 @@ public class ItemFragment extends Fragment {
                     updateUI();
 
                 mIsOwner = mItem != null && mUser != null && mUser.getStatus() && mItem.getOwnerId().toString().equals(mUser.getPageId());
-                new EventsLogger(getActivity()).log("item_is_owner1", "is_auth_null", mAuth.getCurrentUser() != null, "is_user_null", mUser != null, "user_status", (mUser != null) ? mUser.getStatus(): false, "is_id_equal", (mUser != null && mUser.getStatus()) ? mItem.getOwnerId().toString().equals(mUser.getPageId()) : false, "is_owner", mIsOwner);
+                new EventsLogger(getActivity()).log("item_is_owner1", "is_auth_null", mAuth.getCurrentUser() != null, "is_user_null", mUser != null, "user_status", (mUser != null) && mUser.getStatus(), "is_id_equal", mUser != null && mUser.getStatus() && mItem != null && mItem.getOwnerId().toString().equals(mUser.getPageId()), "is_owner", mIsOwner);
             }
 
             @Override
@@ -91,7 +91,7 @@ public class ItemFragment extends Fragment {
                 mUser = dataSnapshot.child(userId).getValue(PushItUser.class);
 
                 mIsOwner = mItem != null && mUser != null && mUser.getStatus() && mItem.getOwnerId().toString().equals(mUser.getPageId());
-                new EventsLogger(getActivity()).log("item_is_owner2", "is_auth_null", mAuth.getCurrentUser() != null, "is_user_null", mUser != null, "user_status", (mUser != null) ? mUser.getStatus(): false, "is_id_equal", (mUser != null && mUser.getStatus()) ? mItem.getOwnerId().toString().equals(mUser.getPageId()) : false, "is_owner", mIsOwner);
+                new EventsLogger(getActivity()).log("item_is_owner2", "is_auth_null", mAuth.getCurrentUser() != null, "is_user_null", mUser != null, "user_status", (mUser != null) && mUser.getStatus(), "is_id_equal", mUser != null && mUser.getStatus() && mItem != null && mItem.getOwnerId().toString().equals(mUser.getPageId()), "is_owner", mIsOwner);
             }
 
             @Override
@@ -100,19 +100,19 @@ public class ItemFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = getActivity().getLayoutInflater().inflate(R.layout.fragment_item, container, false);
 
         if (NavUtils.getParentActivityName(getActivity()) != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        mImageView = (ImageView) v.findViewById(R.id.mainImageView);
-        mTitleTextView = (TextView) v.findViewById(R.id.titleTextView);
-        mDetailsTextView = (TextView) v.findViewById(R.id.detailsTextView);
-        mTextView = (TextView) v.findViewById(R.id.mainTextView);
-        mSegmentTextViews = new TextView[] { (TextView) v.findViewById(R.id.seg1TextView), (TextView) v.findViewById(R.id.seg2TextView) };
-        mImageViews = new ImageView[] { (ImageView) v.findViewById(R.id.itemImageView1), (ImageView) v.findViewById(R.id.itemImageView2) };
+        mImageView = v.findViewById(R.id.mainImageView);
+        mTitleTextView = v.findViewById(R.id.titleTextView);
+        mDetailsTextView = v.findViewById(R.id.detailsTextView);
+        mTextView = v.findViewById(R.id.mainTextView);
+        mSegmentTextViews = new TextView[]{v.findViewById(R.id.seg1TextView), v.findViewById(R.id.seg2TextView)};
+        mImageViews = new ImageView[]{v.findViewById(R.id.itemImageView1), v.findViewById(R.id.itemImageView2)};
         //mSurfaceViews = new SurfaceView[] { (SurfaceView) v.findViewById(R.id.itemSurfaceView1), (SurfaceView) v.findViewById(R.id.itemSurfaceView2) };
 
         if(mItem != null)

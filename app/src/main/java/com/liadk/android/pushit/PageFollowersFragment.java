@@ -128,10 +128,7 @@ public class PageFollowersFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             if (NavUtils.getParentActivityName(getActivity()) != null) {
-                Intent intent = NavUtils.getParentActivityIntent(getActivity());
-                intent.putExtra(PageFragment.EXTRA_ID, mPage.getId());
-
-                NavUtils.navigateUpTo(getActivity(), intent);
+                getActivity().finish();
             }
             return true;
         }

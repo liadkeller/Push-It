@@ -124,10 +124,6 @@ public class StorageManager {
 
 
 
-    public void deleteItemIImage(Item item) {
-        deleteItemIImage(item, null);
-    }
-
     public void deleteItemIImage(Item item, OnCompleteListener<Void> onCompleteListener) {
         StorageReference itemStorageRef = mItemsStorage.child(item.getId().toString());
         itemStorageRef.child("image.png").delete().addOnCompleteListener(onCompleteListener);

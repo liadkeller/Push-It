@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -61,14 +62,14 @@ public class CreateAccountFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_create_account, container, false);
 
         // Referencing Widgets
-        mEmailEditText = (EditText) v.findViewById(R.id.emailEditText);
-        mPasswordEditText = (EditText) v.findViewById(R.id.passwordEditText);
-        mConfirmPasswordEditText = (EditText) v.findViewById(R.id.confirmPasswordEditText);
-        mStatusSwitch = (Switch) v.findViewById(R.id.accountStatusSwitch);
-        mPageNameLayout = (LinearLayout) v.findViewById(R.id.pageNameLayout);
-        mPageNameEditText = (EditText) v.findViewById(R.id.pageNameEditText);
-        mSignUpButton = (Button) v.findViewById(R.id.signUpButton);
-        mLoginTextView = (TextView) v.findViewById(R.id.loginTextView);
+        mEmailEditText = v.findViewById(R.id.emailEditText);
+        mPasswordEditText = v.findViewById(R.id.passwordEditText);
+        mConfirmPasswordEditText = v.findViewById(R.id.confirmPasswordEditText);
+        mStatusSwitch = v.findViewById(R.id.accountStatusSwitch);
+        mPageNameLayout = v.findViewById(R.id.pageNameLayout);
+        mPageNameEditText = v.findViewById(R.id.pageNameEditText);
+        mSignUpButton = v.findViewById(R.id.signUpButton);
+        mLoginTextView = v.findViewById(R.id.loginTextView);
 
         configureView(v);
 
@@ -133,6 +134,10 @@ public class CreateAccountFragment extends Fragment {
                             PushItUser user = new PushItUser(email, status, pageId);
                             mDatabaseManager.pushUserToDB(user, userId);
 
+                            PreferenceManager.getDefaultSharedPreferences(getActivity())
+                                    .edit()
+                                    .putString(SettingsFragment.KEY_EMAIL_PREFERENCE, email)
+                                    .apply();
 
                             if(status) {
                                 final UUID finalPageId = UUID.fromString(pageId);

@@ -1,5 +1,6 @@
 package com.liadk.android.pushit;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -62,10 +63,14 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
                 if(mPage == null) {
                     if(getActivity() != null) {
                         Toast.makeText(getActivity(), R.string.page_not_exist, Toast.LENGTH_SHORT).show();
+                        getActivity().setResult(Activity.RESULT_CANCELED);
                         getActivity().finish();
                     }
                     return;
                 }
+
+                if(getActivity() != null)
+                    getActivity().setResult(Activity.RESULT_OK);
 
                 if(mNamePreference != null && mDescPreference != null && mLayoutPreference != null)
                     updatePreferences();
@@ -76,66 +81,14 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
         });
     }
 
-    @Override
-    public void onCreatePreferences(Bundle bundle, String s) {
-        addPreferencesFromResource(R.xml.preferences_page);
-        mNamePreference = (EditTextPreference) getPreferenceScreen().findPreference(PAGE_NAME);
-        mDescPreference = (EditTextPreference) getPreferenceScreen().findPreference(PAGE_DESC);
-        mPrivayPreference = (SwitchPreference) getPreferenceScreen().findPreference(PAGE_PRIVACY);
-        mFollowersPreference = getPreferenceScreen().findPreference(PAGE_FOLLOWERS);
-        mLayoutPreference = (ListPreference) getPreferenceScreen().findPreference(PAGE_LAYOUT);
-        mLogoPreference = (Preference) getPreferenceScreen().findPreference(PAGE_LOGO);
+    public static Fragment newInstance(UUID id) {
+        Bundle args = new Bundle();
+        args.putSerializable(PageFragment.EXTRA_ID, id);
 
-        mLogoPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(getActivity(), PageLogoActivity.class);
-                i.putExtra(PageFragment.EXTRA_ID, mPage.getId());
-                startActivity(i);
-                return true;
-            }
-        });
+        PageSettingsFragment fragment = new PageSettingsFragment();
+        fragment.setArguments(args);
 
-        mFollowersPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Intent i = new Intent(getActivity(), PageFollowersActivity.class);
-                i.putExtra(PageFragment.EXTRA_ID, mPage.getId());
-                startActivity(i);
-                return true;
-            }
-        });
-
-
-        mPrivayPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object isChecked) {
-                if((boolean) isChecked) return true;
-
-                // Turning public triggers dialog to confirm
-                AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.public_page)
-                        .setMessage(R.string.public_page_dialog)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                mPrivayPreference.setChecked(false);
-
-                                PreferenceManager.getDefaultSharedPreferences(getActivity())
-                                        .edit()
-                                        .putBoolean(PAGE_PRIVACY, false)
-                                        .commit();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .create();
-
-                alertDialog.show();
-                return false;
-            }
-        });
-
-
+        return fragment;
     }
 
     @Override
@@ -179,41 +132,42 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals(PAGE_LAYOUT)) {
-            mPage.settings.design = Page.Design.getDesign(mLayoutPreference.getEntry().toString());
-            mDatabaseManager.setPageDesign(mPage); // update database
+        switch (key) {
+            case PAGE_LAYOUT:
+                mPage.settings.design = Page.Design.getDesign(mLayoutPreference.getEntry().toString());
+                mDatabaseManager.setPageDesign(mPage); // update database
 
-            mLayoutPreference.setSummary(mLayoutPreference.getEntry());
-        }
 
-        else if (key.equals(PAGE_NAME)) {
-            if(mNamePreference.getText().equals("")) {
-                Toast.makeText(getActivity(), R.string.no_page_name_toast, Toast.LENGTH_SHORT).show();
-            }
+                mLayoutPreference.setSummary(mLayoutPreference.getEntry());
+                break;
 
-            else {
-                mPage.setName(mNamePreference.getText());
-                mNamePreference.setSummary(mNamePreference.getText());
-                if (mPage.getName().equals(""))
-                    mNamePreference.setSummary(R.string.choose_name_summary);
-                else
-                    mDatabaseManager.setPageName(mPage); // update database
-            }
-        }
+            case PAGE_NAME:
+                if (mNamePreference.getText().equals("")) {
+                    Toast.makeText(getActivity(), R.string.no_page_name_toast, Toast.LENGTH_SHORT).show();
+                } else {
+                    mPage.setName(mNamePreference.getText());
+                    mNamePreference.setSummary(mNamePreference.getText());
+                    if (mPage.getName().equals(""))
+                        mNamePreference.setSummary(R.string.choose_name_summary);
+                    else
+                        mDatabaseManager.setPageName(mPage); // update database
+                }
+                break;
 
-        else if (key.equals(PAGE_DESC)) {
-            mPage.setDescription(mDescPreference.getText());
-            mDatabaseManager.setPageDescription(mPage); // update database
+            case PAGE_DESC:
+                mPage.setDescription(mDescPreference.getText());
+                mDatabaseManager.setPageDescription(mPage); // update database
 
-            mDescPreference.setSummary(mDescPreference.getText());
-            if(mPage.getDescription().equals(""))
-                mDescPreference.setSummary(R.string.choose_description_summary);
-        }
+                mDescPreference.setSummary(mDescPreference.getText());
+                if (mPage.getDescription().equals(""))
+                    mDescPreference.setSummary(R.string.choose_description_summary);
+                break;
 
-        else if(key.equals(PAGE_PRIVACY)) {
-            mPage.setPrivate(mPrivayPreference.isChecked());
-            mDatabaseManager.setPagePrivacy(mPage);
-            mPrivayPreference.setSummary(mPrivayPreference.isChecked() ? R.string.private_page_summary : R.string.public_page_summary);
+            case PAGE_PRIVACY:
+                mPage.setPrivate(mPrivayPreference.isChecked());
+                mDatabaseManager.setPagePrivacy(mPage);
+                mPrivayPreference.setSummary(mPrivayPreference.isChecked() ? R.string.private_page_summary : R.string.public_page_summary);
+                break;
         }
     }
 
@@ -232,13 +186,62 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
         return super.onOptionsItemSelected(item);
     }
 
-    public static Fragment newInstance(UUID id) {
-        Bundle args = new Bundle();
-        args.putSerializable(PageFragment.EXTRA_ID, id);
+    @Override
+    public void onCreatePreferences(Bundle bundle, String s) {
+        addPreferencesFromResource(R.xml.preferences_page);
+        mNamePreference = (EditTextPreference) getPreferenceScreen().findPreference(PAGE_NAME);
+        mDescPreference = (EditTextPreference) getPreferenceScreen().findPreference(PAGE_DESC);
+        mPrivayPreference = (SwitchPreference) getPreferenceScreen().findPreference(PAGE_PRIVACY);
+        mFollowersPreference = getPreferenceScreen().findPreference(PAGE_FOLLOWERS);
+        mLayoutPreference = (ListPreference) getPreferenceScreen().findPreference(PAGE_LAYOUT);
+        mLogoPreference = getPreferenceScreen().findPreference(PAGE_LOGO);
 
-        PageSettingsFragment fragment = new PageSettingsFragment();
-        fragment.setArguments(args);
+        mLogoPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent i = new Intent(getActivity(), PageLogoActivity.class);
+                i.putExtra(PageFragment.EXTRA_ID, mPage.getId());
+                startActivity(i);
+                return true;
+            }
+        });
 
-        return (Fragment) fragment;
+        mFollowersPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent i = new Intent(getActivity(), PageFollowersActivity.class);
+                i.putExtra(PageFragment.EXTRA_ID, mPage.getId());
+                startActivity(i);
+                return true;
+            }
+        });
+
+        mPrivayPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object isChecked) {
+                if ((boolean) isChecked) return true;
+
+                // Turning public triggers dialog to confirm
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.public_page)
+                        .setMessage(R.string.public_page_dialog)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mPrivayPreference.setChecked(false);
+
+                                PreferenceManager.getDefaultSharedPreferences(getActivity())
+                                        .edit()
+                                        .putBoolean(PAGE_PRIVACY, false)
+                                        .apply();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .create();
+
+                alertDialog.show();
+                return false;
+            }
+        });
     }
 }

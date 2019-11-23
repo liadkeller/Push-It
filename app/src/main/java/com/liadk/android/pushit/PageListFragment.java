@@ -32,7 +32,7 @@ public abstract class PageListFragment extends Fragment {
         searchView.setSearchableInfo(searchInfo);
 
         // Get the search clear button image view
-        ImageView clearButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
+        ImageView clearButton = searchView.findViewById(R.id.search_close_btn);
 
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,14 +49,11 @@ public abstract class PageListFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_item_search:
-                getActivity().onSearchRequested();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.menu_item_search) {
+            getActivity().onSearchRequested();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     public abstract void loadQuery(String query);

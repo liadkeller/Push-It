@@ -48,13 +48,20 @@ public class PushItUser {
         return followedPages;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setPage(String pageId) {
         this.status = true;
         this.pageId = pageId;
     }
 
     public void followPage(Page page) {
-        this.followedPages.add(page.getId().toString());
+        String pageId = page.getId().toString();
+
+        if(!followedPages.contains(pageId))
+            followedPages.add(pageId);
     }
 
     public void unfollowPage(Page page) {

@@ -1,6 +1,5 @@
-<resources>
-    <!--<string name="app_name"><html><font color="#ffcc00" size="22"><b>P</b>ush It</font></html></string>-->
-    <string name="app_name">Push It</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" tools:override="true">Push It</string>
     <string name="edit_item">Edit Article</string>
 
     <string name="item_text_label">Article Text</string>
@@ -30,13 +29,6 @@
     <string name="image_2">Image 2</string>
     <string name="set_image_1">Set Image 1</string>
     <string name="set_image_2">Set Image 2</string>
-
-    <string name="add_video">Add Video</string>
-    <string name="remove_video">Remove Video</string>
-    <string name="video_1">Video 1</string>
-    <string name="video_2">Video 2</string>
-    <string name="set_video_1">Set Video 1</string>
-    <string name="set_video_2">Set Video 2</string>
 
 
     <string name="item_save_label">Save Article</string>
@@ -116,6 +108,9 @@
     <string name="account_login">Account Login</string>
     <string name="account_title">My Account</string>
     <string name="account_status">Account Status</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="update_email">Update Email Address</string>
+    <string name="update_password">Update Password</string>
     <string name="status_creator">Content Creator</string>
     <string name="status_follower">Content Follower</string>
     <string name="account_page">My Page Settings</string>
@@ -129,15 +124,16 @@
     <string name="password">Password</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Create New Account</string>
+    <string name="forgot_password">Forgot Password?</string>
     <string name="wrong_credentials">Wrong email or password.</string>
-    <string name="login_progress_dialog">Logging In...</string>
+    <string name="login_progress_dialog">Logging In…</string>
     <string name="login_account">Login to Existing Account</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="sign_up_progress_dialog">Creating New Account...</string>
+    <string name="sign_up_progress_dialog">Creating New Account…</string>
     <string name="account_created">Account Created</string>
     <string name="account_created_toast">Account was successfully created.</string>
     <string name="logged_in">Successfully logged in.</string>
-    <string name="sign_out_progress_dialog">Signing Out...</string>
+    <string name="sign_out_progress_dialog">Signing Out…</string>
 
     <string name="delete_account_dialog_creator">Are you sure you want to delete this account?\n\nAll of your page data including all of the articles you created will be lost forever.</string>
     <string name="delete_account_dialog_follower">Are you sure you want to delete this account?\n\nAll of your account data including the pages you follow will be lost.</string>
@@ -160,8 +156,8 @@
     <string name="passwords_dont_match">Passwords don\'t match</string>
     <string name="enter_page_name">Enter page name</string>
     <string name="enter_valid_page_name">You must enter a valid page name</string>
-    <string name="delete_page_progress_dialog">Deleting Page...</string>
-    <string name="delete_account_progress_dialog">Deleting Account...</string>
+    <string name="delete_page_progress_dialog">Deleting Page…</string>
+    <string name="delete_account_progress_dialog">Deleting Account…</string>
     <string name="no_articles">No Articles</string>
     <string name="add_article">Add Article</string>
 
@@ -194,5 +190,27 @@
     <string name="clear_search">Clear Search</string>
     <string name="search">Search</string>
     <string name="no_pages_found">No pages found.</string>
+
+    <string name="current_email">Current Email Address:</string>
+    <string name="new_email">New Email Address:</string>
+    <string name="email_address">Email Address</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="update">Update</string>
+    <string name="update_email_progress_dialog">Updating Email Address…</string>
+    <string name="update_password_progress_dialog">Updating Password…</string>
+    <string name="reset_password_progress_dialog">Resetting Password…</string>
+
+    <string name="login_to_continue">Login to continue</string>
+    <string name="email_changed">"Email address changed to %1$s</string>
+    <string name="email_not_changed">"Email address was not changed, logged in to %1$s</string>
+    <string name="new_password">New Password</string>
+    <string name="current_password">Current Password</string>
+    <string name="password_changed">Your password has been updated</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="try_login">Could not update password. Try to login again to your account</string>
+    <string name="password_reset">An email with a reset link was sent to the email address you provided.</string>
+    <string name="no_email_address">There is no user with this email address.</string>
+    <string name="app_help">What is Push It?</string>
+    <string name="what_is_push_it" >Push it is a mobile app which allows you to create your own news-like page and produce content that could be shared with your friends and followers.\n\nEach user in the app is either a Content Creator or a Content Follower. As a Follower, you can follow other people\'s pages and get push notifications for every new update they publish. As a Creator you can create your own page and post articles. You can modify your user status at any time at the settings screen.\n\nBeing a Content Creator, you can modify your page at the page settings screen. You can change your page name and description, choose your page layout, upload your page logo and set your page as private.\n\nWhile public pages can be seen by everyone, including guest users, private pages can only be seen by followers which have been approved by the page owner.\n\nFollowing a page means that every time the page owner publishes an article, you will get a customized push notification straight to your mobile device.\n\nAs a page owner, you can remove followers and prevent them from seeing your notifications by long-pressing a user entry at the \'Page Followers\' screen, available under the page settings screen.\n\nWhen creating a new article, you can select one of 3 available modes:\n\n- Draft, meaning that the article will be invisible to other users while you\'re drafting and writing its content.\n- Posted, meaning that every user with access to your page will be able to see and read the content.\n- Published, meaning that a custom push notification was sent to your followers.\n\nWe hope you have a great time using Push It!\n\n- Team Push It</string>
 
 </resources>

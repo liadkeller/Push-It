@@ -48,6 +48,14 @@
             android:layout_gravity="center"
             android:text="@string/sign_in"/>
 
+        <TextView
+            android:id="@+id/forgotPasswordTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:gravity="center_horizontal"
+            android:text="@string/forgot_password" />
+
     </LinearLayout>
 
     <TextView

@@ -1,12 +1,13 @@
 package com.liadk.android.pushit;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -24,14 +25,18 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginFragment extends Fragment {
+    static final String EXTRA_PREV_UID = "prevUserId";
+    static final String EXTRA_CUR_UID = "curUserId";
 
     private static final String TAG = "LoginFragment";
 
     private FirebaseAuth mAuth;
+    private String mPreviousUserId;
 
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private Button mSignInButton;
+    private TextView mForgotPasswordTextView;
     private TextView mSignUpTextView;
 
 
@@ -42,6 +47,7 @@ public class LoginFragment extends Fragment {
         getActivity().setTitle(R.string.login);
 
         mAuth = FirebaseAuth.getInstance();
+        mPreviousUserId = (mAuth.getCurrentUser() != null) ? mAuth.getCurrentUser().getUid() : null;
     }
 
     @Nullable
@@ -50,10 +56,11 @@ public class LoginFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
 
         // Referencing Widgets
-        mEmailEditText = (EditText) v.findViewById(R.id.emailEditText);
-        mPasswordEditText = (EditText) v.findViewById(R.id.passwordEditText);
-        mSignInButton = (Button) v.findViewById(R.id.signUpButton);
-        mSignUpTextView = (TextView) v.findViewById(R.id.loginTextView);
+        mEmailEditText = v.findViewById(R.id.emailEditText);
+        mPasswordEditText = v.findViewById(R.id.passwordEditText);
+        mSignInButton = v.findViewById(R.id.signUpButton);
+        mForgotPasswordTextView = v.findViewById(R.id.forgotPasswordTextView);
+        mSignUpTextView = v.findViewById(R.id.loginTextView);
 
         configureView(v);
 
@@ -76,8 +83,14 @@ public class LoginFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
 
-                        if (task.isSuccessful())
+                        if (task.isSuccessful()) {
+                            PreferenceManager.getDefaultSharedPreferences(getActivity())
+                                    .edit()
+                                    .putString(SettingsFragment.KEY_EMAIL_PREFERENCE, email)
+                                    .apply();
+
                             onLoginSuccess();
+                        }
 
                         else {
                             onLoginFailed();
@@ -93,6 +106,14 @@ public class LoginFragment extends Fragment {
                 progressDialog.setMessage(string);
                 progressDialog.show();
                 return progressDialog;
+            }
+        });
+
+        mForgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ResetPasswordActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -132,7 +153,12 @@ public class LoginFragment extends Fragment {
     private void onLoginSuccess() {
         Log.d(TAG, "signInWithEmail:success");
         Toast.makeText(getActivity(), R.string.logged_in, Toast.LENGTH_SHORT).show();
-        NavUtils.navigateUpTo(getActivity(), new Intent(getActivity(), HomeActivity.class)); // launches HomeActivity
+
+        Intent data = new Intent();
+        data.putExtra(EXTRA_PREV_UID, mPreviousUserId);
+        data.putExtra(EXTRA_CUR_UID, mAuth.getCurrentUser().getUid());
+        getActivity().setResult(Activity.RESULT_OK, data);
+        getActivity().finish();
     }
 
     private void onLoginFailed() {

@@ -26,6 +26,7 @@
         <activity
             android:name=".HomeActivity"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SettingsTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,34 +43,64 @@
         </activity>
         <activity
             android:name=".PageActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".PageSettingsActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".PageActivity"
             android:theme="@style/AppTheme.SettingsTheme" />
         <activity
             android:name=".PageFollowersActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".PageSettingsActivity" />
         <activity
             android:name=".PageLogoActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".PageSettingsActivity" />
         <activity
             android:name=".ItemActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".PageActivity" />
         <activity
             android:name=".EditItemActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".ItemActivity"
             android:windowSoftInputMode="stateHidden|adjustResize"></activity>
         <activity
             android:name=".CreateNotificationActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".EditItemActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".CreateAccountActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".HomeActivity" />
         <activity
-            android:name=".CreateAccountActivity"
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".LoginActivity" />
+        <activity
+            android:name=".AccountSettingsActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.SettingsTheme" />
+        <activity
+            android:name=".UpdateEmailActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".AccountSettingsActivity" />
+        <activity
+            android:name=".UpdatePasswordActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".AccountSettingsActivity" />
+        <activity
+            android:name=".HelpActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".HomeActivity"/>
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"

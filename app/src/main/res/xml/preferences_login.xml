@@ -7,4 +7,11 @@
     <Preference
         android:key="createAccount"
         android:title="@string/sign_up"/>
+
+    <Preference
+        android:title="@string/app_help">
+        <intent
+            android:targetClass="com.liadk.android.pushit.HelpActivity"
+            android:targetPackage="com.liadk.android.pushit"/>
+    </Preference>
 </PreferenceScreen>

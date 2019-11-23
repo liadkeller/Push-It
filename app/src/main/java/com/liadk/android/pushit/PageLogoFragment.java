@@ -57,9 +57,9 @@ public class PageLogoFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_page_logo, container, false);
 
         // Referencing Widgets
-        mImageView = (ImageView) v.findViewById(R.id.pageLogoImageView);
-        mImageButton = (ImageButton) v.findViewById(R.id.pageLogoButton);
-        mNoLogoTextView = (TextView) v.findViewById(R.id.noLogoTextView);
+        mImageView = v.findViewById(R.id.pageLogoImageView);
+        mImageButton = v.findViewById(R.id.pageLogoButton);
+        mNoLogoTextView = v.findViewById(R.id.noLogoTextView);
 
         // Configuring
         configureImageButtonListener();
@@ -146,10 +146,7 @@ public class PageLogoFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             if (NavUtils.getParentActivityName(getActivity()) != null) {
-                Intent intent = NavUtils.getParentActivityIntent(getActivity());
-                intent.putExtra(PageFragment.EXTRA_ID, mPageId);
-
-                NavUtils.navigateUpTo(getActivity(), intent);
+                getActivity().finish();
             }
             return true;
         }

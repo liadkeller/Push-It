@@ -4,9 +4,7 @@
     <color name="colorPrimaryDark">#B40000</color>
     <color name="colorAccent">#F40034</color>
 
-    <color name="lightRed">@android:color/holo_red_light</color>
-    <color name="niceBlue">#D53F51B5</color>
-    <color name="cardview_title_background">#B40000</color>>
-
-    <color name="colorLogoBackground">#ffcc00</color>
+    <color name="colorDelete">@android:color/holo_red_light</color>
+    <color name="colorPublishButton">#D53F51B5</color>
+    <color name="colorCardViewTitle">#B40000</color>>
 </resources>

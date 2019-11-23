@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -17,13 +17,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/titleEditText"
-            android:hint="@string/item_title_hint"/>
+            android:hint="@string/item_title_hint"
+            android:importantForAutofill="no"
+            android:inputType="text" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/authorEditText"
-            android:hint="@string/item_author_hint"/>
+            android:hint="@string/item_author_hint"
+            android:importantForAutofill="no"
+            android:inputType="text" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -37,7 +41,9 @@
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:paddingRight="8dp"
-            android:paddingBottom="8dp">
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            tools:ignore="RtlSymmetry">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -75,9 +81,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitStart"
-                android:src="@drawable/image_template" />
+                android:src="@drawable/image_template"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
         <TextView
@@ -99,7 +107,9 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginRight="32dp"/>
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginRight="32dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -107,7 +117,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/cardTime"
                     android:layout_marginLeft="32dp"
-                    android:layout_margin="8dp"/>
+                    android:layout_margin="8dp"
+                    android:layout_marginStart="32dp" />
 
         </LinearLayout>
 
@@ -125,7 +136,8 @@
             android:ems="10"
             android:id="@+id/mainItemEditText"
             android:hint="@string/item_text_hint"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+            android:importantForAutofill="no" />
 
         <LinearLayout
             android:id="@+id/image1LinearLayout"
@@ -145,8 +157,10 @@
                 android:orientation="horizontal"
                 android:paddingTop="8dp"
                 android:paddingRight="8dp"
+                android:paddingEnd="8dp"
                 android:paddingBottom="8dp"
-                android:visibility="visible">
+                android:visibility="visible"
+                tools:ignore="RtlSymmetry">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -182,9 +196,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
                     android:adjustViewBounds="true"
                     android:scaleType="fitStart"
-                    android:src="@drawable/image_template" />
+                    android:src="@drawable/image_template"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
         </LinearLayout>
@@ -197,6 +213,7 @@
             android:ems="10"
             android:hint="@string/add_text_hint"
             android:inputType="textMultiLine"
+            android:importantForAutofill="no"
             android:visibility="gone" />
 
         <LinearLayout
@@ -217,8 +234,10 @@
                 android:orientation="horizontal"
                 android:paddingTop="8dp"
                 android:paddingRight="8dp"
+                android:paddingEnd="8dp"
                 android:paddingBottom="8dp"
-                android:visibility="visible">
+                android:visibility="visible"
+                tools:ignore="RtlSymmetry">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -253,9 +272,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
                     android:adjustViewBounds="true"
                     android:scaleType="fitStart"
-                    android:src="@drawable/image_template" />
+                    android:src="@drawable/image_template"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
         </LinearLayout>
 
@@ -267,7 +288,8 @@
             android:id="@+id/seg2EditText"
             android:hint="@string/add_text_hint"
             android:layout_marginBottom="8dp"
-            android:visibility="gone"/>
+            android:importantForAutofill="no"
+            android:visibility="gone" />
 
         <Button
             android:layout_width="match_parent"
@@ -346,8 +368,9 @@
             android:id="@+id/deleteButton"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
-            android:backgroundTint="@color/lightRed"
-            android:textColor="@color/specialButtonTextColor"/>
+            android:backgroundTint="@color/colorDelete"
+            android:textColor="@color/specialButtonTextColor"
+            tools:ignore="UnusedAttribute" />
 
     </LinearLayout>
 </ScrollView>

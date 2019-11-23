@@ -1,0 +1,216 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" tools:override="true">Push It</string>
+    <string name="edit_item">ערוך ידיעה</string>
+
+    <string name="item_text_label">תוכן הידיעה</string>
+    <string name="item_title_label">כותרת</string>
+    <string name="item_author_label">מחבר</string>
+    <string name="item_image_label">תמונת הידיעה</string>
+    <string name="item_time_label">זמן פרסום הידיעה</string>
+
+    <string name="item_title_hint">הזן כותרת</string>
+    <string name="item_author_hint">הזן מחבר (אופציונלי)</string>
+    <string name="item_text_hint">כתוב כאן את תוכן הידיעה</string>
+    <string name="add_text_hint">הוסף טקסט</string>
+
+    <string name="set_image">בחר תמונה</string>
+    <string name="remove_image">הסר תמונה</string>
+    <string name="remove_image_dialog">למחוק את תמונת הידיעה?\n\nלא ניתן יהיה לשחזר אותה.</string>
+
+    <string name="set_time">הגדר זמן פרסום</string>
+    <string name="set_current_time">הגדר את הזמן הנוכחי</string>
+    <string name="set_original_time">הגדר את הזמן המקורי</string>
+    <string name="publication_time_dialog_button_clicked">זמן פרסום הידיעה הוא %1$s.\n\nזמן הפרסום המקורי הוא %2$s.\n\nלשנות את זמן פרסום הידיעה?</string>
+    <string name="publication_time_dialog_state_changed">לעדכן את זמן פרסום הידיעה לזמן הנוכחי?</string>
+
+
+    <string name="add_photo">הוסף תמונה</string>
+    <string name="image_1">תמונה 1</string>
+    <string name="image_2">תמונה 2</string>
+    <string name="set_image_1">בחר תמונה</string>
+    <string name="set_image_2">בחר תמונה</string>
+
+
+    <string name="item_save_label">שמור ידיעה</string>
+    <string name="confirm_changes">שמור את השינויים</string>
+
+    <string name="item_mode_label">סטטוס הידיעה</string>
+    <string name="publish_article_push">פרסם ידיעה (שלח התראת פוש)</string>
+    <string name="publish_article">פרסם ידיעה</string>
+    <string name="post_article">צור ידיעה</string>
+    <string name="save_draft">שמור כטיוטה</string>
+    <string name="delete_article">מחק ידיעה</string>
+    <string name="save_changes">שמור ידיעה</string>
+
+    <string name="publish">פרסם</string>
+    <string name="post">צור</string>
+    <string name="save">שמור</string>
+    <string name="delete">מחק</string>
+
+    <string name="publish_article_dialog">לפרסם את הידיעה?\n\nכעת עליך ליצור התראת פוש שתישלח לכל העוקבים שלך.</string>
+    <string name="post_article_dialog">ליצור את הידיעה?\n\nיש לשים לב כי לאחר שהידיעה תיווצר, היא תופיע בעמוד שלך וכולם יוכלו לראות אותה.</string>
+    <string name="save_draft_dialog">לשמור את הידיעה כטיוטה?</string>
+    <string name="delete_article_dialog">למחוק את הידיעה? \n\nכל המידע יאבד.</string>
+    <string name="save_changes_dialog">לשמור את השינויים? \n\nהמידע הקודם ידרס.</string>
+
+    <string name="save_changes_dialog_published">לשמור את השינויים? \n\nיש לשים לב שלא ניתן לשנות את התראת הפוש שנשלחה לעוקבים.</string>
+
+    <string name="publish_article_toast">הידיעה פורסמה. התראה נשלחה לכל העוקבים.</string>
+    <string name="post_article_toast">הידיעה נוצרה.</string>
+    <string name="save_draft_toast">הידיעה נשמרה כטיוטה.</string>
+    <string name="save_changes_toast">כל השינויים נשמרו.</string>
+    <string name="changes_already_saved_toast">השינויים כבר שמורים.</string>
+
+    <string name="published_article_text_view">המאמר פורסם</string>
+
+    <string name="exit">צא</string>
+    <string name="exit_edit_dialog">לצאת בלי לשמור? \n\nכל השינויים ימחקו.</string>
+    <string name="exit_edit_dialog_new">לצאת? \n\nהידיעה לא נשמרה וכל המידע יאבד.</string>
+    <string name="exit_no_save">צא בלי לשמור</string>
+    <string name="exit_save">שמור את השינויים</string>
+
+    <string name="create_article">ידיעה חדשה</string>
+    <string name="page_settings">הגדרות עמוד</string>
+    <string name="settings">הגדרות</string>
+
+    <string name="create_notification">צור התראה</string>
+    <string name="push_image_label">תמונת ההתראה</string>
+    <string name="push_title_label">כותרת ההתראה</string>
+    <string name="push_title_hint">הזן כותרת</string>
+    <string name="push_check_box_label">זהה לכותרת הידיעה</string>
+    <string name="set_push_image">בחר תמונה</string>
+    <string name="publish_button">פרסם ידיעה</string>
+    <string name="publish_notification_dialog">לפרסם את הידיעה? \n\nבעקבות פרסום הידיעה תישלח התראת פוש לכל העוקבים. \n\nלא ניתן למחוק התראה זו.</string>
+    <string name="exit_notification_dialog">לבטל את פרסום הידיעה?</string>
+
+    <string name="no_title_toast">עליך לתת כותרת לידיעה!</string>
+    <string name="no_text_toast">עליך להזין טקסט לידיעה!</string>
+    <string name="no_notification_title_toast">עליך לתת כותרת להתראה!</string>
+    <string name="no_page_name_toast">עליך לתת שם לעמוד!</string>
+
+    <string name="page_design">עיצוב העמוד</string>
+    <string name="page_name">שם העמוד</string>
+    <string name="choose_name_summary">לחץ כדי להזין שם העמוד</string>
+    <string name="page_description">תיאור העמוד</string>
+    <string name="choose_description_summary">לחץ כדי להזין את תיאור העמוד</string>
+    <string name="page_layout">פריסת העמוד</string>
+    <string name="choose_layout_summary">לחץ כדי לבחור את פריסת העמוד</string>
+    <string name="page_logo">לוגו העמוד</string>
+    <string name="choose_logo_summary">לחץ כדי לבחור את לוגו העמוד</string>
+
+    <string name="explore">תוכן</string>
+    <string name="set_page_logo">בחר את לוגו העמוד</string>
+    <string name="no_logo">לא נבחר לוגו</string>
+
+    <string name="yes">כן</string>
+    <string name="no">לא</string>
+
+    <string name="account_login">התחברות לחשבון</string>
+    <string name="account_title">החשבון שלי</string>
+    <string name="account_status">סטטוס החשבון</string>
+    <string name="account_settings">הגדרות חשבון</string>
+    <string name="update_email">עדכן כתובת מייל</string>
+    <string name="update_password">עדכן סיסמה</string>
+    <string name="status_creator">יוצר תוכן</string>
+    <string name="status_follower">צורך תוכן</string>
+    <string name="account_page">הגדרות העמוד שלי</string>
+    <string name="delete_page">מחק עמוד</string>
+    <string name="delete_account">מחק חשבון</string>
+    <string name="sign_out">התנתק</string>
+
+    <string name="create">יצירה</string>
+    <string name="login">התחבר</string>
+    <string name="email">אימייל</string>
+    <string name="password">סיסמה</string>
+    <string name="sign_in">התחבר</string>
+    <string name="sign_up">צור חשבון חדש</string>
+    <string name="forgot_password">שכחת סיסמה?</string>
+    <string name="wrong_credentials">מייל או סיסמה שגויים.</string>
+    <string name="login_progress_dialog">מתחבר…</string>
+    <string name="login_account">התחבר לחשבון קיים</string>
+    <string name="confirm_password">אימות סיסמה</string>
+    <string name="sign_up_progress_dialog">יוצר חשבון חדש…</string>
+    <string name="account_created">החשבון נוצר</string>
+    <string name="account_created_toast">החשבון נוצר בהצלחה</string>
+    <string name="logged_in">התחבר בהצלחה</string>
+    <string name="sign_out_progress_dialog">מתנתק…</string>
+
+    <string name="delete_account_dialog_creator">למחוק את החשבון?\n\nכל המידע כולל הידיעות שיצרת ימחקו לעד.</string>
+    <string name="delete_account_dialog_follower">למחוק את החשבון?\n\nכל המידע ימחק.</string>
+    <string name="delete_page_dialog">למחוק את העמוד?\n\nכל המידע כולל כל הידיעות שיצרת ימחקו.</string>
+    <string name="create_page">צור עמוד</string>
+    <string name="create_page_dialog">ליצור עמוד חדש ולהפוך ליוצר תוכן?</string>
+    <string name="continue_button">המשך</string>
+    <string name="create_new_page">צור עמוד חדש</string>
+    <string name="create_page_done_dialog">העמוד החדש שלך נוצר.\n\nאתה תועבר למסך הגדרות העמוד, שם תוכל להגדיר את עיצוב העמוד ואת לוגו העמוד.</string>
+    <string name="done">סיים</string>
+    <string name="page_details_dialog_1">בחר שם לעמוד החדש.</string>
+    <string name="page_details_dialog_2">תוכל לשנות את שם ותיאור העמוד בכל זמן במסך הגדרות העמוד.</string>
+    <string name="sign_out_dialog">להתנתק?</string>
+    <string name="page_created">העמוד נוצר</string>
+    <string name="restore_page">שחזר עמוד</string>
+    <string name="restore_page_dialog">לשחזר את העמוד הקודם שלך?\n\nאם תיצור עמוד חדש, לא ניתן יהיה לשחזר את המידע הקודם.</string>
+    <string name="restore">שחזר</string>
+    <string name="enter_valid_email">הזן כתובת אימייל תנית</string>
+    <string name="enter_valid_password">הזן סיסמה בת 6 ספרות לפחות</string>
+    <string name="passwords_dont_match">הסיסמאות לא תואמות</string>
+    <string name="enter_page_name">הזן שם עמוד</string>
+    <string name="enter_valid_page_name">עליך להזין שם עמוד תקני</string>
+    <string name="delete_page_progress_dialog">מוחק עמוד…</string>
+    <string name="delete_account_progress_dialog">מוחק חשבון…</string>
+    <string name="no_articles">אין ידיעות</string>
+    <string name="add_article">צור ידיעה חדשה</string>
+
+    <string name="follow_page">עקוב</string>
+    <string name="unfollow_page">הפסק לעקוב</string>
+    <string name="follow">מעקב</string>
+    <string name="login_to_follow">התחבר כדי לעקוב אחרי עמודים</string>
+    <string name="no_pages">אין עמודים במעקב</string>
+    <string name="no_followers">אין עוקבים</string>
+    <string name="page_followers">עוקבי העמוד</string>
+    <string name="page_privacy">מצב פרטי</string>
+    <string name="public_page_summary">העמוד שלך ציבורי ולכל אחד יש גישה אליו.</string>
+    <string name="private_page_summary">העמוד שלך פרטי ורק למשתמשים מאושרים יש גישה אליו.</string>
+    <string name="public_page">עמוד ציבורי</string>
+    <string name="private_page">עמוד פרטי</string>
+    <string name="public_page_dialog">להפוך את העמוד לעמוד ציבורי?\n\nכולם יוכלו לראות אותו.</string>
+
+    <string name="following_requests">בקשות מעקב</string>
+    <string name="following_users">משתמשים עוקבים</string>
+    <string name="accept_request">אשר</string>
+    <string name="reject_request">דחה</string>
+    <string name="page_not_exist">העמוד לא קיים</string>
+    <string name="remove_follower">הסר עוקב</string>
+    <string name="private_page_click">העמוד פרטי.\nלחץ לחיצה ארוכה כדי להגיש בקשת מעקב.</string>
+    <string name="private_page_click_no_user">העמוד פרטי.\nהתחבר כדי לעקוב.</string>
+    <string name="follow_request_sent">בקשת המעקב נשלחה.</string>
+    <string name="follow_request_failed">לא ניתן לשלוח בקשת מעקב כיוון שהמשתמש מנותק.</string>
+
+    <string name="search_hint">חפש עמודים</string>
+    <string name="clear_search">נקה חיפוש</string>
+    <string name="search">חפש</string>
+    <string name="no_pages_found">לא נמצאו עמודים</string>
+
+    <string name="current_email">כתובת מייל נוכחית:</string>
+    <string name="new_email">כתובת מייל חדשה:</string>
+    <string name="email_address">כתובת מייל:</string>
+    <string name="reset_password">אפס סיסמה</string>
+    <string name="update">עדכן</string>
+    <string name="update_email_progress_dialog">מעדכן כתובת מייל…</string>
+    <string name="update_password_progress_dialog">מעדכן סיסמה…</string>
+    <string name="reset_password_progress_dialog">מאפס סיסמה…</string>
+
+    <string name="login_to_continue">התחבר כדי להמשיך</string>
+    <string name="email_changed">כתובת המייל שונתה ל-%1$s</string>
+    <string name="email_not_changed">כתובת המייל לא שונתה. התחבר ל-%1$s</string>
+    <string name="new_password">סיסמה חדשה</string>
+    <string name="current_password">סיסמה נוכחית</string>
+    <string name="password_changed">הסיסמה שלך עודכנה</string>
+    <string name="invalid_password">סיסמה שגויה</string>
+    <string name="try_login">לא ניתן היה לעדכן סיסמה. נסה להתחבר מחדש לחשבון.</string>
+    <string name="password_reset">מייל עם קישור לאיפוס הסיסמה נשלח לכתובת המייל שציינת.</string>
+    <string name="no_email_address">לא קיים משתמש עם כתובת מייל זו.</string>
+    <string name="app_help">מה זה Push It?</string>
+    <string name="what_is_push_it">אפליקציית Push It היא אפליקציית מובייל המאפשרת ליצור עמוד עדכונים אישי ולשתף תוכן עם חברים ועוקבים.\n\nכל משתמש באפליקציה יכול להיות יוצר תוכן או צורך תוכן. בתור צורכי תוכן, תוכלו לעקוב אחרי עמודים ולקבל התראות פוש על עדכונים חדשים. בתור יוצרי תוכן, תוכלו ליצור עמוד משלכם ולפרסם עדכונים. תוכלו לשנות את סטטוס המשתמש שלכם בכל זמן במסך ההגדרות.\n\nבתור יוצרי תוכן, תוכלו לעדכן את הגדרות העמוד שלכם במסך הגדרות העמוד. במסך זה תוכלו לשנות את שם ותיאור העמוד, לבחור את עיצוב העמוד, להעלות לוגו או להגדיר את העמוד שלכם כפרטי.\n\nבזמן שכל אחד יכול לגשת לעמודים ציבוריים, כולל אורחים, עמודים פרטיים יכולים להיראות רק על ידי עוקבים שאושרו על ידי בעל העמוד.\n\nמעקב אחרי עמוד יוביל לכך שתקבלו התראת פוש מעוצבת ומותאמת אישית היישר לטלפון שלכם בכל פעם שבעל העמוד מפרסם ידיעה.\n\nבתור בעל העמוד, תוכלו לחסום עוקבים ולמנוע מהם לקבל התראות מהעמוד שלכם על ידי לחיצה ארוכה על רשומת המשתמש במסך \'עוקבי העמוד\', אליו ניתן לגשת דרך מסך הגדרות העמוד.\n\nכאשר תיצרו ידיעה חדשה, תוכלו לבחור בין 3 מצבים:\n\n- \"טיוטה\", כלומר רק אתם תוכלו לראות את הידיעה בזמן שאתם עורכים אותה.\n- \"נוצר\", כלומר כל משתמש עם גישה לעמוד שלכם יוכל לראות את הידיעה.\n- \"פורסם\", כלומר הידיעה פורסמה והתראת פוש נשלחה לעוקבים שלכם.\n\nאנחנו מקווים שתהנו להשתמש ב-Push It!\n\n- צוות Push It</string>
+
+</resources>
