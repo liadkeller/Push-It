@@ -1,13 +1,13 @@
 package com.liadk.android.pushit;
 
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.content.Intent;
-import android.app.SearchManager;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -47,6 +47,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         Fragment defaultFragment = new ExploreFragment();
         loadFragment(defaultFragment);
     }
+
 
     @Override
     protected void onStart() {
@@ -97,7 +98,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             PreferenceManager.getDefaultSharedPreferences(this)
                     .edit()
                     .putBoolean(KEY_STATUS_PREFERENCE, mUserStatus)
-                    .commit();
+                    .apply();
 
             onStatusUpdated();
         }
@@ -131,7 +132,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     PushItUser user = dataSnapshot.child(userId).getValue(PushItUser.class);
 
-                    boolean userStatus = (user != null) ? user.getStatus() : false;
+                    boolean userStatus = (user != null) && user.getStatus();
                     setUserStatus(userStatus);
 
                     if(mUserStatus) {
@@ -145,7 +146,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                         PreferenceManager.getDefaultSharedPreferences(HomeActivity.this)
                                 .edit()
                                 .putString(SettingsFragment.KEY_EMAIL_PREFERENCE, user.getEmail())
-                                .commit();
+                                .apply();
                     }
                 }
 

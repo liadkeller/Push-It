@@ -62,14 +62,14 @@ public class CreateAccountFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_create_account, container, false);
 
         // Referencing Widgets
-        mEmailEditText = (EditText) v.findViewById(R.id.emailEditText);
-        mPasswordEditText = (EditText) v.findViewById(R.id.passwordEditText);
-        mConfirmPasswordEditText = (EditText) v.findViewById(R.id.confirmPasswordEditText);
-        mStatusSwitch = (Switch) v.findViewById(R.id.accountStatusSwitch);
-        mPageNameLayout = (LinearLayout) v.findViewById(R.id.pageNameLayout);
-        mPageNameEditText = (EditText) v.findViewById(R.id.pageNameEditText);
-        mSignUpButton = (Button) v.findViewById(R.id.signUpButton);
-        mLoginTextView = (TextView) v.findViewById(R.id.loginTextView);
+        mEmailEditText = v.findViewById(R.id.emailEditText);
+        mPasswordEditText = v.findViewById(R.id.passwordEditText);
+        mConfirmPasswordEditText = v.findViewById(R.id.confirmPasswordEditText);
+        mStatusSwitch = v.findViewById(R.id.accountStatusSwitch);
+        mPageNameLayout = v.findViewById(R.id.pageNameLayout);
+        mPageNameEditText = v.findViewById(R.id.pageNameEditText);
+        mSignUpButton = v.findViewById(R.id.signUpButton);
+        mLoginTextView = v.findViewById(R.id.loginTextView);
 
         configureView(v);
 
@@ -137,7 +137,7 @@ public class CreateAccountFragment extends Fragment {
                             PreferenceManager.getDefaultSharedPreferences(getActivity())
                                     .edit()
                                     .putString(SettingsFragment.KEY_EMAIL_PREFERENCE, email)
-                                    .commit();
+                                    .apply();
 
                             if(status) {
                                 final UUID finalPageId = UUID.fromString(pageId);

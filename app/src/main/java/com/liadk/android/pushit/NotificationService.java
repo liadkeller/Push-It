@@ -53,9 +53,9 @@ public class NotificationService extends Service {
                         String userId = mAuth.getCurrentUser().getUid();
                         PushItUser user = dataSnapshot.child("users").child(userId).getValue(PushItUser.class);
 
-                        Page page = Page.fromDB(dataSnapshot.child("pages").child(notification.getPageId().toString()));
+                        Page page = Page.fromDB(dataSnapshot.child("pages").child(notification.getPageId()));
 
-                        if(user != null && notification != null && page != null && user.isFollowing(page)) {
+                        if (user != null && page != null && user.isFollowing(page)) {
                             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -70,7 +70,7 @@ public class NotificationService extends Service {
                             PreferenceManager.getDefaultSharedPreferences(NotificationService.this)
                                     .edit()
                                     .putLong(KEY_LATEST_UPDATE, notification.getPublishTime())
-                                    .commit();
+                                    .apply();
                         }
                     }
 

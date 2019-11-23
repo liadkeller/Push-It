@@ -107,7 +107,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setHasOptionsMenu(true);
-        ((EditItemActivity) getActivity()).setOnBackPressedListener((EditItemFragment) this);
+        ((EditItemActivity) getActivity()).setOnBackPressedListener(this);
 
         mDatabaseManager = DatabaseManager.get(getActivity());
         mStorageManager = StorageManager.get(getActivity());
@@ -132,7 +132,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = getActivity().getLayoutInflater().inflate(R.layout.fragment_edit_item, container, false);
 
         if (NavUtils.getParentActivityName(getActivity()) != null) {
@@ -140,33 +140,33 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         }
 
         // Referencing Widgets
-        titleEditText = (EditText) v.findViewById(R.id.titleEditText);
-        authorEditText = (EditText) v.findViewById(R.id.authorEditText);
-        mainEditText = (EditText) v.findViewById(R.id.mainItemEditText);
+        titleEditText = v.findViewById(R.id.titleEditText);
+        authorEditText = v.findViewById(R.id.authorEditText);
+        mainEditText = v.findViewById(R.id.mainItemEditText);
 
-        setImageButton = (Button) v.findViewById(R.id.setImageButton);
-        removeImageButton = (Button) v.findViewById(R.id.removeImageButton);
-        imageView = (ImageView) v.findViewById(R.id.itemImageView);
+        setImageButton = v.findViewById(R.id.setImageButton);
+        removeImageButton = v.findViewById(R.id.removeImageButton);
+        imageView = v.findViewById(R.id.itemImageView);
 
-        setTimeButton = (Button) v.findViewById(R.id.setTimeButton);
-        timeTextView = (TextView) v.findViewById(R.id.cardTime);
+        setTimeButton = v.findViewById(R.id.setTimeButton);
+        timeTextView = v.findViewById(R.id.cardTime);
 
-        editTexts = new EditText[]{ (EditText) v.findViewById(R.id.seg1EditText), (EditText) v.findViewById(R.id.seg2EditText) };
+        editTexts = new EditText[]{v.findViewById(R.id.seg1EditText), v.findViewById(R.id.seg2EditText)};
 
-        setImageButtons = new Button[] { (Button) v.findViewById(R.id.setImage1Button), (Button) v.findViewById(R.id.setImage2Button) };
-        removeImageButtons = new Button[] { (Button) v.findViewById(R.id.removeImage1Button), (Button) v.findViewById(R.id.removeImage2Button) };
-        imageImageViews = new ImageView[] { (ImageView) v.findViewById(R.id.image1ImageView), (ImageView) v.findViewById(R.id.image2ImageView)};
-        imageLinearLayouts = new LinearLayout[] { (LinearLayout) v.findViewById(R.id.image1LinearLayout), (LinearLayout) v.findViewById(R.id.image2LinearLayout)};
-        addPhotoButton = (Button) v.findViewById(R.id.addPhotoButton);
+        setImageButtons = new Button[]{v.findViewById(R.id.setImage1Button), v.findViewById(R.id.setImage2Button)};
+        removeImageButtons = new Button[]{v.findViewById(R.id.removeImage1Button), v.findViewById(R.id.removeImage2Button)};
+        imageImageViews = new ImageView[]{v.findViewById(R.id.image1ImageView), v.findViewById(R.id.image2ImageView)};
+        imageLinearLayouts = new LinearLayout[]{v.findViewById(R.id.image1LinearLayout), v.findViewById(R.id.image2LinearLayout)};
+        addPhotoButton = v.findViewById(R.id.addPhotoButton);
 
-        saveChangesLayout = (LinearLayout) v.findViewById(R.id.saveChangesLayout);
-        confirmChangesButton = (Button) v.findViewById(R.id.confirmChangesButton);
+        saveChangesLayout = v.findViewById(R.id.saveChangesLayout);
+        confirmChangesButton = v.findViewById(R.id.confirmChangesButton);
 
-        publishedTextView = (TextView) v.findViewById(R.id.publishedTextView);
-        publishButton = (Button) v.findViewById(R.id.publishButton);
-        createButton = (Button) v.findViewById(R.id.createButton);
-        draftButton = (Button) v.findViewById(R.id.draftButton);
-        deleteButton = (Button) v.findViewById(R.id.deleteButton);
+        publishedTextView = v.findViewById(R.id.publishedTextView);
+        publishButton = v.findViewById(R.id.publishButton);
+        createButton = v.findViewById(R.id.createButton);
+        draftButton = v.findViewById(R.id.draftButton);
+        deleteButton = v.findViewById(R.id.deleteButton);
 
         if(mItem != null)
             configureView(v);
@@ -494,7 +494,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
         String setImageString;
         ArrayList<Object> mediaSegments;
 
-        public SetMediaListener(int i) {
+        SetMediaListener(int i) {
             this.i = i;
             this.setImageString = getString(getResources().getIdentifier("set_image_" + (i+1), "string", getActivity().getPackageName()));
         }
@@ -521,7 +521,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
     private class RemoveMediaListener implements View.OnClickListener {
         int i;
 
-        public RemoveMediaListener(int i) {
+        RemoveMediaListener(int i) {
             this.i = i;
         }
 
@@ -537,7 +537,7 @@ public class EditItemFragment extends Fragment implements EditItemActivity.OnBac
     private class EditTextListener implements TextWatcher {
         int i;
 
-        public EditTextListener(int i) {
+        EditTextListener(int i) {
             this.i = i;
         }
 

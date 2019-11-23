@@ -64,7 +64,7 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.create_notification);
-        ((CreateNotificationActivity) getActivity()).setOnBackPressedListener((EditItemActivity.OnBackPressedListener) this);  // this class has a "onBackPressed()" method as needed
+        ((CreateNotificationActivity) getActivity()).setOnBackPressedListener(this);  // this class has a "onBackPressed()" method as needed
         setHasOptionsMenu(true);
 
         mDatabaseManager = DatabaseManager.get(getActivity());
@@ -96,11 +96,11 @@ public class CreateNotificationFragment extends Fragment implements EditItemActi
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Widgets
-        mTitleEditText = (EditText) v.findViewById(R.id.pushTitleEditText);
-        mTitleCheckBox = (CheckBox) v.findViewById(R.id.pushTitleCheckBox);
-        mImageView = (ImageView) v.findViewById(R.id.pushImageView);
-        mImageButton = (Button) v.findViewById(R.id.pushImageButton);
-        mPublishButton = (Button) v.findViewById(R.id.publishButton);
+        mTitleEditText = v.findViewById(R.id.pushTitleEditText);
+        mTitleCheckBox = v.findViewById(R.id.pushTitleCheckBox);
+        mImageView = v.findViewById(R.id.pushImageView);
+        mImageButton = v.findViewById(R.id.pushImageButton);
+        mPublishButton = v.findViewById(R.id.publishButton);
 
         // Configuring
         if(mItem != null)

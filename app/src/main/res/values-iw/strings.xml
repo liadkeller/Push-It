@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Push It</string>
+    <string name="app_name" tools:override="true">Push It</string>
     <string name="edit_item">ערוך ידיעה</string>
 
     <string name="item_text_label">תוכן הידיעה</string>
@@ -126,14 +126,14 @@
     <string name="sign_up">צור חשבון חדש</string>
     <string name="forgot_password">שכחת סיסמה?</string>
     <string name="wrong_credentials">מייל או סיסמה שגויים.</string>
-    <string name="login_progress_dialog">מתחבר...</string>
+    <string name="login_progress_dialog">מתחבר…</string>
     <string name="login_account">התחבר לחשבון קיים</string>
     <string name="confirm_password">אימות סיסמה</string>
-    <string name="sign_up_progress_dialog">יוצר חשבון חדש...</string>
+    <string name="sign_up_progress_dialog">יוצר חשבון חדש…</string>
     <string name="account_created">החשבון נוצר</string>
     <string name="account_created_toast">החשבון נוצר בהצלחה</string>
     <string name="logged_in">התחבר בהצלחה</string>
-    <string name="sign_out_progress_dialog">מתנתק...</string>
+    <string name="sign_out_progress_dialog">מתנתק…</string>
 
     <string name="delete_account_dialog_creator">למחוק את החשבון?\n\nכל המידע כולל הידיעות שיצרת ימחקו לעד.</string>
     <string name="delete_account_dialog_follower">למחוק את החשבון?\n\nכל המידע ימחק.</string>
@@ -156,8 +156,8 @@
     <string name="passwords_dont_match">הסיסמאות לא תואמות</string>
     <string name="enter_page_name">הזן שם עמוד</string>
     <string name="enter_valid_page_name">עליך להזין שם עמוד תקני</string>
-    <string name="delete_page_progress_dialog">מוחק עמוד...</string>
-    <string name="delete_account_progress_dialog">מוחק חשבון...</string>
+    <string name="delete_page_progress_dialog">מוחק עמוד…</string>
+    <string name="delete_account_progress_dialog">מוחק חשבון…</string>
     <string name="no_articles">אין ידיעות</string>
     <string name="add_article">צור ידיעה חדשה</string>
 
@@ -196,9 +196,9 @@
     <string name="email_address">כתובת מייל:</string>
     <string name="reset_password">אפס סיסמה</string>
     <string name="update">עדכן</string>
-    <string name="update_email_progress_dialog">מעדכן כתובת מייל...</string>
-    <string name="update_password_progress_dialog">מעדכן סיסמה...</string>
-    <string name="reset_password_progress_dialog">מאפס סיסמה...</string>
+    <string name="update_email_progress_dialog">מעדכן כתובת מייל…</string>
+    <string name="update_password_progress_dialog">מעדכן סיסמה…</string>
+    <string name="reset_password_progress_dialog">מאפס סיסמה…</string>
 
     <string name="login_to_continue">התחבר כדי להמשיך</string>
     <string name="email_changed">כתובת המייל שונתה ל-%1$s</string>

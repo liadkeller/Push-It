@@ -65,6 +65,24 @@ public class PageFragment extends Fragment {
     private SwipeRefreshLayout mSwipeRefresh;
     private Button mAddArticleButton;
 
+    public static Fragment newInstance(UUID id) {
+        Bundle args = new Bundle();
+        args.putSerializable(PageFragment.EXTRA_ID, id);
+
+        PageFragment fragment = new PageFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    private void onPageChanged() {
+        if (!"".equals(mPage.getName()) && getActivity() != null) {
+            getActivity().setTitle(mPage.getName());
+        }
+
+        Log.d(TAG, "Page items number: " + mPage.getItemsIdentifiers().size());
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +113,7 @@ public class PageFragment extends Fragment {
                 }
 
                 mIsOwner = mAuth.getCurrentUser() != null && mUser != null && mUser.getStatus() && mPage.getId().toString().equals(mUser.getPageId());
-                new EventsLogger(getActivity()).log("page_is_owner", "is_auth_null", mAuth.getCurrentUser() != null, "is_user_null", mUser != null, "user_status", (mUser != null) ? mUser.getStatus(): false, "is_id_equal", (mUser != null && mUser.getStatus()) ? mPage.getId().toString().equals(mUser.getPageId()) : false, "is_owner", mIsOwner);
+                new EventsLogger(getActivity()).log("page_is_owner", "is_auth_null", mAuth.getCurrentUser() != null, "is_user_null", mUser != null, "user_status", (mUser != null) && mUser.getStatus(), "is_id_equal", (mUser != null && mUser.getStatus()) && mPage.getId().toString().equals(mUser.getPageId()), "is_owner", mIsOwner);
 
                 mItems = getItems(mPage.getItemsIdentifiers(), dataSnapshot);
 
@@ -135,56 +153,6 @@ public class PageFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
-    }
-
-    private void onPageChanged() {
-        if(!"".equals(mPage.getName()) && getActivity() != null) {
-            getActivity().setTitle(mPage.getName());
-        }
-
-        Log.d(TAG, "Page items number: " + mPage.getItemsIdentifiers().size());
-    }
-
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_page, container, false);
-
-        mProgressBar = v.findViewById(R.id.progressBar);
-
-        mRecyclerView = v.findViewById(R.id.recyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        mEmptyView = v.findViewById(R.id.noUserView);
-        mAddArticleButton = v.findViewById(R.id.addArticleButton);
-        mAddArticleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createNewItem();
-            }
-        });
-
-        final PageRecycleViewAdapter adapter = new PageRecycleViewAdapter(getActivity());
-        mRecyclerView.setAdapter(adapter);
-
-        if(mItems != null)
-            configureAdapter(mItems);
-
-        final int PADDING_SIZE = (int) (4 * (getResources().getDisplayMetrics().density) + 0.5f); // 4dp
-        mRecyclerView.setPadding(0, PADDING_SIZE, 0, PADDING_SIZE);
-
-
-        mSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
-        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mRecyclerView.getAdapter().notifyDataSetChanged();
-                mSwipeRefresh.setRefreshing(false);
-            }
-        });
-
-        return v;
     }
 
     private void configureAdapter(ArrayList<Item> items) {
@@ -241,17 +209,140 @@ public class PageFragment extends Fragment {
             mDatabaseManager.removeDatabaseListener(mDatabaseListener);
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_page, container, false);
+
+        mProgressBar = v.findViewById(R.id.progressBar);
+
+        mRecyclerView = v.findViewById(R.id.recyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mEmptyView = v.findViewById(R.id.noUserView);
+        mAddArticleButton = v.findViewById(R.id.addArticleButton);
+        mAddArticleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createNewItem();
+            }
+        });
+
+        final PageRecycleViewAdapter adapter = new PageRecycleViewAdapter(getActivity());
+        mRecyclerView.setAdapter(adapter);
+
+        if (mItems != null)
+            configureAdapter(mItems);
+
+        final int PADDING_SIZE = (int) (4 * (getResources().getDisplayMetrics().density) + 0.5f); // 4dp
+        mRecyclerView.setPadding(0, PADDING_SIZE, 0, PADDING_SIZE);
+
+
+        mSwipeRefresh = v.findViewById(R.id.swipeContainer);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mRecyclerView.getAdapter().notifyDataSetChanged();
+                mSwipeRefresh.setRefreshing(false);
+            }
+        });
+
+        return v;
+    }
+
+    private void loadItemImage(final Item item, final ImageView imageView) {
+        imageView.setVisibility(item.hasImage() ? View.VISIBLE : View.GONE);
+
+        Task loadingTask = FirebaseStorage.getInstance().getReference("items").child(item.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (getActivity() == null) return;
+
+                if (task.getException() == null) {
+                    Glide.with(getActivity()).load(task.getResult()).into(imageView);
+                    imageView.setVisibility(View.VISIBLE);
+                } else
+                    imageView.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_page, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem newArticleMenuItem = menu.findItem(R.id.menu_item_create_article);
+        MenuItem pageSettingsMenuItem = menu.findItem(R.id.menu_item_page_settings);
+        MenuItem followMenuItem = menu.findItem(R.id.menu_item_follow_page);
+
+        newArticleMenuItem.setVisible(mIsOwner);
+        pageSettingsMenuItem.setVisible(mIsOwner);
+        followMenuItem.setVisible(!mIsOwner);
+
+        new EventsLogger(getActivity()).log("page_options_menu", "is_owner", mIsOwner);
+
+        if (mUserId != null) {
+            followMenuItem.setTitle(mPage.hasFollowedBy(mUserId) ? R.string.unfollow_page : R.string.follow_page);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_item_create_article)
+            return createNewItem();
+
+        else if (item.getItemId() == R.id.menu_item_page_settings) {
+            Intent i = new Intent(getActivity(), PageSettingsActivity.class);
+            i.putExtra(EXTRA_ID, mPage.getId());
+            startActivity(i);
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
+            getActivity().finish();
+            return true;
+        } else if (item.getItemId() == R.id.menu_item_follow_page) {
+            if (mAuth.getCurrentUser() == null || mUser == null || mUserId == null || !mAuth.getCurrentUser().getUid().equals(mUserId))
+                return false;
+
+            if (item.getTitle().toString().equals(getString(R.string.follow_page)))
+                mPage.addNewFollower(mUser, mUserId);
+
+            else if (item.getTitle().toString().equals(getString(R.string.unfollow_page)))
+                mPage.removeFollower(mUser, mUserId);
+
+            else
+                return false;
+
+            mDatabaseManager.followPage(mUser, mUserId, mPage);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private boolean createNewItem() {
+        Item newItem = new Item(mPage.getId());
+        mDatabaseManager.pushItemToDB(newItem); // we add only to itemsDatabase and not to pagesDatabase - we'll add it there when we save the item in EditItemFragment
+
+        Intent intent = new Intent(getActivity(), EditItemActivity.class);
+        intent.putExtra(ItemFragment.EXTRA_ID, newItem.getId());
+        startActivity(intent);
+        return true;
+    }
+
     private class PageRecycleViewAdapter extends RecyclerView.Adapter {
         Context mContext;
         ArrayList<Item> mItems;
 
 
-        public PageRecycleViewAdapter(Context context) {
+        PageRecycleViewAdapter(Context context) {
             mContext = context;
             setHasStableIds(true);
         }
 
-        public void setItems(ArrayList<Item> items) {
+        void setItems(ArrayList<Item> items) {
             mItems = items;
             notifyDataSetChanged();
         }
@@ -285,27 +376,24 @@ public class PageFragment extends Fragment {
                 return HEADER_TYPE;
         }
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v;
             if(viewType == HEADER_TYPE) {
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_card_header, parent, false);
                 return new HeaderViewHolder(v);
-            }
-
-            else if(viewType == NO_HEADER_TYPE) {
+            } else if (viewType == NO_HEADER_TYPE) {
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_card, parent, false);
                 return new NoHeaderViewHolder(v);
-            }
-
-            else { // if(view type == NO_IMAGES)
+            } else { // if(view type == NO_IMAGES)
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_card_no_image, parent, false);
                 return new NoImageViewHolder(v);
             }
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             int reversedIndex = mItems.size() - 1 - position;
             final Item item = mItems.get(reversedIndex);
 
@@ -399,12 +487,12 @@ public class PageFragment extends Fragment {
             ImageView mImageView;
             TextView mTextView;
 
-            public HeaderViewHolder(View itemView) {
+            HeaderViewHolder(View itemView) {
                 super(itemView);
 
-                mCardView = (CardView) itemView.findViewById(R.id.card);
-                mImageView = (ImageView) itemView.findViewById(R.id.cardImageView);
-                mTextView = (TextView) itemView.findViewById(R.id.cardText);
+                mCardView = itemView.findViewById(R.id.card);
+                mImageView = itemView.findViewById(R.id.cardImageView);
+                mTextView = itemView.findViewById(R.id.cardText);
             }
         }
 
@@ -414,13 +502,13 @@ public class PageFragment extends Fragment {
             TextView mTextView;
             TextView mTimeTextView;
 
-            public NoHeaderViewHolder(View itemView) {
+            NoHeaderViewHolder(View itemView) {
                 super(itemView);
 
-                mCardView = (CardView) itemView.findViewById(R.id.card);
-                mImageView = (ImageView) itemView.findViewById(R.id.cardImageView);
-                mTextView = (TextView) itemView.findViewById(R.id.cardText);
-                mTimeTextView = (TextView) itemView.findViewById(R.id.cardTime);
+                mCardView = itemView.findViewById(R.id.card);
+                mImageView = itemView.findViewById(R.id.cardImageView);
+                mTextView = itemView.findViewById(R.id.cardText);
+                mTimeTextView = itemView.findViewById(R.id.cardTime);
             }
         }
 
@@ -430,111 +518,14 @@ public class PageFragment extends Fragment {
             TextView mTimeTextView;
 
 
-            public NoImageViewHolder(View v) {
+            NoImageViewHolder(View v) {
                 super(v);
 
-                mCardView = (CardView) v.findViewById(R.id.card);
-                mTextView = (TextView) v.findViewById(R.id.cardText);
-                mTimeTextView = (TextView) v.findViewById(R.id.cardTime);
+                mCardView = v.findViewById(R.id.card);
+                mTextView = v.findViewById(R.id.cardText);
+                mTimeTextView = v.findViewById(R.id.cardTime);
             }
         }
-    }
-
-    private void loadItemImage(final Item item, final ImageView imageView) {
-        imageView.setVisibility(item.hasImage() ? View.VISIBLE : View.GONE);
-
-        Task loadingTask = FirebaseStorage.getInstance().getReference("items").child(item.getId().toString()).child("image.png").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if(getActivity() == null) return;
-
-                if(task.getException() == null) {
-                    Glide.with(getActivity()).load(task.getResult()).into(imageView);
-                    imageView.setVisibility(View.VISIBLE);
-                }
-
-                else
-                    imageView.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_page, menu);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem newArticleMenuItem = menu.findItem(R.id.menu_item_create_article);
-        MenuItem pageSettingsMenuItem = menu.findItem(R.id.menu_item_page_settings);
-        MenuItem followMenuItem = menu.findItem(R.id.menu_item_follow_page);
-
-        newArticleMenuItem.setVisible(mIsOwner);
-        pageSettingsMenuItem.setVisible(mIsOwner);
-        followMenuItem.setVisible(!mIsOwner);
-
-        new EventsLogger(getActivity()).log("page_options_menu", "is_owner", mIsOwner);
-
-        if(mUserId != null) {
-            followMenuItem.setTitle(mPage.hasFollowedBy(mUserId) ? R.string.unfollow_page : R.string.follow_page);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_item_create_article)
-            return createNewItem();
-
-        else if(item.getItemId() == R.id.menu_item_page_settings) {
-            Intent i = new Intent(getActivity(), PageSettingsActivity.class);
-            i.putExtra(EXTRA_ID, mPage.getId());
-            startActivity(i);
-            return true;
-        }
-
-        else if(item.getItemId() == android.R.id.home) {
-            getActivity().finish();
-            return true;
-        }
-
-        else if(item.getItemId() == R.id.menu_item_follow_page) {
-            if(mAuth.getCurrentUser() == null || mUser == null || mUserId == null || !mAuth.getCurrentUser().getUid().equals(mUserId)) return false;
-
-            if(item.getTitle().toString().equals(getString(R.string.follow_page)))
-                mPage.addNewFollower(mUser, mUserId);
-
-            else if (item.getTitle().toString().equals(getString(R.string.unfollow_page)))
-                mPage.removeFollower(mUser, mUserId);
-
-            else
-                return false;
-
-            mDatabaseManager.followPage(mUser, mUserId, mPage);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private boolean createNewItem() {
-        Item newItem = new Item(mPage.getId());
-        mDatabaseManager.pushItemToDB(newItem); // we add only to itemsDatabase and not to pagesDatabase - we'll add it there when we save the item in EditItemFragment
-
-        Intent intent = new Intent(getActivity(), EditItemActivity.class);
-        intent.putExtra(ItemFragment.EXTRA_ID, newItem.getId());
-        startActivity(intent);
-        return true;
-    }
-
-    public static Fragment newInstance(UUID id) {
-        Bundle args = new Bundle();
-        args.putSerializable(PageFragment.EXTRA_ID, id);
-
-        PageFragment fragment = new PageFragment();
-        fragment.setArguments(args);
-
-        return (Fragment) fragment;
     }
 
     public static Intent createIntent(Context context, UUID id) {

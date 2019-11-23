@@ -62,6 +62,7 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
         return mUserId;
     }
 
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(mLayoutResource, parent, false);
@@ -69,7 +70,7 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final Page page = mPages.get(position);
 
         ((ViewHolder) holder).mNameTextView.setText(page.getName());
@@ -85,7 +86,7 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
         ((ViewHolder) holder).mLinearLayout.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               new EventsLogger(mContext).log("has_access", "is_page_public", page.isPublic(), "user_not_null", mUser != null, "is_user_following", (mUser != null) ? mUser.isFollowing(page) : false, "follow_screen", mScreen == PAGES_FOLLOW);
+               new EventsLogger(mContext).log("has_access", "is_page_public", page.isPublic(), "user_not_null", mUser != null, "is_user_following", (mUser != null) && mUser.isFollowing(page), "follow_screen", mScreen == PAGES_FOLLOW);
 
                if (hasAccess(page)) { // if Explore has access or if Follow
                    Intent intent = new Intent(mContext, PageActivity.class);
@@ -113,7 +114,7 @@ public class PageListRecycleViewAdapter extends RecyclerView.Adapter {
         return (mPages == null) ? 0 : mPages.size();
     }
 
-    public Page getPage(MenuItem menuItem) {
+    Page getPage(MenuItem menuItem) {
         if(mPages == null) return null;
 
         int position = menuItem.getOrder(); // we put the adapter position instead of the order

@@ -56,11 +56,11 @@ public class LoginFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
 
         // Referencing Widgets
-        mEmailEditText = (EditText) v.findViewById(R.id.emailEditText);
-        mPasswordEditText = (EditText) v.findViewById(R.id.passwordEditText);
-        mSignInButton = (Button) v.findViewById(R.id.signUpButton);
-        mForgotPasswordTextView = (TextView) v.findViewById(R.id.forgotPasswordTextView);
-        mSignUpTextView = (TextView) v.findViewById(R.id.loginTextView);
+        mEmailEditText = v.findViewById(R.id.emailEditText);
+        mPasswordEditText = v.findViewById(R.id.passwordEditText);
+        mSignInButton = v.findViewById(R.id.signUpButton);
+        mForgotPasswordTextView = v.findViewById(R.id.forgotPasswordTextView);
+        mSignUpTextView = v.findViewById(R.id.loginTextView);
 
         configureView(v);
 
@@ -87,7 +87,7 @@ public class LoginFragment extends Fragment {
                             PreferenceManager.getDefaultSharedPreferences(getActivity())
                                     .edit()
                                     .putString(SettingsFragment.KEY_EMAIL_PREFERENCE, email)
-                                    .commit();
+                                    .apply();
 
                             onLoginSuccess();
                         }

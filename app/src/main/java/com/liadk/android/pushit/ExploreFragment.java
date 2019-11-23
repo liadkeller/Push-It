@@ -103,7 +103,7 @@ public class ExploreFragment extends PageListFragment {
 
         mProgressBar = v.findViewById(R.id.progressBar);
 
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        mRecyclerView = v.findViewById(R.id.recyclerView);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         mRecyclerView.setAdapter(new PageListRecycleViewAdapter(getActivity(), PageListRecycleViewAdapter.PAGES_EXPLORE));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

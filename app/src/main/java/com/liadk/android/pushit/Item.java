@@ -94,140 +94,7 @@ public class Item {
         mTitle = title;
     }
 
-    public void setHasImage(boolean hasImage) {
-        this.mHasImage = hasImage;
-    }
-
-    public void setImageUri(Uri imageUrl) {
-        this.mImageUri = imageUrl;
-    }
-
-    public void setAuthor(String author) {
-        mAuthor = author;
-    }
-
-    public void setTime(Date time) {
-        mTime = time;
-    }
-
-    public void setCurrentTime() {
-        mTime = new Date();
-    }
-
-    public void setPublishTime() { setPublishTime(new Date()); }
-
-    public void setPublishTime(Date time) { mPublishTime = time.getTime(); }
-
-    public void setText(String text) {
-        mTextSegments.set(0, text);
-    }
-
-    public void setState(State state) {
-        mState = state;
-    }
-
-    // promotes mCounter and adds a text segment
-    public void addImage() {
-        mMediaSegments.add(null);
-        mTextSegments.add("");
-        mCounter++;
-    }
-
-    public void removeTextSegment(int index) {
-        if (index > 0 && index <= mCounter) {
-            String linebreak = (mTextSegments.get(index - 1).equals("") || mTextSegments.get(index).equals("")) ? "" : "\n";
-            String text = mTextSegments.get(index - 1) + linebreak + mTextSegments.get(index);
-            mTextSegments.remove(index);
-            mTextSegments.set(index - 1, text);
-            mCounter--;
-        }
-    }
-
-
-    public UUID getId() {
-        return mId;
-    }
-
-    public String getTitle() {
-        return mTitle;
-    }
-
-    public boolean hasImage() {
-        return mHasImage;
-    }
-
-    public Uri getImageUri() {
-        return mImageUri;
-    }
-
-    public String getText() {
-        return mTextSegments.get(0);
-    }
-
-    protected Date getOriginalTime() {
-        return mOriginalTime;
-    }
-
-    public String getFormattedOriginalTime() {
-        if(mOriginalTime == null) return null;
-        return DateFormat.format("MMM d, hh:mm", mOriginalTime).toString();
-    }
-
-    public String getTime() {
-        if(mTime == null) return null;
-        return DateFormat.format("MMM d, hh:mm", mTime).toString();
-    }
-
-    public String getShortTime() {
-        if(mTime == null) return null;
-        return DateFormat.format("hh:mm", mTime).toString();
-    }
-
-    public String getAuthor() {
-        return mAuthor;
-    }
-
-    public String getDetails() {
-        if (mAuthor == null || mAuthor.equals("")) return getTime();
-        else return getTime() + " | " + mAuthor;
-    }
-
-    public State getState() {
-        return mState;
-    }
-
-    public UUID getOwnerId() {
-        return mOwnerId;
-    }
-
-    public ArrayList<String> getTextSegments() {
-        return mTextSegments;
-    }
-
-    public ArrayList<Uri> getMediaSegments() {
-        return mMediaSegments;
-    }
-
-    public int getSegmentsCounter() {
-        return mCounter;
-    }
-
-    public long getOriginalTimeLong() {
-        if(mOriginalTime == null) return 0;
-        return mOriginalTime.getTime();
-    }
-
-    public long getTimeLong() {
-        if(mTime == null) return 0;
-        return mTime.getTime();
-    }
-
-    public long getPublishTimeLong() {
-        return mPublishTime;
-    }
-
-
-    public static Item fromDB(DataSnapshot ds) {
+    static Item fromDB(DataSnapshot ds) {
         if (ds.getValue() == null) return null;
 
         Item item = new Item();
@@ -235,10 +102,10 @@ public class Item {
         item.mId = UUID.fromString(ds.getKey());
         item.mTitle = (String) ds.child("title").getValue();
         item.mAuthor = (String) ds.child("author").getValue();
-        if(ds.child("has-image").getValue() != null)
+        if (ds.child("has-image").getValue() != null)
             item.mHasImage = (boolean) ds.child("has-image").getValue();
 
-        if(ds.child("owner").getValue() != null)
+        if (ds.child("owner").getValue() != null)
             item.mOwnerId = UUID.fromString((String) ds.child("owner").getValue());
         item.mState = State.getState((String) ds.child("state").getValue());
 
@@ -249,20 +116,155 @@ public class Item {
         item.mOriginalTime = null;
         item.mPublishTime = 0;
 
-        if(ds.child("counter").getValue() != null)
-            item.mCounter = (int) ds.child("counter").getValue(Integer.class);
+        if (ds.child("counter").getValue() != null)
+            item.mCounter = ds.child("counter").getValue(Integer.class);
         for (int i = 0; i <= item.mCounter; i++)
             item.mTextSegments.add((String) ds.child("text").child(i + "").getValue());
-        for(int i = 0; i < item.mCounter; i++)
+        for (int i = 0; i < item.mCounter; i++)
             item.mMediaSegments.add(null);     // fill the MediaSegments with nulls (as many as mCounter)
 
-        if(ds.child("time").getValue() != null)
-            item.mTime = new Date( (long) ds.child("time").getValue());
-        if(ds.child("original-time").getValue() != null)
+        if (ds.child("time").getValue() != null)
+            item.mTime = new Date((long) ds.child("time").getValue());
+        if (ds.child("original-time").getValue() != null)
             item.mOriginalTime = new Date((long) ds.child("original-time").getValue());
-        if(ds.child("publish-time").getValue() != null)
+        if (ds.child("publish-time").getValue() != null)
             item.mPublishTime = (long) ds.child("publish-time").getValue();
 
         return item;
+    }
+
+    void setHasImage(boolean hasImage) {
+        this.mHasImage = hasImage;
+    }
+
+    void setCurrentTime() {
+        mTime = new Date();
+    }
+
+    void setPublishTime() {
+        setPublishTime(new Date());
+    }
+
+    private void setPublishTime(Date time) {
+        mPublishTime = time.getTime();
+    }
+
+    // promotes mCounter and adds a text segment
+    void addImage() {
+        mMediaSegments.add(null);
+        mTextSegments.add("");
+        mCounter++;
+    }
+
+    void removeTextSegment(int index) {
+        if (index > 0 && index <= mCounter) {
+            String linebreak = (mTextSegments.get(index - 1).equals("") || mTextSegments.get(index).equals("")) ? "" : "\n";
+            String text = mTextSegments.get(index - 1) + linebreak + mTextSegments.get(index);
+            mTextSegments.remove(index);
+            mTextSegments.set(index - 1, text);
+            mCounter--;
+        }
+    }
+
+    boolean hasImage() {
+        return mHasImage;
+    }
+
+    Uri getImageUri() {
+        return mImageUri;
+    }
+
+    void setImageUri(Uri imageUrl) {
+        this.mImageUri = imageUrl;
+    }
+
+    public UUID getId() {
+        return mId;
+    }
+
+    public String getTitle() {
+        return mTitle;
+    }
+
+    Date getOriginalTime() {
+        return mOriginalTime;
+    }
+
+    String getFormattedOriginalTime() {
+        if(mOriginalTime == null) return null;
+        return DateFormat.format("MMM d, hh:mm", mOriginalTime).toString();
+    }
+
+    public String getText() {
+        return mTextSegments.get(0);
+    }
+
+    public void setText(String text) {
+        mTextSegments.set(0, text);
+    }
+
+    String getTime() {
+        if(mTime == null) return null;
+        return DateFormat.format("MMM d, hh:mm", mTime).toString();
+    }
+
+    void setTime(Date time) {
+        mTime = time;
+    }
+
+    String getShortTime() {
+        if(mTime == null) return null;
+        return DateFormat.format("hh:mm", mTime).toString();
+    }
+
+    String getAuthor() {
+        return mAuthor;
+    }
+
+    void setAuthor(String author) {
+        mAuthor = author;
+    }
+
+    String getDetails() {
+        if (mAuthor == null || mAuthor.equals("")) return getTime();
+        else return getTime() + " | " + mAuthor;
+    }
+
+    State getState() {
+        return mState;
+    }
+
+    void setState(State state) {
+        mState = state;
+    }
+
+    UUID getOwnerId() {
+        return mOwnerId;
+    }
+
+    ArrayList<String> getTextSegments() {
+        return mTextSegments;
+    }
+
+    ArrayList<Uri> getMediaSegments() {
+        return mMediaSegments;
+    }
+
+    int getSegmentsCounter() {
+        return mCounter;
+    }
+
+    long getOriginalTimeLong() {
+        if(mOriginalTime == null) return 0;
+        return mOriginalTime.getTime();
+    }
+
+    long getTimeLong() {
+        if(mTime == null) return 0;
+        return mTime.getTime();
+    }
+
+    long getPublishTimeLong() {
+        return mPublishTime;
     }
 }

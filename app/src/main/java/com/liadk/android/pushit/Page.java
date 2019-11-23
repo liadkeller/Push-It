@@ -43,14 +43,18 @@ public class Page {
         }
     }
 
-    public class PageSettings {
-        public Design design;
+    // only details needed for explore/follow tabs
+    static Page getPageDetailsFromDB(DataSnapshot ds) {
+        if (isNull(ds)) return null;
 
-        public PageSettings() {
-            if(design == null) {
-                design = Design.SINGLE_HEADER; // Default
-            }
-        }
+        Page page = new Page();
+        page.mId = UUID.fromString(ds.getKey());
+        page.mName = (String) ds.child("name").getValue();
+        page.mDescription = (String) ds.child("description").getValue();
+
+        if (ds.child("private").getValue() != null)
+            page.mIsPrivate = (boolean) ds.child("private").getValue();
+        return page;
     }
 
 
@@ -71,22 +75,8 @@ public class Page {
         return ds.getValue() == null || (ds.child("deleted").getValue() != null && (boolean) ds.child("deleted").getValue());
     }
 
-    // only details needed for explore/follow tabs
-    public static Page getPageDetailsFromDB(DataSnapshot ds) {
-        if(isNull(ds)) return null;
-
-        Page page = new Page();
-        page.mId = UUID.fromString(ds.getKey());
-        page.mName = (String) ds.child("name").getValue();
-        page.mDescription = (String) ds.child("description").getValue();
-
-        if(ds.child("private").getValue() != null)
-            page.mIsPrivate = (boolean) ds.child("private").getValue();
-        return page;
-    }
-
     // details needed for page setting screen
-    public static Page getPageSettingsFromDB(DataSnapshot ds) {
+    static Page getPageSettingsFromDB(DataSnapshot ds) {
         if(isNull(ds)) return null;
 
         Page page = getPageDetailsFromDB(ds);
@@ -95,7 +85,7 @@ public class Page {
         return page;
     }
 
-    public static Page getPageFollowersFromDB(DataSnapshot ds) {
+    static Page getPageFollowersFromDB(DataSnapshot ds) {
         if(isNull(ds)) return null;
 
         Page page = new Page();
@@ -104,13 +94,13 @@ public class Page {
         if(ds.child("private").getValue() != null)
             page.mIsPrivate = (boolean) ds.child("private").getValue();
 
-        if((HashMap<String, Boolean>) ds.child("followers").getValue() != null)
+        if (ds.child("followers").getValue() != null)
             page.mFollowersIdentifiers = (HashMap<String, Boolean>) ds.child("followers").getValue();
 
         return page;
     }
 
-    public static Page fromDB(DataSnapshot ds) {
+    static Page fromDB(DataSnapshot ds) {
         if(isNull(ds)) return null;
 
         Page page = new Page();
@@ -123,51 +113,55 @@ public class Page {
         }
         if(ds.child("private").getValue() != null)
             page.mIsPrivate = (boolean) ds.child("private").getValue();
-        if((HashMap<String, Boolean>) ds.child("followers").getValue() != null)
+        if (ds.child("followers").getValue() != null)
             page.mFollowersIdentifiers = (HashMap<String, Boolean>) ds.child("followers").getValue();
         page.settings.design = Design.getDesign((String) ds.child("settings").child("design").getValue());
 
         return page;
     }
 
-    public void setName(String name) {
-        this.mName = name;
-    }
-
-    public void setDescription(String description) {
-        this.mDescription = description;
-    }
-
-    public void setItemsIdentifiers(ArrayList<UUID> itemsIdentifiers) {
-        this.mItemsIdentifiers = itemsIdentifiers;
-    }
-
-    public void addItem(UUID id) {
-        mItemsIdentifiers.add(id);
-    }
-
     // if page public, adds follower. else adds to following requests list
-    public void addNewFollower(PushItUser user, String userId) {
+    void addNewFollower(PushItUser user, String userId) {
         mFollowersIdentifiers.put(userId, this.isPublic());
 
         if(mFollowersIdentifiers.get(userId))
             user.followPage(this);
     }
 
+    public void setName(String name) {
+        this.mName = name;
+    }
+
     // approves follower
-    public void approveFollower(PushItUser user, String userId) {
+    void approveFollower(PushItUser user, String userId) {
         mFollowersIdentifiers.put(userId, true);
         user.followPage(this);
     }
 
-    public void removeFollower(PushItUser user, String userId) {
+    public void addItem(UUID id) {
+        mItemsIdentifiers.add(id);
+    }
+
+    void removeFollower(PushItUser user, String userId) {
         user.unfollowPage(this);
         mFollowersIdentifiers.remove(userId);
     }
 
     // returns true if the user has requested to follow this page
-    public boolean hasFollowedBy(String userId) {
+    boolean hasFollowedBy(String userId) {
         return mFollowersIdentifiers.containsKey(userId);
+    }
+
+    String getDescription() {
+        return mDescription;
+    }
+
+    void setDescription(String description) {
+        this.mDescription = description;
+    }
+
+    ArrayList<UUID> getItemsIdentifiers() {
+        return mItemsIdentifiers;
     }
 
     public void setPrivate(boolean isPrivate) {
@@ -183,12 +177,12 @@ public class Page {
         return mName;
     }
 
-    public String getDescription() {
-        return mDescription;
+    public void setItemsIdentifiers(ArrayList<UUID> itemsIdentifiers) {
+        this.mItemsIdentifiers = itemsIdentifiers;
     }
 
-    public ArrayList<UUID> getItemsIdentifiers() {
-        return mItemsIdentifiers;
+    HashMap<String, Boolean> getFollowersIdentifiers() {
+        return mFollowersIdentifiers;
     }
 
     public boolean isPrivate() {
@@ -199,7 +193,13 @@ public class Page {
         return !mIsPrivate;
     }
 
-    public HashMap<String, Boolean> getFollowersIdentifiers() {
-        return mFollowersIdentifiers;
+    public class PageSettings {
+        Design design;
+
+        PageSettings() {
+            if (design == null) {
+                design = Design.SINGLE_HEADER; // Default
+            }
+        }
     }
 }
