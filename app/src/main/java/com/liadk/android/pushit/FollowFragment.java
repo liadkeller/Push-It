@@ -64,7 +64,7 @@ public class FollowFragment extends PageListFragment {
                 mDatabaseManager.addPagesListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.getValue() == null) return;
+                        if(dataSnapshot.getValue() == null || mUser == null) return;
 
                         mPages = new ArrayList<>();
                         for(String pageId : mUser.getFollowedPages()) {
@@ -175,7 +175,7 @@ public class FollowFragment extends PageListFragment {
         mDatabaseManager.addPagesListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() == null) return;
+                if(dataSnapshot.getValue() == null || mUser == null) return;
 
                 if(query == null) {
                     configureAdapter(mPages);

@@ -56,16 +56,15 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
         mDatabaseManager.addPagesListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() == null) return;
+                if(dataSnapshot.getValue() == null) {
+                    finish();
+                    return;
+                }
 
                 mPage = Page.getPageSettingsFromDB(dataSnapshot.child(id.toString()));
 
                 if(mPage == null) {
-                    if(getActivity() != null) {
-                        Toast.makeText(getActivity(), R.string.page_not_exist, Toast.LENGTH_SHORT).show();
-                        getActivity().setResult(Activity.RESULT_CANCELED);
-                        getActivity().finish();
-                    }
+                    finish();
                     return;
                 }
 
@@ -74,6 +73,14 @@ public class PageSettingsFragment extends PreferenceFragmentCompat implements Sh
 
                 if(mNamePreference != null && mDescPreference != null && mLayoutPreference != null)
                     updatePreferences();
+            }
+
+            private void finish() {
+                if(getActivity() != null) {
+                    Toast.makeText(getActivity(), R.string.page_not_exist, Toast.LENGTH_SHORT).show();
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
+                }
             }
 
             @Override

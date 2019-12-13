@@ -128,7 +128,7 @@ public class PageFragment extends Fragment {
                 ArrayList<Item> items = new ArrayList<>();
                 for (UUID id : itemsIdentifiers) {
                     Item item = Item.fromDB(dataSnapshot.child("items").child(id.toString()));
-                    if(item != null && (mIsOwner || item.getState().inPage()))
+                    if(item != null && (mIsOwner || (item.getState() != null && item.getState().inPage())))
                         items.add(item);
                 }
 
@@ -156,38 +156,36 @@ public class PageFragment extends Fragment {
     }
 
     private void configureAdapter(ArrayList<Item> items) {
-
         final PageRecycleViewAdapter adapter = (PageRecycleViewAdapter) mRecyclerView.getAdapter();
 
         adapter.setItems(items);
         mProgressBar.setVisibility(View.GONE);
-
-        mEmptyView.setVisibility(items.size() == 0 ? View.VISIBLE : View.GONE);
+        configureEmptyView(items.size());
 
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() { // checks if recycler view empty
-
             @Override
             public void onChanged() {
                 super.onChanged();
-                checkEmpty();
+                configureEmptyView(adapter.getItemCount());
             }
 
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
-                checkEmpty();
+                configureEmptyView(adapter.getItemCount());
             }
 
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 super.onItemRangeRemoved(positionStart, itemCount);
-                checkEmpty();
-            }
-
-            void checkEmpty() {
-                mEmptyView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+                configureEmptyView(adapter.getItemCount());
             }
         });
+    }
+
+    private void configureEmptyView(int size) {
+        mEmptyView.setVisibility(size == 0 ? View.VISIBLE : View.GONE);
+        mAddArticleButton.setVisibility(size == 0 && mIsOwner ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -219,7 +217,7 @@ public class PageFragment extends Fragment {
         mRecyclerView = v.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mEmptyView = v.findViewById(R.id.noUserView);
+        mEmptyView = v.findViewById(R.id.emptyPageView);
         mAddArticleButton = v.findViewById(R.id.addArticleButton);
         mAddArticleButton.setOnClickListener(new View.OnClickListener() {
             @Override
