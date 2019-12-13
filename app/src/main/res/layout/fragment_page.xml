@@ -13,7 +13,7 @@
         android:layout_gravity="center"/>
 
     <LinearLayout
-        android:id="@+id/noUserView"
+        android:id="@+id/emptyPageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -33,7 +33,8 @@
             android:layout_margin="32dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:text="@string/add_article"></Button>
+            android:text="@string/add_article"
+            android:visibility="gone"></Button>
     </LinearLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
