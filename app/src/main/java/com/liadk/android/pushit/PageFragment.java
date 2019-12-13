@@ -128,7 +128,7 @@ public class PageFragment extends Fragment {
                 ArrayList<Item> items = new ArrayList<>();
                 for (UUID id : itemsIdentifiers) {
                     Item item = Item.fromDB(dataSnapshot.child("items").child(id.toString()));
-                    if(item != null && (mIsOwner || item.getState().inPage()))
+                    if(item != null && (mIsOwner || (item.getState() != null && item.getState().inPage())))
                         items.add(item);
                 }
 

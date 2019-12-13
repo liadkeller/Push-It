@@ -126,6 +126,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         else
             return false; // user status = false (content follower) thus current fragment ok
 
+        if(getActivity() == null) // no activity, cannot replace fragment
+            return false;
+
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
